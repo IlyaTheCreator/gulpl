@@ -1,4 +1,5 @@
 const { src, dest, watch, series } = require("gulp");
+const babel = require("gulp-babel");
 const connect = require("gulp-connect");
 const sass = require("gulp-sass")(require("sass"));
 const postcss = require("gulp-postcss");
@@ -17,8 +18,13 @@ function scssTask() {
 // JavaScript Task
 function jsTask() {
   return src("app/js/**/*.js", { sourcemaps: true })
+    .pipe(
+      babel({
+        presets: ["@babel/env"],
+      })
+    )
     .pipe(terser())
-    .pipe(dest("dist/js", { sourcemaps: "." }));
+    .pipe(dest("dist/js"));
 }
 
 // Browsersync Tasks
