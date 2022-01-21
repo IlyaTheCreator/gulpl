@@ -1,6 +1,5 @@
 const { src, dest, watch, series } = require("gulp");
 const babel = require("gulp-babel");
-const connect = require("gulp-connect");
 const sass = require("gulp-sass")(require("sass"));
 const postcss = require("gulp-postcss");
 const cssnano = require("cssnano");
