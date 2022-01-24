@@ -9,7 +9,9 @@ $color-secondary: #f2f2f2;
 $color-cloudy: linear-gradient(180deg, #0F2027 0%, #203A43 52.6%, #2C5364 100%);
 $widget-color-cloudy: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
 $color-black: #000;
-$color-gray: #ccc;
+$color-gray: #EBEBEB;
+$color-normal: #DDE2E4;
+$color-blue: #689BFF;
 $box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.2);
 
 body {
@@ -33,6 +35,13 @@ button {
   background: $widget-color-cloudy;
 }
 
+.card {
+  background: $color-gray;
+  border-radius: 5px;
+  padding: 40px;
+  color: $color-black;
+}
+
 .screen {
   position: relative;
   padding: 20px;
@@ -43,9 +52,17 @@ button {
     background: $color-cloudy;
   }
 
+  &--bg-normal {
+    background: $color-normal;
+  }
+
   &__header {
     font-weight: normal;
     font-size: 1.7em;
+
+    &--black {
+      color: $color-black;
+    }
   }
 
   &__date {
@@ -158,6 +175,22 @@ button {
 
   &__widget-additional {
     font-size: .9em;
+  }
+
+  &__settings-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__item-text {
+    font-size: 1.3em;
+  }
+
+  &__toggle-icon {
+    cursor: pointer;
+    font-size: 2em;
+    color: $color-blue;
   }
 }
 
