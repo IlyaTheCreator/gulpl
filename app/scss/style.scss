@@ -1,3 +1,8 @@
+@font-face {
+  font-family: custom-icons-font;
+  src: url("../../assets/fonts/font/custom-icons-font.woff");
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,7 +20,7 @@ $color-blue: #689BFF;
 $box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.2);
 
 body {
-  font-family: sans-serif;
+  font-family: custom-icons-font, sans-serif;
   color: $color-primary;
 }
 
