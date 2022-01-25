@@ -51,6 +51,8 @@ body {
 
 .screen {
   position: relative;
+  display: flex;
+  flex-direction: column;
   padding: 20px;
   min-height: 100vh;
 
@@ -118,10 +120,13 @@ body {
 
   &__btn {
     margin: 25px 0 0 0;
-    float: right;
     font-size: 3em;
     width: 1.5em;
     min-height: 1.5em;
+  }
+
+  &__add-btn {
+    align-self: flex-end;
   }
 
   &__weather {
