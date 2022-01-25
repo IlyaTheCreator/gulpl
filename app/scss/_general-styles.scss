@@ -1,0 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'custom-icons-font', sans-serif;
+  color: $color-primary;
+}
+
+.btn {
+  cursor: pointer;
+  color: $color-primary;
+  background: 0;
+  border: 0;
+}
+
+.widget {
+  padding: 10px;
+  border: 1.5px solid $color-secondary;
+  box-shadow: inset -5px -5px 250px rgba(255, 255, 255, 0.02);
+  // probably won't work
+  backdrop-filter: blur(42px);
+  border-radius: 25px;
+  box-shadow: $box-shadow;
+  background: $widget-color-cloudy;
+}
+
+.card {
+  background: $color-gray;
+  border-radius: 5px;
+  padding: 40px;
+  color: $color-black;
+}
+
+.link {
+  color: $color-primary;
+  text-decoration: none;
+}

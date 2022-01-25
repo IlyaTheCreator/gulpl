@@ -1,58 +1,6 @@
-@font-face {
-  font-family: custom-icons-font;
-  src: url("../../assets/fonts/font/custom-icons-font.woff");
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-$color-primary: #fff;
-$color-secondary: #f2f2f2;
-$color-cloudy: linear-gradient(180deg, #0F2027 0%, #203A43 52.6%, #2C5364 100%);
-$widget-color-cloudy: radial-gradient(100% 100% at 0% 0%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
-$color-black: #000;
-$color-gray: #EBEBEB;
-$color-normal: #DDE2E4;
-$color-blue: #689BFF;
-$box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.2);
-
-body {
-  font-family: custom-icons-font, sans-serif;
-  color: $color-primary;
-}
-
-.btn {
-  cursor: pointer;
-  color: $color-primary;
-  background: 0;
-  border: 0;
-}
-
-.widget {
-  padding: 10px;
-  border: 1.5px solid $color-secondary;
-  box-shadow: inset -5px -5px 250px rgba(255, 255, 255, 0.02);
-  // probably won't work
-  backdrop-filter: blur(42px);
-  border-radius: 25px;
-  box-shadow: $box-shadow;
-  background: $widget-color-cloudy;
-}
-
-.card {
-  background: $color-gray;
-  border-radius: 5px;
-  padding: 40px;
-  color: $color-black;
-}
-
-.link {
-  color: $color-primary;
-  text-decoration: none;
-}
+@import './variables';
+@import './font';
+@import './general-styles';
 
 .screen {
   position: relative;
@@ -132,6 +80,11 @@ body {
 
   &__add-btn {
     align-self: flex-end;
+    display: grid;
+    place-content: center;
+    font-size: 2em;
+    width: 100px;
+    height: 100px;
   }
 
   &__weather {
@@ -169,7 +122,14 @@ body {
   &__toggle-icon {
     cursor: pointer;
     font-size: 2em;
-    color: $color-blue;
+    
+    &--on {
+      color: $color-blue;
+    }
+
+    &--off {
+      color: $color-dark-gray;
+    }
   }
 }
 
@@ -246,12 +206,16 @@ body {
   font-size: 2em;
 
   &__pages {
-    font-size: .3em;
+    display: flex;
   }
 
   &__circle {
-    margin: 0 5px;
+    font-size: 1.5em;
     color: $color-gray;
+    width: 20px;
+    margin: 0 5px;
+    display: grid;
+    place-content: center;
 
     &--active {
       color: $color-primary;
