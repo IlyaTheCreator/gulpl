@@ -145,10 +145,16 @@ body {
     width: 160px;
   }
 
+  &__settings {
+    width: 360px;
+    margin: 10px auto;
+  }
+
   &__settings-item {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    font-size: 1.1em;
   }
 
   &__item-text {
