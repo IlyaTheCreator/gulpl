@@ -6,89 +6,91 @@
     <link rel="stylesheet" href="dist/css/style.css" />
   </head>
   <body>
-    <div class="screen screen--bg--cloudy">
-        <!-- navigation start -->
-        <nav class="navigation">
-            <div class="navigation__settings">
-                <a class="link" href="./settings.html">
-                    <i class="icon-cog"></i>
-                </a>
-            </div>
-            <div class="navigation__pages">
-                <i class="icon-dot navigation__circle navigation__circle--active"></i>
-                <i class="icon-dot navigation__circle"></i>
-                <i class="icon-dot navigation__circle"></i>
-                <i class="icon-dot navigation__circle"></i>
-            </div>
-            <div class="navigation__cities">
-                <a class="link" href="./index.html">
-                    <i class="icon-th"></i>
-                </a>
-            </div>
-        </nav>
-        <!-- navigation end -->
-        <h1 class="screen__header">Escondido</h1>
-        <p class="screen__date">Jul 13 2021</p>
-        <div class="screen__weather">
-            <img src="./assets/images/cloudy.png" alt="weather image" class="screen__image">
-            <p class="screen__temperature">18°</p>
-            <p class="screen__weather-type">Cloudy</p>
-        </div>
-        <!-- grid start -->
-        <div class="city-info-grid">
-            <!-- widget start -->
-            <div class="city-info-grid__min-temp widget">
-                <p class="city-info-grid__widget-description">MIN TEMP</p>
-                <div class="city-info-grid__content-wrapper">
-                    <p class="city-info-grid__widget-number">7°</p>
-                    <p class="city-info-grid__widget-data">Min</p>
+    <div class="screen-wrapper">
+        <div class="screen screen--bg--cloudy">
+            <!-- navigation start -->
+            <nav class="navigation">
+                <div class="navigation__settings">
+                    <a class="link" href="./settings.html">
+                        <i class="icon-cog"></i>
+                    </a>
                 </div>
-            </div>
-            <!-- widget end -->
-
-            <!-- widget start -->
-            <div class="city-info-grid__max-temp widget">
-                <p class="city-info-grid__widget-description">MAX TEMP</p>
-                <div class="city-info-grid__content-wrapper">
-                    <p class="city-info-grid__widget-number">23°</p>
-                    <p class="city-info-grid__widget-data">Max</p>
+                <div class="navigation__pages">
+                    <i class="icon-dot navigation__circle navigation__circle--active"></i>
+                    <i class="icon-dot navigation__circle"></i>
+                    <i class="icon-dot navigation__circle"></i>
+                    <i class="icon-dot navigation__circle"></i>
                 </div>
-            </div>
-            <!-- widget end -->
-
-            <!-- widget start -->
-            <div class="city-info-grid__uv widget">
-                <p class="city-info-grid__widget-description">Uv Indicator</p>
-                <div class="city-info-grid__content-wrapper">
-                    <p class="city-info-grid__widget-number">1</p>
-                    <p class="city-info-grid__widget-data">Low</p>
+                <div class="navigation__cities">
+                    <a class="link" href="./index.html">
+                        <i class="icon-th"></i>
+                    </a>
                 </div>
-                <p class="city-info-grid__widget-additional">Low level during all the day.</p>
+            </nav>
+            <!-- navigation end -->
+            <h1 class="screen__header">Escondido</h1>
+            <p class="screen__date">Jul 13 2021</p>
+            <div class="screen__weather">
+                <img src="./assets/images/cloudy.png" alt="weather image" class="screen__image">
+                <p class="screen__temperature">18°</p>
+                <p class="screen__weather-type">Cloudy</p>
             </div>
-            <!-- widget end -->
-
-            <!-- widget start -->
-            <div class="city-info-grid__feels-like widget">
-                <p class="city-info-grid__widget-description">FEELS LIKE</p>
-                <p class="city-info-grid__widget-number">14°</p>
+            <!-- grid start -->
+            <div class="city-info-grid">
+                <!-- widget start -->
+                <div class="city-info-grid__min-temp widget">
+                    <p class="city-info-grid__widget-description">MIN TEMP</p>
+                    <div class="city-info-grid__content-wrapper">
+                        <p class="city-info-grid__widget-number">7°</p>
+                        <p class="city-info-grid__widget-data">Min</p>
+                    </div>
+                </div>
+                <!-- widget end -->
+    
+                <!-- widget start -->
+                <div class="city-info-grid__max-temp widget">
+                    <p class="city-info-grid__widget-description">MAX TEMP</p>
+                    <div class="city-info-grid__content-wrapper">
+                        <p class="city-info-grid__widget-number">23°</p>
+                        <p class="city-info-grid__widget-data">Max</p>
+                    </div>
+                </div>
+                <!-- widget end -->
+    
+                <!-- widget start -->
+                <div class="city-info-grid__uv widget">
+                    <p class="city-info-grid__widget-description">Uv Indicator</p>
+                    <div class="city-info-grid__content-wrapper">
+                        <p class="city-info-grid__widget-number">1</p>
+                        <p class="city-info-grid__widget-data">Low</p>
+                    </div>
+                    <p class="city-info-grid__widget-additional">Low level during all the day.</p>
+                </div>
+                <!-- widget end -->
+    
+                <!-- widget start -->
+                <div class="city-info-grid__feels-like widget">
+                    <p class="city-info-grid__widget-description">FEELS LIKE</p>
+                    <p class="city-info-grid__widget-number">14°</p>
+                </div>
+                <!-- widget end -->
+    
+                <!-- widget start -->
+                <div class="city-info-grid__pressure widget">
+                    <p class="city-info-grid__widget-description">PRESSURE</p>
+                    <p class="city-info-grid__widget-number">1002 hPa</p>
+                </div>
+                <!-- widget end -->
+    
+                <!-- widget start -->
+                <div class="city-info-grid__air-quality widget">
+                    <p class="city-info-grid__widget-description">Air Quality</p>
+                </div>
+                <!-- widget end -->
             </div>
-            <!-- widget end -->
-
-            <!-- widget start -->
-            <div class="city-info-grid__pressure widget">
-                <p class="city-info-grid__widget-description">PRESSURE</p>
-                <p class="city-info-grid__widget-number">1002 hPa</p>
-            </div>
-            <!-- widget end -->
-
-            <!-- widget start -->
-            <div class="city-info-grid__air-quality widget">
-                <p class="city-info-grid__widget-description">Air Quality</p>
-            </div>
-            <!-- widget end -->
-        </div>
-        <!-- grid end -->
-    </div>   
+            <!-- grid end -->
+        </div>   
+    </div>
     <script src="dist/js/index.js"></script>
   </body>
 </html>

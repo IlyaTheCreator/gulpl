@@ -1,19 +1,15 @@
-console.log("hello");
-console.log("I am working!");
+const devices = ["windows", "mac", "iphone", "android", "linux"];
 
-const dummyFunc = () => {
-  const a = 2;
-  const b = 43;
+const detectDevice = () => {
+  const ua = navigator.userAgent.toLocaleLowerCase();
 
-  return a + b;
+  devices.forEach(device => {
+    const searchResult = ua.search(device)
+
+    if (searchResult !== -1) {
+      document.querySelector(".screen-wrapper").classList.add(`screen-wrapper--${device}`);
+    }
+  });
 };
 
-const list = [1, 2, 3, 4, 5];
-const newList = [...list, 6, 7];
-
-const obj = {
-  key1: 333,
-  key2: 23,
-};
-
-const newObj = { ...obj, name: "what?" };
+window.onload = detectDevice;

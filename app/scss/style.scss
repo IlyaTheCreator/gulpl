@@ -131,6 +131,12 @@
       color: $color-dark-gray;
     }
   }
+
+  @media screen and (min-width: 720px) {
+    width: 720px;
+    height: auto;
+    margin: 0 auto;
+  }
 }
 
 .city-info-grid {
@@ -192,11 +198,10 @@
 }
 
 .navigation {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   right: 0;
-  width: 100vw;
-  background: red;
+  width: 100%;
   border-top: 1px solid $color-gray;
   background: rgba(0, 0, 0, .08);
   display: flex;
