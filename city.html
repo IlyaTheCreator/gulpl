@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="screen screen--bg--cloudy">
+        <!-- navigation start -->
         <nav class="navigation">
             <div class="navigation__settings">
                 <a class="link" href="./settings.html">
@@ -27,6 +28,7 @@
                 </a>
             </div>
         </nav>
+        <!-- navigation end -->
         <h1 class="screen__header">Escondido</h1>
         <p class="screen__date">Jul 13 2021</p>
         <div class="screen__weather">
@@ -34,46 +36,60 @@
             <p class="screen__temperature">18°</p>
             <p class="screen__weather-type">Cloudy</p>
         </div>
-        <div class="screen__weather-layout">
-            <div class="screen__info-widget widget">
-                <p class="screen__widget-description">MIN TEMP</p>
-                <div class="screen__content-wrapper">
-                    <p class="screen__widget-number">7°</p>
-                    <p class="screen__widget-data">Min</p>
+        <!-- grid start -->
+        <div class="city-info-grid">
+            <!-- widget start -->
+            <div class="city-info-grid__min-temp widget">
+                <p class="city-info-grid__widget-description">MIN TEMP</p>
+                <div class="city-info-grid__content-wrapper">
+                    <p class="city-info-grid__widget-number">7°</p>
+                    <p class="city-info-grid__widget-data">Min</p>
                 </div>
             </div>
-            <div class="screen__info-widget widget">
-                <p class="screen__widget-description">MAX TEMP</p>
-                <div class="screen__content-wrapper">
-                    <p class="screen__widget-number">23°</p>
-                    <p class="screen__widget-data">Max</p>
+            <!-- widget end -->
+
+            <!-- widget start -->
+            <div class="city-info-grid__max-temp widget">
+                <p class="city-info-grid__widget-description">MAX TEMP</p>
+                <div class="city-info-grid__content-wrapper">
+                    <p class="city-info-grid__widget-number">23°</p>
+                    <p class="city-info-grid__widget-data">Max</p>
                 </div>
             </div>
-            <div class="screen__info-widget widget">
-                <p class="screen__widget-description">Uv Indicator</p>
-                <div class="screen__content-wrapper">
-                    <p class="screen__widget-number">1</p>
-                    <p class="screen__widget-data">Low</p>
+            <!-- widget end -->
+
+            <!-- widget start -->
+            <div class="city-info-grid__uv widget">
+                <p class="city-info-grid__widget-description">Uv Indicator</p>
+                <div class="city-info-grid__content-wrapper">
+                    <p class="city-info-grid__widget-number">1</p>
+                    <p class="city-info-grid__widget-data">Low</p>
                 </div>
-                <p class="screen__widget-additional">Low level during all the day.</p>
+                <p class="city-info-grid__widget-additional">Low level during all the day.</p>
             </div>
-            <div class="widget-wrapper screen__info-widget">
-                <div class="screen__feels-like widget">
-                    <p class="screen__widget-description">FEELS LIKE</p>
-                    <p class="screen__widget-number">14°</p>
-                </div>
-                <div class="screen__pressure widget">
-                    <p class="screen__widget-description">PRESSURE</p>
-                    <p class="screen__widget-number">1002 hPa</p>
-                </div>
+            <!-- widget end -->
+
+            <!-- widget start -->
+            <div class="city-info-grid__feels-like widget">
+                <p class="city-info-grid__widget-description">FEELS LIKE</p>
+                <p class="city-info-grid__widget-number">14°</p>
             </div>
-            <div class="screen__info-widget-large widget">
-                <p class="screen__widget-description">Air Quality</p>
-                <div class="screen__content-wrapper">
-                    <p class="screen__widget-data">some info...</p>
-                </div>
+            <!-- widget end -->
+
+            <!-- widget start -->
+            <div class="city-info-grid__pressure widget">
+                <p class="city-info-grid__widget-description">PRESSURE</p>
+                <p class="city-info-grid__widget-number">1002 hPa</p>
             </div>
+            <!-- widget end -->
+
+            <!-- widget start -->
+            <div class="city-info-grid__air-quality widget">
+                <p class="city-info-grid__widget-description">Air Quality</p>
+            </div>
+            <!-- widget end -->
         </div>
+        <!-- grid end -->
     </div>   
     <script src="dist/js/index.js"></script>
   </body>
