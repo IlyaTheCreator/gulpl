@@ -19,9 +19,11 @@ body {
   color: $color-primary;
 }
 
-button {
+.btn {
   cursor: pointer;
   color: $color-primary;
+  background: 0;
+  border: 0;
 }
 
 .widget {
@@ -86,7 +88,7 @@ button {
     justify-content: space-between;
   }
 
-  &__add-btn {
+  &__btn {
     margin: 25px 0 0 0;
     float: right;
     font-size: 3em;
