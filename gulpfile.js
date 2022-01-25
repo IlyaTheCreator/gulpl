@@ -11,7 +11,8 @@ function scssTask() {
   return src("app/scss/**/*.scss", { sourcemaps: true })
     .pipe(sass())
     .pipe(postcss([cssnano]))
-    .pipe(dest("dist/css", { sourcemaps: "." }));
+    .pipe(dest("dist/css", { sourcemaps: "." }))
+    .pipe(browserSync.stream());
 }
 
 // JavaScript Task

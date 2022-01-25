@@ -42,18 +42,24 @@ button {
   color: $color-black;
 }
 
+.link {
+  color: $color-primary;
+  text-decoration: none;
+}
+
 .screen {
   position: relative;
   padding: 20px;
-  width: 100vw;
   min-height: 100vh;
 
-  &--bg-cloudy {
-    background: $color-cloudy;
-  }
+  &--bg {
+    &--cloudy {
+      background: $color-cloudy;
+    }
 
-  &--bg-normal {
-    background: $color-normal;
+    &--normal {
+      background: $color-normal;
+    }
   }
 
   &__header {
@@ -74,38 +80,10 @@ button {
     margin: 40px 0 0 0;
   }
 
-  &__city {
-    margin: 25px 0;
-  }
-
   &__title {
     font-weight: normal;
     display: flex;
     justify-content: space-between;
-  }
-
-  &__city-name {
-    font-size: 1.25em;
-  }
-
-  &__city-temperature {
-    font-size: 1.4em;
-  }
-
-  &__city-time {
-    font-size: .9em;
-    color: $color-secondary;
-    margin: 0 0 30px 0;
-  }
-
-  &__city-info {
-    display: flex;
-    justify-content: space-between;
-    color: $color-secondary;
-  }
-
-  &__temperature-range {
-    color: $color-gray;
   }
 
   &__add-btn {
@@ -191,6 +169,34 @@ button {
     cursor: pointer;
     font-size: 2em;
     color: $color-blue;
+  }
+}
+
+.city {
+  margin: 25px 0;
+
+  &__name {
+    font-size: 1.25em;
+  }
+
+  &__temperature {
+    font-size: 1.4em;
+  }
+
+  &__time {
+    font-size: .9em;
+    color: $color-secondary;
+    margin: 0 0 30px 0;
+  }
+
+  &__info {
+    display: flex;
+    justify-content: space-between;
+    color: $color-secondary;
+  }
+
+  &__temperature-range {
+    color: $color-gray;
   }
 }
 
