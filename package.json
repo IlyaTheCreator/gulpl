@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.16.10",
+    "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "^7.16.11",
     "browser-sync": "^2.27.7",
     "cssnano": "^5.0.15",
@@ -20,5 +21,8 @@
     "gulp-terser": "^2.1.0",
     "node-sass": "^7.0.1",
     "sass": "^1.49.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.7"
   }
 }
