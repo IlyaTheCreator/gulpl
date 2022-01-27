@@ -21,14 +21,15 @@ i {
 }
 
 .widget {
-  padding: 10px;
-  border: 1.5px solid $color-secondary;
+  padding: 8px 10px;
   box-shadow: inset -5px -5px 250px rgba(255, 255, 255, 0.02);
-  // probably won't work
-  backdrop-filter: blur(42px);
-  border-radius: 10px;
-  box-shadow: $box-shadow;
   background: $widget-color-cloudy;
+  border: 2px solid rgba(255, 255, 255, .3);
+  border-radius: 10px;
+}
+
+.widget-rounded {
+  border-radius: 20px;
 }
 
 .card {
@@ -41,4 +42,8 @@ i {
 .link {
   color: $color-primary;
   text-decoration: none;
+}
+
+.icon {
+  cursor: pointer;
 }
