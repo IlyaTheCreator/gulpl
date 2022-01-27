@@ -1,13 +1,239 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import './variables';
+@import './fonts';
+@import './general-styles';
+
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  min-height: 100vh;
+  max-width: 411px;
+
+  &--bg {
+    &--cloudy {
+      background: $color-cloudy;
+    }
+
+    &--normal {
+      background: $color-normal;
+    }
+  }
+
+  &__header {
+    font-weight: normal;
+    font-size: 30px;
+
+    &--black {
+      color: $color-black;
+    }
+  }
+
+  &__date {
+    color: $color-gray;
+    font-size: 18px;
+    margin-top: 5px;
+  }
+
+  &__cities {
+    margin: 20px 0 0 0;
+  }
+
+  &__city {
+    margin: 35px 0;
+  
+    &-name {
+      font-size: 30px;
+      position: relative;
+      left: -1px;
+    }
+  
+    &-temperature {
+      font-size: 40px;
+      padding-right: 10px;
+    }
+  
+    &-time {
+      font-size: .9em;
+      color: $color-gray;
+    }
+  
+    &-info {
+      display: flex;
+      justify-content: space-between;
+      color: $color-secondary;
+      margin-top: 30px;
+    }
+  
+    &-temperature-range {
+      color: $color-gray;
+      font-size: 20px;
+    }
+
+    &-weather-condition {
+      color: $color-gray;
+    }
+  }
+
+  &__title {
+    font-weight: normal;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__btn {
+    margin: 20px 0 0 0;
+    font-size: 3em;
+    width: 1.5em;
+    min-height: 1.5em;
+  }
+
+  &__add-btn {
+    align-self: flex-end;
+    display: grid;
+    place-content: center;
+    font-size: 30px;
+    width: 75px;
+    height: 75px;
+  }
+
+  &__weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  &__temperature {
+    margin-top: 15px;
+    font-size: 40px;
+  }
+
+  &__weather-type {
+    font-size: 20px;
+    margin-bottom: 40px;
+  }
+
+  &__image {
+    width: 160px;
+  }
+
+  &__settings {
+    width: 360px;
+    margin: 10px auto;
+  }
+
+  &__settings-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+
+  &__item-text {
+    font-size: 1.3em;
+  }
+
+  &__toggle-icon {
+    cursor: pointer;
+    font-size: 2em;
+    
+    &--on {
+      color: $color-blue;
+    }
+
+    &--off {
+      color: $color-dark-gray;
+    }
+  }
+
+  @media screen and (min-width: 720px) {
+    height: auto;
+    margin: 0 auto;
+  }
 }
 
-body {
-  background: red;
+.city-info-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 
-  h1 {
-    color: white;
+  &__grid-item {
+    flex: 0 0 46%;
+    margin-bottom: 35px;
+
+    &--small-margin {
+      margin-bottom: 15px;
+    }
+
+    &--no-margin {
+      margin-bottom: 0;
+    }
+
+    &--wide {
+      flex: 0 0 100%;
+      min-height: 120px;
+    }
+  }
+
+  &__widget-description {
+    color: $color-gray;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  &__content-wrapper {
+    font-size: 30px;
+
+    &--margin-bottom {
+      margin-bottom: 12px;
+    }
+  }
+  
+  &__widget-additional {
+    font-size: 15px;
+  }
+}
+
+.navigation {
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  border-top: 1px solid $color-gray;
+  background: rgba(0, 0, 0, .08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-size: 2em;
+
+  &__pages {
+    display: flex;
+  }
+
+  &__circle {
+    font-size: 1.5em;
+    color: $color-gray;
+    width: 20px;
+    margin: 0 5px;
+    display: grid;
+    place-content: center;
+
+    &--active {
+      color: $color-primary;
+    }
+  }
+
+  &__cities-link-wrapper {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-content: center;
+  }
+
+  &__smaller-icon {
+    font-size: 25px;
   }
 }

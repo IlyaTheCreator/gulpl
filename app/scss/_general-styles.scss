@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "basier-circle", sans-serif;
+  color: $color-primary;
+}
+
+i {
+  font-family: 'custom-icons-font', sans-serif;
+}
+
+.btn {
+  cursor: pointer;
+  color: $color-primary;
+  background: 0;
+  border: 0;
+}
+
+.widget {
+  padding: 8px 10px;
+  box-shadow: inset -5px -5px 250px rgba(255, 255, 255, 0.02);
+  background: $widget-color-cloudy;
+  border: 2px solid rgba(255, 255, 255, .3);
+  border-radius: 10px;
+}
+
+.widget-rounded {
+  border-radius: 20px;
+}
+
+.card {
+  background: $color-gray;
+  border-radius: 5px;
+  padding: 40px;
+  color: $color-black;
+}
+
+.link {
+  color: $color-primary;
+  text-decoration: none;
+}
+
+.icon {
+  cursor: pointer;
+}
