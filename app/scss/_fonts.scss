@@ -1,4 +1,16 @@
 @font-face {
+  font-family: 'basier-circle';
+  src: url('../../assets/fonts/basier-circle/BasierCircle-Regular.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-Bold.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-Bold-Italic.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-Italic.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-Medium.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-MediumItalic.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-SemiBold.woff') format('woff'),
+       url('../../assets/fonts/basier-circle/BasierCircle-SemiBoldItalic.woff') format('woff');
+}
+
+@font-face {
   font-family: 'custom-icons-font';
   src: url('../../assets/fonts/icon-');
   src: url('../../assets/fonts/icon-#iefix') format('embedded-opentype'),
