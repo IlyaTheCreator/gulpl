@@ -1,6 +1,26 @@
 import addWrapperClass from "./wrapperClassScript";
 import LsManager from "./LsManager";
 
+const settingsOverlay = document.getElementById("settings-overlay");
+const settingsModal = document.getElementById("settings-modal");
+const settingsToggleBtn = document.getElementById("settings-toggle-btn");
+
+const openSettingsModal = () => {
+    settingsOverlay.classList.add("modal-overlay--visible");
+    settingsModal.classList.add("modal--visible");
+};
+
+const closeSettingsModal = () => {
+    settingsOverlay.classList.remove("modal-overlay--visible");
+    settingsModal.classList.remove("modal--visible");
+};
+
+settingsToggleBtn.addEventListener("click", openSettingsModal);
+settingsOverlay.addEventListener("click", closeSettingsModal);
+
+
+
+
 // Adding css class to screen-wrapper based on device operating system and width
 addWrapperClass();
 

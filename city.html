@@ -9,32 +9,44 @@
 </head>
 <body>
     <!-- settings start -->
-    <div class="modal-overlay"></div>
-    <div class="modal">
+    <div class="modal-overlay" id="settings-overlay"></div>
+    <div class="modal" id="settings-modal">
         <div class="card settings">
             <div class="settings__item">
                 <p class="settings__item-text">Min. Temp.</p>
-                <div class="settings__toggle-icon settings__toggle-icon--on"><i class="icon icon-toggle-on"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--on">
+                    <i class="icon icon-toggle-on"></i>
+                </div>
             </div>
             <div class="settings__item">
                 <p class="settings__item-text">Max. Temp.</p>
-                <div class="settings__toggle-icon settings__toggle-icon--on"><i class="icon icon-toggle-on"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--on">
+                    <i class="icon icon-toggle-on"></i>
+                </div>
             </div>
             <div class="settings__item">
                 <p class="settings__item-text">UV Indicator</p>
-                <div class="settings__toggle-icon settings__toggle-icon--off"><i class="icon icon-toggle-off"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--off">
+                    <i class="icon icon-toggle-off"></i>
+                </div>
             </div>
             <div class="settings__item">
                 <p class="settings__item-text">Felt Temp</p>
-                <div class="settings__toggle-icon settings__toggle-icon--off"><i class="icon icon-toggle-off"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--off">
+                    <i class="icon icon-toggle-off"></i>
+                </div>
             </div>
             <div class="settings__item">
                 <p class="settings__item-text">Pressure</p>
-                <div class="settings__toggle-icon settings__toggle-icon--on"><i class="icon icon-toggle-on"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--on">
+                    <i class="icon icon-toggle-on"></i>
+                </div>
             </div>
             <div class="settings__item">
                 <p class="settings__item-text">Air quality</p>
-                <div class="settings__toggle-icon settings__toggle-icon--on"><i class="icon icon-toggle-on"></i></div>
+                <div class="settings__toggle-icon settings__toggle-icon--on">
+                    <i class="icon icon-toggle-on"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -43,10 +55,8 @@
         <div class="screen">
             <!-- navigation start -->
             <nav class="navigation">
-                <div class="navigation__settings">
-                    <a class="link" href="./settings.html">
-                        <i class="icon icon-figma-settings"></i>
-                    </a>
+                <div class="navigation__settings" id="settings-toggle-btn">
+                    <i class="icon icon-figma-settings"></i>
                 </div>
                 <div class="navigation__pages">
                     <i class="icon icon-dot navigation__circle navigation__circle--active"></i>
