@@ -153,10 +153,8 @@ const detectDeviceWidth = () => {
 }
 
 const addWrapperClass = () => {
-  window.onload = () => {
-    detectDevice();
-    detectDeviceWidth();
-  };
+  detectDevice();
+  detectDeviceWidth();
 };
 
 export default addWrapperClass;

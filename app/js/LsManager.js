@@ -1,12 +1,14 @@
 export default class LsManager {
-    appKey = "";
+    constructor() {
+        this.appKey = "";
+    }
 
-    init(appKey, data = {}) {    
+    init(appKey, data = {}) {  
+        this.appKey = appKey;
+        
         if (!localStorage.getItem(appKey)) {
             localStorage.setItem(appKey, JSON.stringify(data));
         }
-
-        this.appKey = appKey;
     }
 
     get(key) {
