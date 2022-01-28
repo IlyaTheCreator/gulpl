@@ -23,6 +23,7 @@
     "sass": "^1.49.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.16.7"
+    "@babel/runtime": "^7.16.7",
+    "webpack-stream": "^7.0.0"
   }
 }

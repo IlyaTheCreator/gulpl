@@ -1,3 +1,5 @@
+import sayHello from "./file.js"
+
 /*
   Array which allows us to loop through device types
 
@@ -70,6 +72,8 @@ const devices = [
     }
   ]
 ];
+
+sayHello();
 
 // Array which allows us to loop through different device sizes
 const deviceDimensions = [
