@@ -120,35 +120,6 @@
   &__image {
     width: 160px;
   }
-
-  &__settings {
-    width: 360px;
-    margin: 10px auto;
-  }
-
-  &__settings-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    font-size: 1.1em;
-  }
-
-  &__item-text {
-    font-size: 1.3em;
-  }
-
-  &__toggle-icon {
-    cursor: pointer;
-    font-size: 2em;
-    
-    &--on {
-      color: $color-blue;
-    }
-
-    &--off {
-      color: $color-dark-gray;
-    }
-  }
 }
 
 .city-info-grid {
@@ -195,7 +166,7 @@
 
 .navigation {
   position: absolute;
-  z-index: 10;
+  z-index: 5;
   bottom: 0;
   right: 0;
   width: 100%;
@@ -235,3 +206,34 @@
     font-size: 25px;
   }
 }
+
+.settings {
+  width: 360px;
+  background: #ccc;
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+
+    &-text {
+      font-size: 1.3em;
+    }
+  }
+  
+  &__toggle-icon {
+    cursor: pointer;
+    font-size: 2em;
+    
+    &--on {
+      color: $color-blue;
+    }
+  
+    &--off {
+      color: $color-dark-gray;
+    }
+  }
+}
+
+
