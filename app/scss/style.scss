@@ -2,14 +2,7 @@
 @import './fonts';
 @import './general-styles';
 
-.screen {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  min-height: 100vh;
-  max-width: 411px;
-
+.screen-wrapper {
   &--bg {
     &--cloudy {
       background: $color-cloudy;
@@ -19,6 +12,16 @@
       background: $color-normal;
     }
   }
+}
+
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  min-height: 100vh;
+  max-width: 411px;
+  margin: 0 auto;
 
   &__header {
     font-weight: normal;
@@ -145,11 +148,6 @@
     &--off {
       color: $color-dark-gray;
     }
-  }
-
-  @media screen and (min-width: 720px) {
-    height: auto;
-    margin: 0 auto;
   }
 }
 
