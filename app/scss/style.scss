@@ -220,6 +220,10 @@
   padding: 10px 20px;
   font-size: 2em;
 
+  @media screen and (max-device-width: 512px) {
+    position: fixed;
+  }
+
   &__pages {
     display: flex;
   }
