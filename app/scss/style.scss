@@ -27,8 +27,11 @@
   margin: 0 auto;
   overflow-y: auto;
 
-  &--wider {
-    width: calc(100% + 17px);
+  @media only screen and (min-device-width: 768px) {
+    &--wider {
+      width: calc(100% + 17px);
+      padding-right: 23px;
+    }
   }
 
   &__header {
@@ -136,6 +139,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   grid-gap: 25px 20px;
+  margin-bottom: 50px;
 
   &__grid-item-wrapper {
     flex: 1 0 44%;
@@ -195,6 +199,10 @@
 
   @media screen and (max-width: 411px) {
     width: 100vw;
+  }
+
+  @media screen and (min-device-width: 512px) {
+    height: 100vh;
   }
 }
 
