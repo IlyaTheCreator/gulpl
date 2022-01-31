@@ -7,32 +7,33 @@ const settingsToggleBtn = document.getElementById("settings-toggle-btn");
 const settingsCard = document.getElementById("settings-card");
 const cityContainer = document.getElementById("city-container");
 
+const APP_KEY = "weather";
 const lsManager = new LsManager();
 
 const settingsData = {
     minTemp: {
         text: "Min. Temp.",
-        value: true
+        isActive: true
     },
     maxTemp: {
         text: "Max. Temp.",
-        value: true
+        isActive: true
     },
     uvIndicator: {
         text: "Uv Indicator",
-        value: true
+        isActive: true
     },
     feltTemp: {
         text: "Felt Temp",
-        value: false
+        isActive: false
     },
     pressure: {
         text: "Pressure",
-        value: false
+        isActive: false
     },
     airQuality: {
         text: "Air quality",
-        value: false
+        isActive: false
     },
 };
 
@@ -49,15 +50,14 @@ const closeSettingsModal = () => {
 };
 
 const renderCityData = () => {
-    for (let setting in LsManager.list()) {
+    for (let setting in lsManager.get(APP_KEY)) {
         const cityItem = document.getElementById(`${setting}Widget`);
+        const settingsItemData = lsManager.get(APP_KEY)[setting];
 
-        const settingsItemData = lsManager.get(setting);
-
-        if (!settingsItemData.value) {
-            cityItem.classList.add("widget--hidden");
+        if (!settingsItemData.isActive) {
+            cityItem.classList.remove("widget--visible");
         } else {
-            cityItem.classList.remove("widget--hidden");
+            cityItem.classList.add("widget--visible");
         }
     }
 };
@@ -65,12 +65,16 @@ const renderCityData = () => {
 const renderSettingsItems = () => {
     settingsCard.innerHTML = "";
 
-    for (let setting in LsManager.list()) {
-        const settingsItemData = lsManager.get(setting);
-        const toggleValue = settingsItemData.value ? "on" : "off";
+    for (let setting in lsManager.get(APP_KEY)) {
+        const settingsItemData = lsManager.get(APP_KEY)[setting];
+        const toggleValue = settingsItemData.isActive ? "on" : "off";
 
         const toggleSetting = () => {
-            lsManager.set(setting, { ...settingsItemData, value: !settingsItemData.value});
+            const appData = lsManager.get(APP_KEY);
+
+            appData[setting].isActive = !appData[setting].isActive;
+            lsManager.set(APP_KEY, appData);
+
             renderSettingsItems();
             renderCityData();
         };
@@ -98,12 +102,11 @@ const renderSettingsItems = () => {
 
 window.onload = () => {
     addWrapperClass();
-    lsManager.init("weather", settingsData);
+
+    lsManager.init(APP_KEY, settingsData);
 
     settingsToggleBtn && settingsToggleBtn.addEventListener("click", openSettingsModal);
     settingsOverlay && settingsOverlay.addEventListener("click", closeSettingsModal);
-
     settingsCard && renderSettingsItems();
     cityContainer && renderCityData();
-    addWrapperClass();
 };
