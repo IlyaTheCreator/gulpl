@@ -3,6 +3,10 @@
 @import './general-styles';
 
 .screen-wrapper {
+  flex: 1;
+  display: grid;
+  place-content: center;
+
   &--bg {
     &--cloudy {
       background: $color-cloudy;
@@ -19,9 +23,10 @@
   display: flex;
   flex-direction: column;
   padding: 24px;
-  min-height: 100vh;
-  max-width: 411px;
+  height: 823px;
+  width: 411px;
   margin: 0 auto;
+  overflow-y: auto;
 
   &__header {
     font-weight: normal;
@@ -119,6 +124,10 @@
 
   &__image {
     width: 160px;
+  }
+
+  @media screen and (max-width: 411px) {
+    width: 100vw;
   }
 }
 
@@ -227,17 +236,18 @@
 }
 
 .settings {
-  width: 360px;
-  background: #ccc;
+  width: 358px;
+  background: $color-gray;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
 
   &__item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    font-size: 1.1em;
 
     &-text {
-      font-size: 1.3em;
+      font-size: 20px;
+      line-height: 24px;
     }
   }
   

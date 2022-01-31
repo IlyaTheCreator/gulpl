@@ -55,9 +55,9 @@ const renderCityData = () => {
         const settingsItemData = lsManager.get(APP_KEY)[setting];
 
         if (!settingsItemData.isActive) {
-            cityItem.classList.remove("widget--visible");
+            cityItem.classList.add("widget--hidden");
         } else {
-            cityItem.classList.add("widget--visible");
+            cityItem.classList.remove("widget--hidden");
         }
     }
 };
@@ -103,7 +103,9 @@ const renderSettingsItems = () => {
 window.onload = () => {
     addWrapperClass();
 
-    lsManager.init(APP_KEY, settingsData);
+    if (!lsManager.get(APP_KEY)) {
+        lsManager.init(APP_KEY, settingsData);
+    }
 
     settingsToggleBtn && settingsToggleBtn.addEventListener("click", openSettingsModal);
     settingsOverlay && settingsOverlay.addEventListener("click", closeSettingsModal);
