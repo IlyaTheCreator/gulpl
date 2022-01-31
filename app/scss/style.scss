@@ -19,14 +19,17 @@
 }
 
 .screen {
-  position: relative;
   display: flex;
   flex-direction: column;
   padding: 24px;
-  height: 823px;
-  width: 411px;
+  height: 100%;
+  width: 100%;
   margin: 0 auto;
   overflow-y: auto;
+
+  &--wider {
+    width: calc(100% + 17px);
+  }
 
   &__header {
     font-weight: normal;
@@ -125,10 +128,6 @@
   &__image {
     width: 160px;
   }
-
-  @media screen and (max-width: 411px) {
-    width: 100vw;
-  }
 }
 
 .city-info-grid {
@@ -188,6 +187,17 @@
   margin-right: 0px;
 }
 
+.screen-nav-wrapper {
+  position: relative;
+  height: 823px;
+  width: 411px;
+  overflow: hidden;
+
+  @media screen and (max-width: 411px) {
+    width: 100vw;
+  }
+}
+
 .navigation {
   position: absolute;
   z-index: 5;
@@ -228,10 +238,6 @@
 
   &__smaller-icon {
     font-size: 25px;
-  }
-
-  @media screen and (max-width: 768px) {
-    position: fixed;
   }
 }
 

@@ -6,6 +6,7 @@ const settingsModal = document.getElementById("settings-modal");
 const settingsToggleBtn = document.getElementById("settings-toggle-btn");
 const settingsCard = document.getElementById("settings-card");
 const cityContainer = document.getElementById("city-container");
+const screen = document.querySelector(".screen");
 
 const APP_KEY = "weather";
 const lsManager = new LsManager();
@@ -36,6 +37,15 @@ const settingsData = {
         isActive: false
     },
 };
+
+const checkScreenWidth = () => {
+    if (screen.scrollHeight > screen.clientHeight) {
+        console.log(screen.offsetWidth)
+        screen.classList.add("screen--wider");
+    } else {
+        screen.classList.remove("screen--wider");
+    }
+}
 
 const openSettingsModal = () => {
     document.querySelector("body").style.overflow = "hidden";
@@ -77,6 +87,7 @@ const renderSettingsItems = () => {
 
             renderSettingsItems();
             renderCityData();
+            checkScreenWidth();
         };
 
         const settingsItemInnerHTML = `
@@ -111,4 +122,5 @@ window.onload = () => {
     settingsOverlay && settingsOverlay.addEventListener("click", closeSettingsModal);
     settingsCard && renderSettingsItems();
     cityContainer && renderCityData();
+    cityContainer && checkScreenWidth();
 };
