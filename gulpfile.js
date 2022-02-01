@@ -5,6 +5,7 @@ const postcss = require("gulp-postcss");
 const cssnano = require("cssnano");
 const terser = require("gulp-terser");
 const browserSync = require("browser-sync").create();
+const webpack = require("webpack-stream");
 
 // Sass Task
 function scssTask() {
@@ -23,6 +24,9 @@ function jsTask() {
         presets: ["@babel/env"],
       })
     )
+    .pipe(webpack({
+      mode: "development",
+    }))
     .pipe(terser())
     .pipe(dest("dist/js"));
 }

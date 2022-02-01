@@ -1,158 +1,126 @@
-/*
-  Array which allows us to loop through device types
+import addWrapperClass from "./wrapperClassScript";
+import LsManager from "./LsManager";
 
-  overall structure: [ [], [], [] ] - array of arrays. Each inner array is a group of related operating systems (e.g. mac and ios)
-  structure of inner array: [ {}, {} ] - one or two objects. Each object represents a particular OS
-  structure of the OS object: { systemName, devices } - devices - list of device types available in that OS
-  structure of devices: [ {}, {} ] - each object is a separate device 
-  structure of the device: { name, types } - types - array of strings which will help us to search through userAgent string 
-*/
-const devices = [
-  [
-    {
-      systemName: "android",
-      devices: [
-        {
-          name: "device",
-          types: [],
-        },
-      ],
+const settingsOverlay = document.getElementById("settings-overlay");
+const settingsModal = document.getElementById("settings-modal");
+const settingsToggleBtn = document.getElementById("settings-toggle-btn");
+const settingsCard = document.getElementById("settings-card");
+const cityContainer = document.getElementById("city-container");
+const screen = document.querySelector(".screen");
+
+const APP_KEY = "weather";
+const lsManager = new LsManager();
+
+const settingsData = {
+    minTemp: {
+        text: "Min. Temp.",
+        isActive: true
     },
-  ],
-  [
-    {
-      systemName: "windows",
-      devices: [
-        {
-          name: "mobile",
-          types: ["Mobile"],
-        },
-        {
-          name: "desktop",
-          types: ["win64", "wow64;", "wow64", "win64;"],
-        },
-      ],
+    maxTemp: {
+        text: "Max. Temp.",
+        isActive: true
     },
-  ],
-  [
-    {
-      systemName: "ios",
-      devices: [
-        {
-          name: "device",
-          types: ["iphone;", "iphone"],
-        },
-      ],
+    uvIndicator: {
+        text: "Uv Indicator",
+        isActive: true
     },
-    {
-      systemName: "mac",
-      devices: [
-        {
-          name: "desktop",
-          types: ["macintosh", "macintosh;"],
-        },
-        {
-          name: "tablet",
-          types: ["ipad", "ipad;"],
-        },
-      ],
+    feltTemp: {
+        text: "Felt Temp",
+        isActive: false
     },
-  ],
-  [
-    {
-      systemName: "linux",
-      devices: [
-        {
-          name: "device",
-          types: [],
-        },
-      ]
-    }
-  ]
-];
-
-// Array which allows us to loop through different device sizes
-const deviceDimensions = [
-  {
-    name: "phone-wide",
-    maxWidth: 599,
-  },
-  {
-    name: "tablet-portrait-wide",
-    maxWidth: 600,
-  },
-  {
-    name: "tablet-landscape-wide",
-    maxWidth: 900,
-  },
-  {
-    name: "desktop-wide",
-    maxWidth: 1200,
-  },
-  {
-    name: "big-desktop-wide",
-    maxWidth: 1920,
-  },
-  {
-    name: "large-desktop-wide",
-    maxWidth: 2600,
-  },
-];
-
-/* 
-  Function which in the end assigns a class to outer wrapper of the application which tells 
-  what device a user is in.
-*/
-const detectDevice = () => {
-  const ua = navigator.userAgent.toLocaleLowerCase();
-  let typeClassName;
-
-  devices.forEach(systemGroup => {
-    systemGroup.forEach(system => {
-      system.devices.forEach(device => {
-        let searchResult;
-
-        // If there are no types for this particular device, do the search with systemName (windows, linux, android, etc)
-        if (device.types.length === 0) {
-          searchResult = ua.search(system.systemName);
-        } 
-
-        // Otherwise, search for each individual type is executed
-        device.types.forEach(type => {
-          searchResult = ua.search(type);
-        })
-
-        // If there's a match in the search, assign this value to the class variable
-        if (searchResult !== -1) {
-          typeClassName = `screen-wrapper--${system.systemName}--${device.name}`;
-        }
-
-        /* 
-          Expections.
-          If you are on android, your userAgent will have both linux and android strings matches.
-          Here typeClassName is explicitly set to the value of android
-        */
-        if (ua.search("linux") !== -1 && ua.search("android") ) {
-          typeClassName = "screen-wrapper--android--device";
-        }
-      })
-    });
-  });
-
-  document.querySelector(".screen-wrapper").classList.add(typeClassName);
+    pressure: {
+        text: "Pressure",
+        isActive: false
+    },
+    airQuality: {
+        text: "Air quality",
+        isActive: false
+    },
 };
 
-const detectDeviceWidth = () => {
-  for (const dimension of deviceDimensions) {
-    // if there's a match, assign the class and exit from the loop
-    if (screen.width <= dimension.maxWidth) {
-      document.querySelector(".screen-wrapper").classList.add(dimension.name);
-      break;
-    } 
-  }
+const checkScreenWidth = () => {
+    if (screen.scrollHeight > screen.clientHeight) {
+        console.log(screen.offsetWidth)
+        screen.classList.add("screen--wider");
+    } else {
+        screen.classList.remove("screen--wider");
+    }
 }
 
+const openSettingsModal = () => {
+    document.querySelector("body").style.overflow = "hidden";
+    settingsOverlay.classList.add("modal-overlay--visible");
+    settingsModal.classList.add("modal--visible");
+};
+
+const closeSettingsModal = () => {
+    document.querySelector("body").style.overflow = "visible";
+    settingsOverlay.classList.remove("modal-overlay--visible");
+    settingsModal.classList.remove("modal--visible");
+};
+
+const renderCityData = () => {
+    for (let setting in lsManager.get(APP_KEY)) {
+        const cityItem = document.getElementById(`${setting}Widget`);
+        const settingsItemData = lsManager.get(APP_KEY)[setting];
+
+        if (!settingsItemData.isActive) {
+            cityItem.classList.add("widget--hidden");
+        } else {
+            cityItem.classList.remove("widget--hidden");
+        }
+    }
+};
+
+const renderSettingsItems = () => {
+    settingsCard.innerHTML = "";
+
+    for (let setting in lsManager.get(APP_KEY)) {
+        const settingsItemData = lsManager.get(APP_KEY)[setting];
+        const toggleValue = settingsItemData.isActive ? "on" : "off";
+
+        const toggleSetting = () => {
+            const appData = lsManager.get(APP_KEY);
+
+            appData[setting].isActive = !appData[setting].isActive;
+            lsManager.set(APP_KEY, appData);
+
+            renderSettingsItems();
+            renderCityData();
+            checkScreenWidth();
+        };
+
+        const settingsItemInnerHTML = `
+            <p class="settings__item-text">${settingsItemData.text}</p>
+            <div 
+                class="settings__toggle-icon settings__toggle-icon--${toggleValue}"
+            >
+                <i 
+                    class="icon icon-toggle-${toggleValue}"
+                ></i>
+            </div>
+        `;
+
+        const settingsItem = document.createElement("div");
+
+        settingsItem.classList.add("settings__item");
+        settingsItem.innerHTML = settingsItemInnerHTML;
+        settingsItem.addEventListener("click", toggleSetting);
+
+        settingsCard.appendChild(settingsItem);
+    }
+};
+
 window.onload = () => {
-  detectDevice();
-  detectDeviceWidth();
+    addWrapperClass();
+
+    if (!lsManager.get(APP_KEY)) {
+        lsManager.init(APP_KEY, settingsData);
+    }
+
+    settingsToggleBtn && settingsToggleBtn.addEventListener("click", openSettingsModal);
+    settingsOverlay && settingsOverlay.addEventListener("click", closeSettingsModal);
+    settingsCard && renderSettingsItems();
+    cityContainer && renderCityData();
+    cityContainer && checkScreenWidth();
 };

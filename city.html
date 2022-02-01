@@ -1,106 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gulp test</title>
-    <link rel="stylesheet" href="dist/css/style.css" />
-  </head>
-  <body>
-    <div class="screen-wrapper">
-        <div class="screen screen--bg--cloudy">
-            <!-- navigation start -->
-            <nav class="navigation">
-                <div class="navigation__settings">
-                    <a class="link" href="./settings.html">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gulp test</title>
+  <link rel="stylesheet" href="./dist/css/style.css" />
+</head>
+<body>
+    <!-- settings start -->
+    <div class="modal-overlay modal-overlay--settings" id="settings-overlay"></div>
+    <div class="modal" id="settings-modal">
+        <div class="card settings" id="settings-card"></div>
+    </div>
+    <!-- settings end -->
+    <div class="screen-wrapper screen-wrapper--bg--cloudy">
+        <div class="screen-nav-wrapper">
+            <div class="screen">
+                <!-- navigation start -->
+                <nav class="navigation">
+                    <div class="navigation__settings" id="settings-toggle-btn">
                         <i class="icon icon-figma-settings"></i>
-                    </a>
-                </div>
-                <div class="navigation__pages">
-                    <i class="icon icon-dot navigation__circle navigation__circle--active"></i>
-                    <i class="icon icon-dot navigation__circle"></i>
-                    <i class="icon icon-dot navigation__circle"></i>
-                    <i class="icon icon-dot navigation__circle"></i>
-                </div>
-                <div class="navigation__cities">
-                    <a class="link" href="./index.html">
-                        <div class="navigation__cities-link-wrapper">
-                            <i class="icon icon-figma-tiles navigation__smaller-icon"></i>
-                        </div>
-                    </a>
-                </div>
-            </nav>
-            <!-- navigation end -->
-            <h1 class="screen__header">Escondido</h1>
-            <p class="screen__date">Jul 13 2021</p>
-            <div class="screen__weather">
-                <img src="./assets/images/cloudy.png" alt="weather image" class="screen__image">
-                <p class="screen__temperature">18°</p>
-                <p class="screen__weather-type">Cloudy</p>
-            </div>
-            <!-- grid start -->
-            <div class="city-info-grid">
-                <!-- widget start -->
-                <div class="city-info-grid__grid-item widget widget-rounded">
-                    <p class="city-info-grid__widget-description">MIN TEMP</p>
-                    <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-                        <p class="city-info-grid__widget">7°</p>
-                        <p class="city-info-grid__widget">Min</p>
                     </div>
-                </div>
-                <!-- widget end -->
-    
-                <!-- widget start -->
-                <div class="city-info-grid__grid-item widget widget-rounded">
-                    <p class="city-info-grid__widget-description">MAX TEMP</p>
-                    <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-                        <p class="city-info-grid__widget-number">23°</p>
-                        <p class="city-info-grid__widget-data">Max</p>
+                    <div class="navigation__pages">
+                        <i class="icon icon-dot navigation__circle navigation__circle--active"></i>
+                        <i class="icon icon-dot navigation__circle"></i>
+                        <i class="icon icon-dot navigation__circle"></i>
+                        <i class="icon icon-dot navigation__circle"></i>
                     </div>
-                </div>
-                <!-- widget end -->
-    
-                <!-- widget start -->
-                <div class="city-info-grid__grid-item widget widget-rounded">
-                    <p class="city-info-grid__widget-description">Uv Indicator</p>
-                    <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-                        <p class="city-info-grid__widget-number">1</p>
-                        <p class="city-info-grid__widget-data">Low</p>
+                    <div class="navigation__cities">
+                        <a class="link" href="./index.html">
+                            <div class="navigation__cities-link-wrapper">
+                                <i class="icon icon-figma-tiles navigation__smaller-icon"></i>
+                            </div>
+                        </a>
                     </div>
-                    <p class="city-info-grid__widget-additional">Low level during all the day.</p>
+                </nav>
+                <!-- navigation end -->
+                <h1 class="screen__header">Escondido</h1>
+                <p class="screen__date">Jul 13 2021</p>
+                <div class="screen__weather">
+                    <img src="./assets/images/cloudy.png" alt="weather image" class="screen__image">
+                    <p class="screen__temperature">18°</p>
+                    <p class="screen__weather-type">Cloudy</p>
                 </div>
-                <!-- widget end -->
-    
-                <div class="city-info-grid__grid-item">
+                <!-- grid start -->
+                <div class="city-info-grid" id="city-container">
                     <!-- widget start -->
-                    <div class="city-info-grid__grid-item--small-margin widget widget-rounded">
-                        <p class="city-info-grid__widget-description">FEELS LIKE</p>
-                        <div class="city-info-grid__content-wrapper">
-                            <p class="city-info-grid__widget-number">14°</p>
+                    <div id="minTempWidget" class="city-info-grid__grid-item widget widget-rounded">
+                        <p class="city-info-grid__widget-description">MIN TEMP</p>
+                        <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
+                            <p class="city-info-grid__widget">7°</p>
+                            <p class="city-info-grid__widget">Min</p>
                         </div>
                     </div>
                     <!-- widget end -->
         
                     <!-- widget start -->
-                    <div class="city-info-grid__grid-item--no-margin widget widget-rounded">
-                        <p class="city-info-grid__widget-description">PRESSURE</p>
-                        <div class="city-info-grid__content-wrapper">
-                            <p class="city-info-grid__widget-number">1002 hPa</p>
+                    <div id="maxTempWidget" class="city-info-grid__grid-item widget widget-rounded">
+                        <p class="city-info-grid__widget-description">MAX TEMP</p>
+                        <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
+                            <p class="city-info-grid__widget-number">23°</p>
+                            <p class="city-info-grid__widget-data">Max</p>
                         </div>
                     </div>
                     <!-- widget end -->
+        
+                    <!-- widget start -->
+                    <div id="uvIndicatorWidget" class="city-info-grid__grid-item widget widget-rounded">
+                        <p class="city-info-grid__widget-description">Uv Indicator</p>
+                        <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
+                            <p class="city-info-grid__widget-number">1</p>
+                            <p class="city-info-grid__widget-data">Low</p>
+                        </div>
+                        <p class="city-info-grid__widget-additional">Low level during all the day.</p>
+                    </div>
+                    <!-- widget end -->
+        
+                    <div class="city-info-grid__grid-item-wrapper">
+                        <!-- widget start -->
+                        <div id="feltTempWidget" class="city-info-grid__grid-item city-info-grid__grid-item--small-margin widget widget-rounded">
+                            <p class="city-info-grid__widget-description">FEELS LIKE</p>
+                            <div class="city-info-grid__content-wrapper">
+                                <p class="city-info-grid__widget-number">14°</p>
+                            </div>
+                        </div>
+                        <!-- widget end -->
+            
+                        <!-- widget start -->
+                        <div id="pressureWidget" class="city-info-grid__grid-item city-info-grid__grid-item--no-margin widget widget-rounded">
+                            <p class="city-info-grid__widget-description">PRESSURE</p>
+                            <div class="city-info-grid__content-wrapper">
+                                <p class="city-info-grid__widget-number">1002 hPa</p>
+                            </div>
+                        </div>
+                        <!-- widget end -->
+                    </div>
+        
+                    <!-- widget start -->
+                    <div id="airQualityWidget" class="city-info-grid__grid-item city-info-grid__grid-item--wide  widget widget-rounded">
+                        <p class="city-info-grid__widget-description">Air Quality</p>
+                    </div>
+                    <!-- widget end -->
                 </div>
-    
-                <!-- widget start -->
-                <div class="city-info-grid__grid-item city-info-grid__grid-item--wide  widget widget-rounded">
-                    <p class="city-info-grid__widget-description">Air Quality</p>
-                </div>
-                <!-- widget end -->
-            </div>
-            <!-- grid end -->
-        </div>   
+                <!-- grid end -->
+            </div>   
+        </div>
     </div>
-    <script src="dist/js/index.js"></script>
+    <script src="./dist/js/main.js"></script>
   </body>
 </html>
