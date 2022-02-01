@@ -37,18 +37,51 @@ i {
 }
 
 .widget {
+  position: relative;
   padding: 8px 10px;
   box-shadow: inset -5px -5px 250px rgba(255, 255, 255, 0.02);
-  background: $widget-color-cloudy;
-  border: 2px solid rgba(255, 255, 255, .3);
   border-radius: 10px;
+  z-index: 1;
 
   &--hidden {
     display: none;
   }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    background: $widget-color-cloudy;
+    backdrop-filter: blur(42px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    box-sizing: content-box;
+    border: 2px solid transparent;
+    background:linear-gradient(135deg,rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)) border-box; 
+    -webkit-mask: 
+       linear-gradient(#fff 0 0) padding-box, 
+       linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; 
+            mask-composite: exclude; 
+    pointer-events: none;
+  }
 }
 
-.widget-rounded {
+.widget-rounded, .widget-rounded:after, .widget-rounded:before {
   border-radius: 20px;
 }
 
