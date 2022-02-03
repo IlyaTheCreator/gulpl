@@ -4,18 +4,6 @@
   box-sizing: border-box;
 }
 
-@keyframes popDown {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -200%);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-}
-
 body {
   font-family: "basier-circle", sans-serif;
   color: $color-primary;
@@ -109,11 +97,6 @@ i {
   width: 100%;
   height: 100%;
   z-index: 10;
-  display: none;
-
-  &--visible {
-    display: block;
-  }
 
   &--settings {
     background: $color-normal;
@@ -125,13 +108,5 @@ i {
   z-index: 9999;
   top: 50%;
   left: 50%;
-  animation-name: popDown;
-  animation-timing-function: ease;
-  animation-duration: .3s;
-  animation-fill-mode: forwards;
-  display: none;
-
-  &--visible {
-    display: block !important;
-  }
+  transform: translate(-50%, -50%);
 }

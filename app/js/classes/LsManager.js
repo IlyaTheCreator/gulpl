@@ -1,7 +1,10 @@
 export default class LsManager {
-    appKey = "";
+    constructor() {
+        this.appKey = "";
+    }
 
     init(appKey, data = {}) {  
+        console.log("bruh")
         this.set(appKey, data);
         this.appKey = appKey;
     }
