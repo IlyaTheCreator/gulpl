@@ -150,6 +150,7 @@ export default class App {
 
   getCities = () => {
     return this.lsManager.get(this.citiesListLcKey);
+    // return [];
   };
 
   showCityList = () => {

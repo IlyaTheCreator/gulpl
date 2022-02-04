@@ -103,6 +103,7 @@
   }
 
   &__add-btn {
+    margin-top: 20px;
     align-self: flex-end;
     display: grid;
     place-content: center;
@@ -284,9 +285,24 @@
 }
 
 .city-list {
-  display: block;
+  display: flex;
+  flex-direction: column;
 
   &--hidden {
     display: none;
+  }
+}
+
+.empty-city-list-container {
+  display: flex;
+  flex-direction: column;
+
+  &__text {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  button {
+    align-self: center;
   }
 }

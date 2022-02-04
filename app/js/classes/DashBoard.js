@@ -114,8 +114,43 @@ export default class DashBoard {
     });
   }
 
+  createAddBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("btn");
+    btn.classList.add("widget");
+    btn.classList.add("screen__add-btn");
+
+    btn.innerHTML = `
+      <i class="icon-figma-plus"></i>
+    `;
+
+    return btn;
+  }
+
+  createEmptyListMessage() {
+    const container = document.createElement("div");
+
+    container.classList.add("empty-city-list-container");
+
+    container.innerHTML = `
+      <p class="empty-city-list-container__text">
+        It seems like you don't have any cities selected.
+        Let's add one!
+      </p>
+    `;
+
+    return container;
+  }
+
   generateCityList() {
-    const list = this.createCityList(this.getCities(), this.onCityWidgetClick);
+    const cities = this.getCities();
+
+    if (cities.length === 0) {
+      return this.createEmptyListMessage();
+    }
+
+    const list = this.createCityList(cities, this.onCityWidgetClick);
     const listWrapper = document.createElement("div");
 
     listWrapper.classList.add("city-list");
@@ -151,6 +186,8 @@ export default class DashBoard {
 
     if (this.showCityInfo) {
       output.push(this.generateCityInfo());
+    } else {
+      cityList.appendChild(this.createAddBtn());
     }
 
     output.push(cityList);
