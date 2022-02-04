@@ -1,20 +1,23 @@
 import addWrapperClass from "../wrapperClassScript";
 import City from "./City";
+import CityList from "./CityList";
 import Settings from "./Settings";
 import App from "./App";
 
-const AppModule =  (function() {
-    return {
-        init() {
-            const rootElement = document.getElementById("app");
-            const city = new City();
-            const settings = new Settings();
+const AppModule = (function () {
+  return {
+    init() {
+      new App(
+        new City(),
+        new CityList(),
+        new Settings(),
+        document.getElementById("app")
+      ).create();
 
-            new App(city, settings, rootElement).create();
-
-            addWrapperClass();
-        }
-    }
+      addWrapperClass();
+    },
+  };
 })();
 
 export default AppModule;
+

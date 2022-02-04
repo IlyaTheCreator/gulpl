@@ -1,87 +1,101 @@
+import Widget from "./Widget";
+
 export default class City {
-    constructor() {
-        this.app = null;
-    }
+  createContentWrapper(city) {
+    const contentWrapper = document.createElement("div");
 
-    createCityList() {
-        this.app.citiesData.forEach((city) => {
-            const content = `
-                <a class="link" href="#">
-                    <h3 class="screen__title">
-                        <div className="screen__city-title-group">
-                            <span class="screen__city-name">${city.title}</span>
-                            <p class="screen__city-time">${city.date.toDateString()}</p>
-                        </div>
-                        <span class="screen__city-temperature">${city.currentTemp}°</span>
-                    </h3>
-                    <div class="screen__city-info">
-                        <span class="screen__city-weather-condition">${city.weatherCondition}</span>
-                        <span class="screen__city-temperature-range">Max. ${city.maxTemp.value} Min. ${city.minTemp.value}</span>
-                    </div>
-                </a>
-            `;
-
-            const onClick = () => {
-                this.app.setCurrentCity(city.id);
-                this.app.cityDisplayMode = 'city';
-                this.app.create()
-            };
-
-            const cityWidget = this.app.createWidget(content, "list", onClick, ["screen__city"]);
-            this.app.rootElement.appendChild(cityWidget);
-        });
-    }
-
-    createCitySingle() {
-        const city = this.app.getCurrentCity();
-        const navigation = this.app.createNavigation();
-        const contentWrapper = document.createElement("div");
-        const cityInfoGrid = document.createElement("div");
-
-        cityInfoGrid.classList.add("city-info-grid");
-
-        contentWrapper.innerHTML = `
+    contentWrapper.innerHTML = `
             <h1 class="screen__header">${city.title}</h1>
             <p class="screen__date">${city.date.toDateString()}</p>
             <div class="screen__weather">
-                <img src="${city.cityImage}" alt="weather image" class="screen__image">
+                <img src="${
+                  city.cityImage
+                }" alt="weather image" class="screen__image">
                 <p class="screen__temperature">${city.currentTemp}°</p>
                 <p class="screen__weather-type">${city.weatherCondition}</p>
             </div>
         `;
 
-        const cityDataWidgets = Object.keys(this.app.lsManager.get(this.app.lcKey)).map((key) => {
-            const cityData = this.app.getCurrentCity();
+    return contentWrapper;
+  }
 
-            const content = `
-                <p class="city-info-grid__widget-description">${cityData[key].name}</p>
+  createCityInfoGrid() {
+    const cityInfoGrid = document.createElement("div");
+
+    cityInfoGrid.classList.add("city-info-grid");
+
+    return cityInfoGrid;
+  }
+
+  createCityWidgetContent(cityData, key) {
+    console.log(cityData, key);
+    return `
+                <p class="city-info-grid__widget-description">${
+                  cityData[key].name
+                }</p>
                 <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-                    <p class="city-info-grid__widget-number">${cityData[key].value}</p>
-                    ${cityData[key].text ? `<p class="city-info-grid__widget-data">${cityData[key].text}</p>` : ""}
-                    ${cityData[key].additional ? `<p class="city-info-grid__widget-additional">${cityData[key].additional}</p>` : ""}
+                    <p class="city-info-grid__widget-number">${
+                      cityData[key].value
+                    }</p>
+                    ${
+                      cityData[key].text
+                        ? `<p class="city-info-grid__widget-data">${cityData[key].text}</p>`
+                        : ""
+                    }
+                    ${
+                      cityData[key].additional
+                        ? `<p class="city-info-grid__widget-additional">${cityData[key].additional}</p>`
+                        : ""
+                    }
                 </div>
             `;
+  }
 
-            if (this.app.lsManager.get(this.app.lcKey)[key].isActive) {
-                return this.app.createWidget(content, "city");
-            }
+  createCity(citiesData, currentCity) {
+    // const navigation = this.app.createNavigation();
+    const contentWrapper = this.createContentWrapper(currentCity);
+    const cityInfoGrid = this.createCityInfoGrid();
+    /**
+         *  список - в отдельный класс. App - главный. Он управляет всем. Дети нет. В App create - через switch 
+            Отдельный city - может быть singleton'ом 
+            Эффект нажатия на элемент списка + на кнопку добавить 
+            Виджет - в класс.
+            Отображает ли 2 колонки? 
+            Сделать gh-pages 
+            Отдельный метод, который фильтр по активным ключам настроек, и undefined check будет не нужен
+            Возможно # методы (приватные)
+            Верстка - в отдельные методы. Активное разбиение на методы
+            Навешивать обработчик - в отдельный метод 
+            В AppModule - не использовать const. Сразу new.
+            Mock - в отдельный helper
+            Добавить фичу, если нет городов - информационное сообщение
+            Удалать обработчики событий 
+         */
 
-            return;
-        });
+    const cityDataWidgets = Object.keys(citiesData).map((key) => {
+      const content = this.createCityWidgetContent(currentCity, key);
 
-        cityDataWidgets.forEach((widget) => {
-            if (widget !== undefined) {
-                widget.classList.add("city-info-grid__grid-item");
-                cityInfoGrid.appendChild(widget);
-            }
-        });
+      return Widget.create(content, "city");
+    });
 
-        contentWrapper.appendChild(cityInfoGrid);
+    cityDataWidgets.forEach((widget) => {
+      widget.classList.add("city-info-grid__grid-item");
+      cityInfoGrid.appendChild(widget);
+    });
 
-        this.app.rootElement.appendChild(navigation);
-        this.app.rootElement.appendChild(contentWrapper);
-        
-        document.getElementById("settingsToggleBtn").addEventListener("click", this.app.showSettings);
-        document.getElementById("showCitiesListBtn").addEventListener("click", this.app.showCityList);
-    }
-};
+    contentWrapper.appendChild(cityInfoGrid);
+
+    // this.app.rootElement.appendChild(navigation);
+    // this.app.rootElement.appendChild(contentWrapper);
+    //
+    // document
+    //   .getElementById("settingsToggleBtn")
+    //   .addEventListener("click", this.app.showSettings);
+    // document
+    //   .getElementById("showCitiesListBtn")
+    //   .addEventListener("click", this.app.showCityList);
+
+    return contentWrapper;
+  }
+}
+
