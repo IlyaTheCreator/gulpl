@@ -19,6 +19,19 @@ export default class DashBoard {
     return contentWrapper;
   }
 
+  createCloseCityBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-city-btn");
+    btn.id = "cityCloseBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    return btn;
+  }
+
   createCityInfoGrid() {
     const cityInfoGrid = document.createElement("div");
 
@@ -185,6 +198,7 @@ export default class DashBoard {
     );
 
     if (this.showCityInfo) {
+      output.push(this.createCloseCityBtn());
       output.push(this.generateCityInfo());
     } else {
       cityList.appendChild(this.createAddBtn());

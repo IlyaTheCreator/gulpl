@@ -77,7 +77,7 @@ export default class App {
 
     // dashboard || something else
     this.displayMode = "dashboard";
-    this.showCityInfo = false;
+    this.showCityInfo = true;
     this.setupLocalStorage();
   }
 
@@ -142,6 +142,10 @@ export default class App {
     document
       .getElementById("settingsToggleBtn")
       .addEventListener("click", this.createSettings);
+
+    document
+      .getElementById("cityCloseBtn")
+      .addEventListener("click", this.showCityList);
   }
 
   clearRootElement() {
