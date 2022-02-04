@@ -1,15 +1,13 @@
 import addWrapperClass from "../wrapperClassScript";
-import City from "./City";
-import CityList from "./CityList";
 import Settings from "./Settings";
+import DashBoard from "./DashBoard";
 import App from "./App";
 
 const AppModule = (function () {
   return {
     init() {
       new App(
-        new City(),
-        new CityList(),
+        new DashBoard(),
         new Settings(),
         document.getElementById("app")
       ).create();
@@ -20,4 +18,3 @@ const AppModule = (function () {
 })();
 
 export default AppModule;
-

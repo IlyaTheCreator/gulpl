@@ -1,78 +1,7 @@
 import LsManager from "./LsManager";
-import Widget from "./Widget";
+import MOCK_CITIES from "../mocks/cities";
 
 export default class App {
-  MOCK_CITIES = [
-    {
-      id: 2,
-      title: "Escondido",
-      date: new Date(),
-      cityImage: "assets/images/cloudy.png",
-      currentTemp: 49,
-      weatherCondition: "cloudy",
-      maxTemp: {
-        name: "MAX TEMP",
-        value: "67°",
-      },
-      minTemp: {
-        name: "MIN TEMP",
-        value: "40°",
-      },
-      feltTemp: {
-        name: "FEELS LIKE",
-        value: "14°",
-      },
-      uvIndicator: {
-        value: 1,
-        name: "Uv Indicator",
-        additional: "Low level during all the day.",
-        text: "Low",
-      },
-      pressure: {
-        name: "PRESSURE",
-        value: "1040 hPa",
-      },
-      airQuality: {
-        name: "Air quality",
-        value: "Air quality text",
-      },
-    },
-    {
-      id: 3,
-      title: "Zaporozhie",
-      date: new Date(),
-      cityImage: "assets/images/cloudy.png",
-      currentTemp: 49,
-      weatherCondition: "cloudy",
-      maxTemp: {
-        name: "MAX TEMP",
-        value: "67°",
-      },
-      minTemp: {
-        name: "MIN TEMP",
-        value: "40°",
-      },
-      feltTemp: {
-        name: "FEELS LIKE",
-        value: "14°",
-      },
-      uvIndicator: {
-        value: 1,
-        name: "Uv Indicator",
-        additional: "Low level during all the day.",
-        text: "Low",
-      },
-      pressure: {
-        name: "PRESSURE",
-        value: "1040 hPa",
-      },
-      airQuality: {
-        name: "Air quality",
-        value: "Air quality text",
-      },
-    },
-  ];
-
   widgetsData = {
     maxTemp: {
       id: 0,
@@ -138,40 +67,52 @@ export default class App {
     },
   };
 
-  constructor(city, cityList, settings, rootElement) {
-    this.city = city;
-    this.cityList = cityList;
+  constructor(dashBoard, settings, rootElement) {
+    this.dashBoard = dashBoard;
     this.settings = settings;
     this.rootElement = rootElement;
     this.lsManager = new LsManager();
 
     this.citiesData = this.getCities();
 
-    // list || city
-    this.cityDisplayMode = "city";
-    this.currentCityId = 2;
-    this.lcKey = "weather";
-
-    if (!this.lsManager.get(this.lcKey)) {
-      this.lsManager.init(this.lcKey, this.settingsData);
-    }
+    // dashboard || something else
+    this.displayMode = "dashboard";
+    this.showCityInfo = false;
+    this.setupLocalStorage();
   }
 
-  onCityWidgetClick = (cityId) => {
-    this.setCurrentCity(cityId);
-    this.cityDisplayMode = "city";
+  setupLocalStorage = () => {
+    this.settingsLcKey = "weather";
+    this.citiesListLcKey = "cities";
+    this.cityLcKey = "city";
 
+    if (!this.lsManager.get(this.settingsLcKey)) {
+      this.lsManager.init(this.settingsLcKey, this.settingsData);
+    }
+
+    if (!this.lsManager.get(this.citiesListLcKey)) {
+      this.lsManager.init(this.citiesListLcKey, MOCK_CITIES);
+    }
+
+    if (!this.lsManager.get(this.cityLcKey)) {
+      this.lsManager.init(this.cityLcKey, {});
+    }
+  };
+
+  onCityWidgetClick = (city) => {
+    this.setCurrentCity(city);
+    this.showCityInfo = true;
     this.create();
   };
 
   toggleWidgetDisplay = (e) => {
     const key = e.target.id.split("-")[2];
-    const newSettings = this.lsManager.get(this.lcKey);
+    const newSettings = this.lsManager.get(this.settingsLcKey);
     const active = e.target.classList[1].split("-")[2];
     const isActive = active === "on" ? true : false;
     newSettings[key].isActive = !isActive;
 
-    this.lsManager.set(this.lcKey, newSettings);
+    this.lsManager.set(this.settingsLcKey, newSettings);
 
     this.create();
     this.createSettings();
@@ -181,32 +122,14 @@ export default class App {
     this.closeSettings();
   };
 
-  createCityList() {
-    this.cityList
-      .createCityList(this.getCities(), this.onCityWidgetClick)
-      .forEach((city) => {
-        this.rootElement.appendChild(city);
-      });
-  }
+  getSettingsState = () => {
+    return this.lsManager.get(this.settingsLcKey);
+  };
 
-  createCity() {
-    this.rootElement.appendChild(this.createNavigation());
-
-    const currentSettingsState = this.lsManager.get(this.lcKey);
-
-    const filteredCityWidgets = {};
-
-    Object.keys(currentSettingsState)
-      .filter((key) => {
-        return currentSettingsState[key].isActive;
-      })
-      .forEach((key) => {
-        filteredCityWidgets[key] = this.widgetsData[key];
-      });
-
-    this.rootElement.appendChild(
-      this.city.createCity(filteredCityWidgets, this.getCurrentCity())
-    );
+  setEventListeners() {
+    if (!this.showCityInfo) {
+      return;
+    }
 
     document
       .getElementById("settingsToggleBtn")
@@ -221,30 +144,16 @@ export default class App {
       .addEventListener("click", this.createSettings);
   }
 
-  create() {
-    this.clearRootElement();
-
-    switch (this.cityDisplayMode) {
-      case "list":
-        this.createCityList();
-        break;
-      case "city":
-        this.createCity();
-      default:
-        break;
-    }
-  }
-
   clearRootElement() {
     this.rootElement.innerHTML = "";
   }
 
-  getCities() {
-    return this.MOCK_CITIES;
-  }
+  getCities = () => {
+    return this.lsManager.get(this.citiesListLcKey);
+  };
 
   showCityList = () => {
-    this.cityDisplayMode = "list";
+    this.showCityInfo = false;
     this.create();
   };
 
@@ -271,14 +180,14 @@ export default class App {
             </div>
         `;
 
-    return navigation;
+    this.rootElement.appendChild(navigation);
   }
 
   createSettings = () => {
     this.rootElement.appendChild(this.settings.createContentWrapper());
 
     this.settings
-      .createSettings(this.lsManager.get(this.lcKey))
+      .createSettings(this.lsManager.get(this.settingsLcKey))
       .forEach((setting) => {
         document.getElementById("settings-card").appendChild(setting);
 
@@ -293,15 +202,48 @@ export default class App {
       .addEventListener("click", this.closeSettings);
   };
 
-  setCurrentCity(id) {
-    this.currentCityId = id;
+  setCurrentCity(city) {
+    this.lsManager.set(this.cityLcKey, city);
   }
 
   getCurrentCity = () => {
-    return this.citiesData.find((city) => city.id == this.currentCityId);
+    return this.lsManager.get(this.cityLcKey);
   };
 
   closeSettings = () => {
     this.create();
   };
+
+  create() {
+    this.clearRootElement();
+
+    if (this.showCityInfo) {
+      this.createNavigation();
+    }
+
+    switch (this.displayMode) {
+      case "dashboard":
+        this.dashBoard
+          .create(
+            this.onCityWidgetClick,
+            this.getCities,
+            this.getCurrentCity,
+            this.getSettingsState,
+            this.widgetsData,
+            this.showCityInfo
+          )
+          .forEach((element) => this.rootElement.appendChild(element));
+
+        this.setEventListeners();
+        break;
+      default:
+        break;
+    }
+
+    if (this.showCityInfo) {
+      document
+        .querySelector(".city-list")
+        .classList.toggle("city-list--hidden");
+    }
+  }
 }
