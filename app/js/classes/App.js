@@ -148,7 +148,7 @@ export default class App {
     this.citiesData = this.getCities();
 
     // list || city
-    this.cityDisplayMode = "list";
+    this.cityDisplayMode = "city";
     this.currentCityId = 2;
     this.lcKey = "weather";
 
@@ -164,28 +164,79 @@ export default class App {
     this.create();
   };
 
+  toggleWidgetDisplay = (e) => {
+    const key = e.target.id.split("-")[2];
+    const newSettings = this.lsManager.get(this.lcKey);
+    const active = e.target.classList[1].split("-")[2];
+    const isActive = active === "on" ? true : false;
+    newSettings[key].isActive = !isActive;
+
+    this.lsManager.set(this.lcKey, newSettings);
+
+    this.create();
+    this.createSettings();
+  };
+
+  closeSettings = () => {
+    this.closeSettings();
+  };
+
+  createCityList() {
+    this.cityList
+      .createCityList(this.getCities(), this.onCityWidgetClick)
+      .forEach((city) => {
+        this.rootElement.appendChild(city);
+      });
+  }
+
+  createCity() {
+    this.rootElement.appendChild(this.createNavigation());
+
+    const currentSettingsState = this.lsManager.get(this.lcKey);
+
+    const filteredCityWidgets = {};
+
+    Object.keys(currentSettingsState)
+      .filter((key) => {
+        return currentSettingsState[key].isActive;
+      })
+      .forEach((key) => {
+        filteredCityWidgets[key] = this.widgetsData[key];
+      });
+
+    this.rootElement.appendChild(
+      this.city.createCity(filteredCityWidgets, this.getCurrentCity())
+    );
+
+    document
+      .getElementById("settingsToggleBtn")
+      .addEventListener("click", this.showSettings);
+
+    document
+      .getElementById("showCitiesListBtn")
+      .addEventListener("click", this.showCityList);
+
+    document
+      .getElementById("settingsToggleBtn")
+      .addEventListener("click", this.createSettings);
+  }
+
   create() {
     this.clearRootElement();
 
-    if (this.cityDisplayMode === "list") {
-      this.cityList
-        .createCityList(this.getCities(), this.onCityWidgetClick)
-        .forEach((city) => {
-          this.rootElement.appendChild(city);
-        });
-    }
-
-    if (this.cityDisplayMode === "city") {
-      this.city.createCity(this.widgetsData, this.getCurrentCity());
+    switch (this.cityDisplayMode) {
+      case "list":
+        this.createCityList();
+        break;
+      case "city":
+        this.createCity();
+      default:
+        break;
     }
   }
 
   clearRootElement() {
     this.rootElement.innerHTML = "";
-  }
-
-  createWidget(content, type, onClick, classes) {
-    return Widget.create(content, type, onClick, classes);
   }
 
   getCities() {
@@ -223,6 +274,25 @@ export default class App {
     return navigation;
   }
 
+  createSettings = () => {
+    this.rootElement.appendChild(this.settings.createContentWrapper());
+
+    this.settings
+      .createSettings(this.lsManager.get(this.lcKey))
+      .forEach((setting) => {
+        document.getElementById("settings-card").appendChild(setting);
+
+        setting.childNodes[3].childNodes[1].addEventListener(
+          "click",
+          this.toggleWidgetDisplay
+        );
+      });
+
+    document
+      .getElementById("settings-overlay")
+      .addEventListener("click", this.closeSettings);
+  };
+
   setCurrentCity(id) {
     this.currentCityId = id;
   }
@@ -234,9 +304,4 @@ export default class App {
   closeSettings = () => {
     this.create();
   };
-
-  showSettings = () => {
-    this.settings.create();
-  };
 }
-

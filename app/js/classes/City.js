@@ -28,7 +28,6 @@ export default class City {
   }
 
   createCityWidgetContent(cityData, key) {
-    console.log(cityData, key);
     return `
                 <p class="city-info-grid__widget-description">${
                   cityData[key].name
@@ -52,26 +51,8 @@ export default class City {
   }
 
   createCity(citiesData, currentCity) {
-    // const navigation = this.app.createNavigation();
     const contentWrapper = this.createContentWrapper(currentCity);
     const cityInfoGrid = this.createCityInfoGrid();
-    /**
-         *  список - в отдельный класс. App - главный. Он управляет всем. Дети нет. В App create - через switch 
-            Отдельный city - может быть singleton'ом 
-            Эффект нажатия на элемент списка + на кнопку добавить 
-            Виджет - в класс.
-            Отображает ли 2 колонки? 
-            Сделать gh-pages 
-            Отдельный метод, который фильтр по активным ключам настроек, и undefined check будет не нужен
-            Возможно # методы (приватные)
-            Верстка - в отдельные методы. Активное разбиение на методы
-            Навешивать обработчик - в отдельный метод 
-            В AppModule - не использовать const. Сразу new.
-            Mock - в отдельный helper
-            Добавить фичу, если нет городов - информационное сообщение
-            Удалать обработчики событий 
-         */
-
     const cityDataWidgets = Object.keys(citiesData).map((key) => {
       const content = this.createCityWidgetContent(currentCity, key);
 
@@ -85,17 +66,6 @@ export default class City {
 
     contentWrapper.appendChild(cityInfoGrid);
 
-    // this.app.rootElement.appendChild(navigation);
-    // this.app.rootElement.appendChild(contentWrapper);
-    //
-    // document
-    //   .getElementById("settingsToggleBtn")
-    //   .addEventListener("click", this.app.showSettings);
-    // document
-    //   .getElementById("showCitiesListBtn")
-    //   .addEventListener("click", this.app.showCityList);
-
     return contentWrapper;
   }
 }
-
