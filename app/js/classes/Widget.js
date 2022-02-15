@@ -1,4 +1,20 @@
+/**
+ * @namespace entities
+ */
+
+/**
+ * Class for managing creating widgets - ui components
+ * @memberof entities
+ */
 export default class Widget {
+  /**
+   * @property {Function} create creating a widget
+   * @param {Object} content 
+   * @param {string} type 
+   * @param {Function} onClick 
+   * @param {Array} classes 
+   * @returns {HTMLBodyElement}
+   */
   static create(content, type, onClick, classes = []) {
     const widget = document.createElement("div");
 
