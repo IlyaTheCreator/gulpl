@@ -77,7 +77,7 @@ export default class App {
 
     // dashboard || something else
     this.displayMode = "dashboard";
-    this.showCityInfo = true;
+    this.showCityInfo = false;
     this.setupLocalStorage();
   }
 
@@ -86,15 +86,19 @@ export default class App {
     this.citiesListLcKey = "cities";
     this.cityLcKey = "city";
 
-    if (!this.lsManager.get(this.settingsLcKey)) {
+    const lcSettings = this.lsManager.get(this.settingsLcKey);
+    const lcCitiesList = this.lsManager.get(this.citiesListLcKey);
+    const lcCity = this.lsManager.get(this.cityLcKey);
+
+    if (lcSettings === null) {
       this.lsManager.init(this.settingsLcKey, this.settingsData);
     }
 
-    if (!this.lsManager.get(this.citiesListLcKey)) {
+    if (lcCitiesList === null || !lcCitiesList.length) {
       this.lsManager.init(this.citiesListLcKey, MOCK_CITIES);
     }
 
-    if (!this.lsManager.get(this.cityLcKey)) {
+    if (lcCity === null || !Object.keys(lcCity).length) {
       this.lsManager.init(this.cityLcKey, {});
     }
   };
