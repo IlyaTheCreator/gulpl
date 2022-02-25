@@ -40,7 +40,7 @@ export default class DashBoard {
     const btn = document.createElement("button");
 
     btn.classList.add("close-city-list-btn");
-    btn.id = "cityCloseBtn";
+    btn.id = "cityListCloseBtn";
 
     btn.innerHTML = `
       <i class="icon-cancel-squared"></i>
@@ -206,7 +206,7 @@ export default class DashBoard {
     const cities = this.getCities();
 
     if (cities.length === 0) {
-      return this.createEmptyListMessage();
+      return [this.createEmptyListMessage(), this.createAddBtn()];
     }
 
     const list = this.createCityList(cities, this.onCityWidgetClick);
@@ -222,6 +222,8 @@ export default class DashBoard {
       [], 
       "city-list"
     );
+
+    return [];
   }
 
   /**
@@ -249,13 +251,13 @@ export default class DashBoard {
    * @returns {Array<Object>}
    */
   generateDashBoard() {
-    const output = [];
+    let output = [];
 
     if (this.showCityInfo) {
       output.push(this.generateCityInfo());
     } else {
       output.push(this.createCloseCityListBtn());
-      this.generateCityList();
+      output = [...output, ...this.generateCityList()];
     }
 
     return output;

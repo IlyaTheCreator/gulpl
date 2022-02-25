@@ -30,7 +30,7 @@ export default class ModalService {
 
         if (!availableModal) {
             console.warn(`There is no available modal of type ${modalType}`);
-            return;
+            return document.createElement("div");
         } 
 
         let registeredModal = this.checkRegisteredModal(modalType);

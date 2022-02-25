@@ -121,7 +121,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = false;
+    this.showCityInfo = true;
     /**
      * @property {string} settingsLcKey localstorage key for keeping settings data
      */
@@ -217,6 +217,7 @@ export default class App {
    */
   getCities = () => {
     return this.lsManager.get(this.citiesListLcKey);
+    // return []
   }
 
   /**
@@ -245,7 +246,6 @@ export default class App {
     document.getElementById("settingsToggleBtn")?.addEventListener("click", this.showSettings);
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
     document.getElementById("settingsToggleBtn")?.addEventListener("click", this.createSettings);
-    document.getElementById("cityCloseBtn")?.addEventListener("click", this.showCityList);
   }
 
   /**
@@ -345,6 +345,12 @@ export default class App {
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
+
+        // fix later
+        document.getElementById("cityListCloseBtn")?.addEventListener("click", () => {
+          this.showCityInfo = true;
+          this.create();
+        });
         break;
       default:
         break;
