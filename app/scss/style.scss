@@ -19,13 +19,9 @@
 }
 
 .screen {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
   height: 100%;
   width: 100%;
   margin: 0 auto;
-  overflow-y: auto;
 
   @media only screen and (min-device-width: 768px) {
     &--wider {
@@ -196,7 +192,7 @@
   position: relative;
   height: 823px;
   width: 411px;
-  overflow: hidden;
+  // overflow: hidden;
 
   @media screen and (max-width: 411px) {
     width: 100vw;
@@ -255,6 +251,11 @@
 }
 
 .settings {
+  position: absolute;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 358px;
   background: $color-gray;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
@@ -287,10 +288,6 @@
 .city-list {
   display: flex;
   flex-direction: column;
-
-  &--hidden {
-    display: none;
-  }
 }
 
 .empty-city-list-container {
@@ -307,12 +304,20 @@
   }
 }
 
-.close-city-btn {
+.close-city-list-btn {
   border: 0;
   background: none;
+  position: absolute;
+  right: 13px;
+  top: -10px;
   cursor: pointer;
   color: $color-primary;
   font-size: 35px;
   display: flex;
   justify-content: flex-end;
+  z-index: 10;
+}
+
+.city-info {
+  padding: 24px;
 }

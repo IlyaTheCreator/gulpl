@@ -12,7 +12,7 @@ export default class DashBoard {
   /**
    * @property {Function} createContentWrapper creating markup/styles wrapper for displayed city
    * @param {*} city current city to be displayed
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   createContentWrapper(city) {
     const contentWrapper = document.createElement("div");
@@ -34,12 +34,12 @@ export default class DashBoard {
 
   /**
    * @property {Function} createCloseCityBtn creating btn for closing current city
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
-  createCloseCityBtn() {
+  createCloseCityListBtn() {
     const btn = document.createElement("button");
 
-    btn.classList.add("close-city-btn");
+    btn.classList.add("close-city-list-btn");
     btn.id = "cityCloseBtn";
 
     btn.innerHTML = `
@@ -51,7 +51,7 @@ export default class DashBoard {
 
   /**
    * @property {Function} createCityInfoGrid creating wrapper for city's widgets
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   createCityInfoGrid() {
     const cityInfoGrid = document.createElement("div");
@@ -88,7 +88,7 @@ export default class DashBoard {
    * @property {Function} createCity creating current city page
    * @param {Object} citiesData current cities data
    * @param {Object} currentCity current city data
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   createCity(citiesData, currentCity) {
     const contentWrapper = this.createContentWrapper(currentCity);
@@ -99,7 +99,7 @@ export default class DashBoard {
       return Widget.create(content, "city");
     });
 
-    contentWrapper.classList.add("city-info-modal");
+    contentWrapper.classList.add("city-info");
 
     cityDataWidgets.forEach((widget) => {
       widget.classList.add("city-info-grid__grid-item");
@@ -138,10 +138,10 @@ export default class DashBoard {
    * @property {Function} createCityList creating city list page
    * @param {Object} cities current cities data
    * @param {Function} onCityWidgetClick Individual city widget's onClick handler
-   * @returns {Array<HTMLBodyElement>}
+   * @returns {Array<Object>}
    */
   createCityList(cities, onCityWidgetClick) {
-    return cities.map((city) => {
+    const content = cities.map((city) => {
       const onClick = () => {
         onCityWidgetClick(city);
       };
@@ -155,11 +155,15 @@ export default class DashBoard {
 
       return cityWidget;
     });
+
+    content.push(this.createAddBtn());
+
+    return content;
   }
 
   /**
    * @property {Function} createAddBtn creates button to add a city
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   createAddBtn() {
     const btn = document.createElement("button");
@@ -177,7 +181,7 @@ export default class DashBoard {
 
   /**
    * @property {Function} createEmptyListMessage creating message of empty city list
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   createEmptyListMessage() {
     const container = document.createElement("div");
@@ -196,7 +200,7 @@ export default class DashBoard {
 
   /**
    * @property {Function} generateCityList preparing city list to be attached to the dom
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   generateCityList() {
     const cities = this.getCities();
@@ -212,12 +216,17 @@ export default class DashBoard {
 
     list.forEach((item) => listWrapper.appendChild(item));
 
-    return listWrapper;
+    this.mountModal(
+      "city-list",
+      () => this.createCityList(cities, this.onCityWidgetClick),
+      [], 
+      "city-list"
+    );
   }
 
   /**
    * @property {Function} generateCityInfo preparing single city page to be attached to the dom
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
   generateCityInfo() {
     const currentSettingsState = this.getSettingsState();
@@ -237,24 +246,17 @@ export default class DashBoard {
 
   /**
    * @property {Function} generateDashBoard preparing entire dashboard to be attached to the dom
-   * @returns {Array<HTMLBodyElement>}
+   * @returns {Array<Object>}
    */
   generateDashBoard() {
     const output = [];
 
-    const cityList = this.generateCityList(
-      this.getCities(),
-      this.onCityWidgetClick
-    );
-
     if (this.showCityInfo) {
-      output.push(this.createCloseCityBtn());
       output.push(this.generateCityInfo());
     } else {
-      cityList.appendChild(this.createAddBtn());
+      output.push(this.createCloseCityListBtn());
+      this.generateCityList();
     }
-
-    output.push(cityList);
 
     return output;
   }
@@ -267,7 +269,8 @@ export default class DashBoard {
    * @param {Function} getSettingsState 
    * @param {Function} widgetsData 
    * @param {Function} showCityInfo 
-   * @returns {Array<HTMLBodyElement>}
+   * @param {Function} mountModal 
+   * @returns {Array<Object>}
    */
   create(
     onCityWidgetClick,
@@ -275,7 +278,8 @@ export default class DashBoard {
     getCurrentCity,
     getSettingsState,
     widgetsData,
-    showCityInfo
+    showCityInfo,
+    mountModal
   ) {
     /**
      * @property {Function} onCityWidgetClick check App class for more information
@@ -301,6 +305,10 @@ export default class DashBoard {
      * @property {Function} showCityInfo check App class for more information
      */
     this.showCityInfo = showCityInfo;
+    /**
+     * @property {Function} mountModal check App class for more information
+     */
+    this.mountModal = mountModal;
 
     return this.generateDashBoard();
   }

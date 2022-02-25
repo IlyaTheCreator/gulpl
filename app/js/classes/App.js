@@ -85,9 +85,10 @@ export default class App {
   /**
    * @param {Object} dashBoard  DashBoard instance
    * @param {Object} settings Settings instance
+   * @param {Object} modalService modalService instance
    * @param {HTMLBodyElement} rootElement DOM element to attach the app to
    */
-  constructor(dashBoard, settings, rootElement) {
+  constructor(dashBoard, settings, modalService, rootElement) {
     /**
      * @property {Object} dashBoard  DashBoard instance
      */
@@ -96,6 +97,10 @@ export default class App {
      * @property {Object} settings Settings instance
      */
     this.settings = settings;
+    /**
+     * @property {Object} settings ModalService instance
+     */
+     this.modalService = modalService;
     /**
      * @property {HTMLBodyElement} rootElement DOM element to attach the app to
      */
@@ -141,13 +146,11 @@ export default class App {
     this.citiesListLcKey = "cities";
     this.cityLcKey = "city";
 
-    const lcSettings = this.lsManager.get(this.settingsLcKey);
-    const lcCitiesList = this.lsManager.get(this.citiesListLcKey);
-    const lcCity = this.lsManager.get(this.cityLcKey);
-
-    /**
-     * Inital launching checks
-     */
+    const lcSettings = this.getSettingsState();
+    const lcCitiesList = this.getCities();
+    const lcCity = this.getCurrentCity();
+    
+    // Inital launching checks
     if (lcSettings === null) {
       this.lsManager.init(this.settingsLcKey, this.settingsData);
     }
@@ -159,7 +162,19 @@ export default class App {
     if (lcCity === null || !Object.keys(lcCity).length) {
       this.lsManager.init(this.cityLcKey, {});
     }
-  };
+  }
+
+  /**
+   * @property {Function} mountModal function for creating and mounting a modal 
+   * For props description see Modal's constructor
+   */
+  mountModal = (modalType, modalData, modalContentCreateMethod, classes, id) => {
+    this.clearRootElement();
+
+    this.rootElement.appendChild(
+      this.modalService.createModal(modalType, modalData, modalContentCreateMethod, classes, id)
+    )
+  }
 
   /**
    * @property {Function} onCityWidgetClick Individual city widget's onClick handler
@@ -169,7 +184,7 @@ export default class App {
     this.setCurrentCity(city);
     this.showCityInfo = true;
     this.create();
-  };
+  }
 
   /**
    * @property {Function} onCityWidgetClick Individual setting trigger onClick handler
@@ -186,7 +201,7 @@ export default class App {
 
     this.create();
     this.createSettings();
-  };
+  }
 
   /**
    * @property {Function} getSettingsState getting current settings state from localstorage
@@ -194,7 +209,30 @@ export default class App {
    */
   getSettingsState = () => {
     return this.lsManager.get(this.settingsLcKey);
-  };
+  }
+
+  /**
+   * @property {Function} getCities getting current cities list state from localstorage
+   * @returns {Object}
+   */
+  getCities = () => {
+    return this.lsManager.get(this.citiesListLcKey);
+  }
+
+  /**
+   * @property {Function} getCurrentCity Current city localstorage getter
+   */
+  getCurrentCity = () => {
+    return this.lsManager.get(this.cityLcKey);
+  }
+
+  /**
+   * @property {Function} setCurrentCity Current city localstorage setter
+   * @param {Object} city city to set
+   */
+  setCurrentCity(city) {
+    this.lsManager.set(this.cityLcKey, city);
+  }
 
   /**
    * @property {Function} setEventListeners setting event listeners when single city "page" is loaded
@@ -204,10 +242,10 @@ export default class App {
       return;
     }
 
-    document.getElementById("settingsToggleBtn").addEventListener("click", this.showSettings);
-    document.getElementById("showCitiesListBtn").addEventListener("click", this.showCityList);
-    document.getElementById("settingsToggleBtn").addEventListener("click", this.createSettings);
-    document.getElementById("cityCloseBtn").addEventListener("click", this.showCityList);
+    document.getElementById("settingsToggleBtn")?.addEventListener("click", this.showSettings);
+    document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
+    document.getElementById("settingsToggleBtn")?.addEventListener("click", this.createSettings);
+    document.getElementById("cityCloseBtn")?.addEventListener("click", this.showCityList);
   }
 
   /**
@@ -218,20 +256,12 @@ export default class App {
   }
 
   /**
-   * @property {Function} getCities getting current cities list state from localstorage
-   * @returns {Object}
-   */
-  getCities = () => {
-    return this.lsManager.get(this.citiesListLcKey);
-  };
-
-  /**
    * @property {Function} showCityList displaying cities list "page"
    */
   showCityList = () => {
     this.showCityInfo = false;
     this.create();
-  };
+  }
 
   /**
    * @property {Function} createNavigation creating navigation element
@@ -266,43 +296,30 @@ export default class App {
    * @property {Function} createSettings creating settings element
    */
   createSettings = () => {
-    this.rootElement.appendChild(this.settings.createContentWrapper());
-
-    this.settings
-      .createSettings(this.lsManager.get(this.settingsLcKey))
-      .forEach((setting) => {
-        document.getElementById("settings-card").appendChild(setting);
-
-        setting.childNodes[3].childNodes[1].addEventListener(
-          "click",
-          this.toggleWidgetDisplay
-        );
-      });
-
-    document.getElementById("settings-overlay").addEventListener("click", this.closeSettings);
-  };
-
-  /**
-   * @property {Function} setCurrentCity Current city localstorage setter
-   * @param {Object} city city to set
-   */
-  setCurrentCity(city) {
-    this.lsManager.set(this.cityLcKey, city);
+    this.mountModal(
+      "settings",
+      () => [
+        this.settings.createContentWrapper(this.closeSettings),
+        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick)
+      ],
+      [],
+      "settings"
+    );
   }
-
-  /**
-   * @property {Function} getCurrentCity Current city localstorage getter
-   */
-  getCurrentCity = () => {
-    return this.lsManager.get(this.cityLcKey);
-  };
 
   /**
    * @property {Function} closeSettings Closing settings modal
    */
   closeSettings = () => {
     this.create();
-  };
+  }
+
+  /**
+   * @property {Function} setOnSettingClick Setting onClick event later on a single setting item
+   */
+  setOnSettingClick = (settingNode) => {
+    settingNode.childNodes[3].childNodes[1].addEventListener("click",this.toggleWidgetDisplay);
+  }
 
   /**
    * @property {Function} create central app's point
@@ -323,7 +340,8 @@ export default class App {
           this.getCurrentCity,
           this.getSettingsState,
           this.widgetsData,
-          this.showCityInfo
+          this.showCityInfo,
+          this.mountModal
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
@@ -333,7 +351,7 @@ export default class App {
     }
 
     if (this.showCityInfo) {
-      document.querySelector(".city-list").classList.toggle("city-list--hidden");
+      document.getElementById("city-list")?.remove();
     }
   }
 }

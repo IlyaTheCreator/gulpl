@@ -9,17 +9,16 @@
 export default class Settings {
   /**
    * @property {Function} createContentWrapper creating settings dom wrapper
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
-  createContentWrapper() {
+  createContentWrapper(onClick) {
     const contentWrapper = document.createElement("div");
 
-    contentWrapper.innerHTML = `
-      <div class="modal-overlay modal-overlay--settings" id="settings-overlay"></div>
-      <div class="modal" id="settings-modal">
-        <div class="card settings" id="settings-card"></div>
-      </div>
-    `;
+    contentWrapper.id = "settings-overlay";
+    contentWrapper.classList.add("modal-overlay");
+    contentWrapper.classList.add("modal-overlay--settings");
+
+    contentWrapper.addEventListener("click", onClick);
 
     return contentWrapper;
   }
@@ -28,9 +27,9 @@ export default class Settings {
    * @property {Function} createSettingItem creating a single setting toggler
    * @param {Object} setting current setting object (see App's settingsData prop) 
    * @param {string} key current setting key (see App's settingsData prop) 
-   * @returns {HTMLBodyElement}
+   * @returns {Object}
    */
-  createSettingItem(setting, key) {
+  createSettingItem(setting, key, setOnSettingClick) {
     const toggleValue = setting.isActive ? "on" : "off";
     const settingItem = document.createElement("div");
 
@@ -48,19 +47,28 @@ export default class Settings {
       </div>
     `;
 
+    setOnSettingClick(settingItem);
+
     return settingItem;
   }
 
   /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
-   * @returns {Array<HTMLBodyElement>}
+   * @returns {Object}
    */
-  createSettings(lcData) {
-    return Object.keys(lcData).map((key) => {
+  createSettings(lcData, setOnSettingClick) {
+    const settingsCard = document.createElement("div");
+    
+    settingsCard.classList.add("card");
+    settingsCard.classList.add("settings");
+
+    Object.keys(lcData).forEach((key) => {
       const setting = lcData[key];
 
-      return this.createSettingItem(setting, key);
+      settingsCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
     });
+
+    return settingsCard;
   }
 }
