@@ -141,7 +141,6 @@
   &__grid-item {
     flex: 1 0 44%;
     min-height: 100px;
-    // margin: 0 0 25px 0;
 
     &:first-child {
       margin-right: 0px;
@@ -188,14 +187,9 @@
   position: relative;
   height: 823px;
   width: 411px;
-  // overflow: hidden;
 
   @media screen and (max-width: 411px) {
     width: 100vw;
-  }
-
-  @media screen and (max-device-width: 512px) {
-    height: 100vh;
   }
 }
 
@@ -298,20 +292,13 @@
   }
 }
 
-.close-city-list-btn {
-  border: 0;
-  background: none;
-  position: absolute;
-  right: 13px;
-  top: -10px;
-  cursor: pointer;
-  color: $color-primary;
-  font-size: 35px;
-  display: flex;
-  justify-content: flex-end;
-  z-index: 9999;
-}
-
 .city-info {
   padding: 24px;
+}
+
+.close-settings-modal-btn {
+  top: 210px;
+  right: 6px;
+  color: $color-black;
+  z-index: 9999;
 }

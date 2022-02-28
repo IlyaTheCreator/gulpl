@@ -169,8 +169,6 @@ export default class App {
    * For props description see Modal's constructor
    */
   mountModal = (modalType, modalData, modalContentCreateMethod, classes, id) => {
-    this.clearRootElement();
-
     this.rootElement.appendChild(
       this.modalService.createModal(modalType, modalData, modalContentCreateMethod, classes, id)
     )
@@ -269,7 +267,7 @@ export default class App {
     }
 
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
-    document.getElementById("settingsToggleBtn")?.addEventListener("click", this.createSettings);
+    document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
   }
 
   /**
@@ -295,7 +293,7 @@ export default class App {
     navigation.classList.add("navigation");
 
     navigation.innerHTML = `
-      <div class="navigation__settings" id="settingsToggleBtn">
+      <div class="navigation__settings" id="settingsOpenBtn">
           <i class="icon icon-figma-settings"></i>
       </div>
       <div class="navigation__pages">
@@ -323,12 +321,15 @@ export default class App {
     this.mountModal(
       "settings",
       () => [
+        this.settings.createCloseSettingsBtn(),
         this.settings.createContentWrapper(this.closeSettings),
         this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick)
       ],
       [],
       "settings"
     );
+
+    document.getElementById("settingsCloseBtn")?.addEventListener("click", this.create);
   }
 
   /**
@@ -348,7 +349,7 @@ export default class App {
   /**
    * @property {Function} create central app's point
    */
-  create() {
+  create = () => {
     this.clearRootElement();
 
     if (this.showCityInfo) {

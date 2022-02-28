@@ -39,6 +39,7 @@ export default class DashBoard {
   createCloseCityListBtn() {
     const btn = document.createElement("button");
 
+    btn.classList.add("close-modal-btn");
     btn.classList.add("close-city-list-btn");
     btn.id = "cityListCloseBtn";
 
@@ -218,8 +219,6 @@ export default class DashBoard {
       [], 
       "city-list"
     );
-
-    return [];
   }
 
   /**
@@ -247,13 +246,11 @@ export default class DashBoard {
    * @returns {Array<Object>}
    */
   generateDashBoard() {
-    let output = [];
+    const output = [this.generateCityInfo()];
 
-    if (this.showCityInfo) {
-      output.push(this.generateCityInfo());
-    } else {
+    if (!this.showCityInfo) {
       output.push(this.createCloseCityListBtn());
-      output = [...output, ...this.generateCityList()];
+      this.generateCityList();
     }
 
     return output;

@@ -53,6 +53,24 @@ export default class Settings {
   }
 
   /**
+   * @property {Function} createCloseSettingsBtn creating btn for closing setting modal
+   * @returns {Object}
+   */
+   createCloseSettingsBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-modal-btn");
+    btn.classList.add("close-settings-modal-btn");
+    btn.id = "settingsCloseBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    return btn;
+  }
+
+  /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
    * @returns {Object}
