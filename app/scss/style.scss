@@ -276,6 +276,7 @@
 }
 
 .city-list {
+  align-self: flex-start !important;
   display: flex;
   flex-direction: column;
 }
@@ -301,4 +302,64 @@
   right: 6px;
   color: $color-black;
   z-index: 9999;
+}
+
+.close-add-city-btn {
+  top: 210px;
+  right: 14px;
+  z-index: 10000;
+}
+
+.add-city {
+  margin-top: calc(50vh - 50%);
+  z-index: 10000;
+  padding: 1.7em;
+}
+
+.close-city-list-btn {
+  top: -5px;
+  z-index: 9999;
+}
+
+.add-city-form {
+  display: flex;
+  flex-direction: column;
+
+  .input-wrapper {
+    position: relative;
+
+    input[type="text"] {
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, #DBDBDB 0%, rgba(228, 228, 228, 0.96) 100%);
+      border-radius: 10px;
+      border: 0;
+      padding: 0.8em 2em 0.8em 2.6em;
+      font-size: 0.95rem;
+  
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .icon-wrapper {
+      position: absolute;
+      top: 8px;
+      left: 5px;
+
+      i {
+        font-size: 20px;
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    background: green;
+    margin-top: 50px;
+    padding: 0.3em 2em;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    font-size: 1.6rem;
+  }
 }

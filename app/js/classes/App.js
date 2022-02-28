@@ -339,6 +339,11 @@ export default class App {
     this.create();
   }
 
+  closeCityAddModal = () => {
+    this.create();
+    this.showCityInfo = false;
+  }
+
   /**
    * @property {Function} setOnSettingClick Setting onClick event later on a single setting item
    */
@@ -366,16 +371,19 @@ export default class App {
           this.getSettingsState,
           this.widgetsData,
           this.showCityInfo,
-          this.mountModal
+          this.mountModal,
+          this.closeCityAddModal,
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
 
-        // fix later
         document.getElementById("cityListCloseBtn")?.addEventListener("click", () => {
           this.showCityInfo = true;
           this.create();
         });
+
+        document.getElementById("addCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
+
         break;
       default:
         break;

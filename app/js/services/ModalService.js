@@ -13,7 +13,7 @@ export default class ModalService {
         /**
          * @property {Array<String>} availableModalTypes these types match element's ids in the dom
          */
-        this.availableModalTypes = ["city-list", "settings"];
+        this.availableModalTypes = ["city-list", "settings", "add-city"];
         /**
          * @property {Array<Object>} registeredModals registered modals
          */

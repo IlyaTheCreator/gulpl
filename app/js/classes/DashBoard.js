@@ -168,12 +168,78 @@ export default class DashBoard {
     btn.classList.add("btn");
     btn.classList.add("widget");
     btn.classList.add("screen__add-btn");
+    btn.id = "addCityBtn";
 
     btn.innerHTML = `
       <i class="icon-figma-plus"></i>
     `;
 
     return btn;
+  }
+
+  /**
+   * @property {Function} createAddCityContentWrapper creating add-city overlay
+   * @returns {Object}
+   */
+   createAddCityContentWrapper(onClick) {
+    const contentWrapper = document.createElement("div");
+
+    contentWrapper.id = "add-city-overlay";
+    contentWrapper.classList.add("modal-overlay");
+    contentWrapper.classList.add("modal-overlay--add-city");
+
+    contentWrapper.addEventListener("click", onClick);
+
+    return contentWrapper;
+  }
+
+  /**
+   * @property {Function} createCloseAddCityBtn creating btn for closing add-city modal
+   * @returns {Object}
+   */
+   createCloseAddCityBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-modal-btn");
+    btn.classList.add("close-add-city-btn");
+    btn.id = "closeCityBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    btn.addEventListener("click", this.closeCityAddModal);
+
+    return btn;
+  }
+
+  createAddCityForm() {
+    const form = document.createElement("form");
+
+    form.classList.add("add-city-form");
+
+    form.innerHTML = `
+      <div class="input-wrapper">
+        <input type="text" placeholder="Enter City Name..." />
+        <div class="icon-wrapper">
+          <i class="icon-map"></i>
+        </div>
+      </div>
+      <button class="btn">Add</button>
+    `;
+
+    return form;
+  }
+
+  createAddCityContent() {
+    const addCityCard = document.createElement("div");
+    
+    addCityCard.classList.add("card");
+    addCityCard.classList.add("add-city");
+
+    addCityCard.appendChild(this.createAddCityForm());
+
+    return addCityCard;
   }
 
   /**
@@ -193,6 +259,19 @@ export default class DashBoard {
     `;
 
     return container;
+  }
+
+  generateAddCityModal() {
+    this.mountModal(
+      "add-city",
+      () => [
+        this.createCloseAddCityBtn(),
+        this.createAddCityContentWrapper(this.closeCityAddModal),
+        this.createAddCityContent()
+      ],
+      ["add-city-modal"],
+      "settings"
+    );
   }
 
   /**
@@ -216,7 +295,7 @@ export default class DashBoard {
     this.mountModal(
       "city-list",
       () => this.createCityList(cities, this.onCityWidgetClick),
-      [], 
+      ["city-list"], 
       "city-list"
     );
   }
@@ -274,7 +353,8 @@ export default class DashBoard {
     getSettingsState,
     widgetsData,
     showCityInfo,
-    mountModal
+    mountModal,
+    closeCityAddModal
   ) {
     /**
      * @property {Array} cities latest city data
@@ -285,25 +365,29 @@ export default class DashBoard {
      */
     this.onCityWidgetClick = onCityWidgetClick;
     /**
-     * @property {Function} getCurrentCity check App class for more information
+     * @property {Function} getCurrentCity 
      */
     this.getCurrentCity = getCurrentCity;
     /**
-     * @property {Function} getSettingsState check App class for more information
+     * @property {Function} getSettingsState
      */
     this.getSettingsState = getSettingsState;
     /**
-     * @property {Function} widgetsData check App class for more information
+     * @property {Function} widgetsData
      */
     this.widgetsData = widgetsData;
     /**
-     * @property {Function} showCityInfo check App class for more information
+     * @property {Function} showCityInfo
      */
     this.showCityInfo = showCityInfo;
     /**
-     * @property {Function} mountModal check App class for more information
+     * @property {Function} mountModal
      */
     this.mountModal = mountModal;
+    /**
+     * @property {Function} closeCityAddModal
+     */
+    this.closeCityAddModal = closeCityAddModal;
 
     return this.generateDashBoard();
   }

@@ -75,9 +75,10 @@ i {
 
 .card {
   background: $color-gray;
-  border-radius: 5px;
+  border-radius: 10px;
   padding: 40px;
   color: $color-black;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 .link {
@@ -99,6 +100,8 @@ i {
   display: flex;
   flex-direction: column;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-overlay {
@@ -111,6 +114,11 @@ i {
   height: 100%;
 
   &--settings {
+    background: $color-normal;
+  }
+
+  &--add-city {
+    z-index: 9999;
     background: $color-normal;
   }
 }
@@ -127,4 +135,8 @@ i {
   display: flex;
   justify-content: flex-end;
   z-index: 9999;
+}
+
+.close-add-city-btn {
+  color: $color-black;
 }

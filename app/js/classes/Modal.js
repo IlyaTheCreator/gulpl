@@ -19,7 +19,7 @@ export default class Modal {
          */
         this.modalContentCreateMethod = modalContentCreateMethod;
         /**
-         * @property {Array<String>} classes additional classes for model's content
+         * @property {Array<String>} classes additional classes for the modal
          */
         this.classes = classes;
         /**
@@ -36,8 +36,8 @@ export default class Modal {
         const modal = document.createElement("div");
 
         modal.classList.add("modal");
+        this.classes.forEach((className) => modal.classList.add(className));
         modal.id = this.id;
-        this.classes.forEach((className) => this.content.classList.add(className));
         this.modalContentCreateMethod().forEach((child) => modal.appendChild(child));
 
         return modal;
