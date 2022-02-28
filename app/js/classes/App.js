@@ -191,10 +191,35 @@ export default class App {
    * @param {Object} e event object
    */
   toggleWidgetDisplay = (e) => {
+    // check if there's an id
+    if (!e.target.id.trim()) {
+      this.create();
+    }
+
+    // check if there's a '-' sign in the id
+    if (!e.target.id.search("-")) {
+      this.create();
+    }
+
+    // check if there's a class
+    if (!e.target.classList[1]) {
+      this.create();
+    }
+
+    // check if there's a '-' sign in the class
+    if (!e.target.classList[1].split("-")) {
+      this.create();
+    }
+
+    // check if there's a division of the class
+    if (!e.target.classList[1].split("-")[2]) {
+      this.create();
+    }
+
     const key = e.target.id.split("-")[2];
     const newSettings = this.lsManager.get(this.settingsLcKey);
     const active = e.target.classList[1].split("-")[2];
-    const isActive = active === "on" ? true : false;
+    const isActive = active === "on";
     newSettings[key].isActive = !isActive;
 
     this.lsManager.set(this.settingsLcKey, newSettings);
@@ -243,7 +268,6 @@ export default class App {
       return;
     }
 
-    document.getElementById("settingsToggleBtn")?.addEventListener("click", this.showSettings);
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
     document.getElementById("settingsToggleBtn")?.addEventListener("click", this.createSettings);
   }
@@ -335,8 +359,8 @@ export default class App {
     switch (this.displayMode) {
       case "dashboard":
         this.dashBoard.create(
+          this.getCities(),
           this.onCityWidgetClick,
-          this.getCities,
           this.getCurrentCity,
           this.getSettingsState,
           this.widgetsData,

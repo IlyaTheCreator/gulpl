@@ -93,19 +93,15 @@ export default class DashBoard {
   createCity(citiesData, currentCity) {
     const contentWrapper = this.createContentWrapper(currentCity);
     const cityInfoGrid = this.createCityInfoGrid();
-    const cityDataWidgets = Object.keys(citiesData).map((key) => {
+    
+    Object.keys(citiesData).forEach((key) => {
       const content = this.createCityWidgetContent(currentCity, key);
-
-      return Widget.create(content, "city");
-    });
-
-    contentWrapper.classList.add("city-info");
-
-    cityDataWidgets.forEach((widget) => {
-      widget.classList.add("city-info-grid__grid-item");
+      const widget = Widget.create(content, "city", undefined, ["city-info-grid__grid-item"])
+    
       cityInfoGrid.appendChild(widget);
     });
 
+    contentWrapper.classList.add("city-info");
     contentWrapper.appendChild(cityInfoGrid);
 
     return contentWrapper;
@@ -203,7 +199,7 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
-    const cities = this.getCities();
+    const cities = this.cities;
 
     if (cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
@@ -275,8 +271,8 @@ export default class DashBoard {
    * @returns {Array<Object>}
    */
   create(
+    cities,
     onCityWidgetClick,
-    getCities,
     getCurrentCity,
     getSettingsState,
     widgetsData,
@@ -284,13 +280,13 @@ export default class DashBoard {
     mountModal
   ) {
     /**
+     * @property {Array} cities latest city data
+     */
+     this.cities = cities;
+    /**
      * @property {Function} onCityWidgetClick check App class for more information
      */
     this.onCityWidgetClick = onCityWidgetClick;
-    /**
-     * @property {Function} getCities check App class for more information
-     */
-    this.getCities = getCities;
     /**
      * @property {Function} getCurrentCity check App class for more information
      */
