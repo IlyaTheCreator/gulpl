@@ -38,33 +38,33 @@ export default [
     title: "Zaporozhie",
     date: new Date(),
     cityImage: "assets/images/cloudy.png",
-    currentTemp: 49,
+    currentTemp: 21,
     weatherCondition: "cloudy",
     maxTemp: {
       name: "MAX TEMP",
-      value: "67°",
+      value: "12°",
     },
     minTemp: {
       name: "MIN TEMP",
-      value: "40°",
+      value: "77°",
     },
     feltTemp: {
       name: "FEELS LIKE",
-      value: "14°",
+      value: "34°",
     },
     uvIndicator: {
       value: 1,
       name: "Uv Indicator",
-      additional: "Low level during all the day.",
-      text: "Low",
+      additional: "High level be careful.",
+      text: "Hight",
     },
     pressure: {
       name: "PRESSURE",
-      value: "1040 hPa",
+      value: "666 hPa",
     },
     airQuality: {
       name: "Air quality",
-      value: "Air quality text",
+      value: "Shitty air",
     },
   },
 ];

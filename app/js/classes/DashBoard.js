@@ -294,7 +294,7 @@ export default class DashBoard {
 
     this.mountModal(
       "city-list",
-      () => this.createCityList(cities, this.onCityWidgetClick),
+      () => list,
       ["city-list"], 
       "city-list"
     );
@@ -317,7 +317,7 @@ export default class DashBoard {
         filteredCityWidgets[key] = this.widgetsData[key];
       });
 
-    return this.createCity(filteredCityWidgets, this.getCurrentCity());
+    return this.createCity(filteredCityWidgets, this.currentCity);
   }
 
   /**
@@ -325,9 +325,11 @@ export default class DashBoard {
    * @returns {Array<Object>}
    */
   generateDashBoard() {
-    const output = [this.generateCityInfo()];
+    const output = [];
 
-    if (!this.showCityInfo) {
+    if (this.currentCity.name || this.showCityInfo) {
+      output.push(this.generateCityInfo());
+    } else {
       output.push(this.createCloseCityListBtn());
       this.generateCityList();
     }
@@ -337,9 +339,9 @@ export default class DashBoard {
 
   /**
    * @property {Function} create getting the required methods from the app and connecting to it
+   * @param {Object} cities 
+   * @param {Object} currentCity 
    * @param {Function} onCityWidgetClick 
-   * @param {Function} getCities 
-   * @param {Function} getCurrentCity 
    * @param {Function} getSettingsState 
    * @param {Function} widgetsData 
    * @param {Function} showCityInfo 
@@ -348,8 +350,8 @@ export default class DashBoard {
    */
   create(
     cities,
+    currentCity,
     onCityWidgetClick,
-    getCurrentCity,
     getSettingsState,
     widgetsData,
     showCityInfo,
@@ -361,13 +363,13 @@ export default class DashBoard {
      */
      this.cities = cities;
     /**
+     * @property {Function} currentCity 
+     */
+    this.currentCity = currentCity;
+    /**
      * @property {Function} onCityWidgetClick check App class for more information
      */
     this.onCityWidgetClick = onCityWidgetClick;
-    /**
-     * @property {Function} getCurrentCity 
-     */
-    this.getCurrentCity = getCurrentCity;
     /**
      * @property {Function} getSettingsState
      */

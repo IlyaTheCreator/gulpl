@@ -112,7 +112,7 @@ export default class App {
     /**
      * @property {Object} citiesData weather information
      */
-    this.citiesData = this.getCities();
+    this.citiesData = [];
     /**
      * "dashboard" || something else
      * @property {string} displayMode defines what "page" to display (kind of SPA)
@@ -134,6 +134,9 @@ export default class App {
      * @property {string} cityLcKey localstorage key for keeping individual city's data
      */
     this.cityLcKey = "";
+
+    this.touchStartX = 0;
+    this.touchEndX = 0;
 
     this.setupLocalStorage();
   }
@@ -161,6 +164,7 @@ export default class App {
 
     if (lcCity === null || !Object.keys(lcCity).length) {
       this.lsManager.init(this.cityLcKey, {});
+      this.showCityList();
     }
   }
 
@@ -263,11 +267,41 @@ export default class App {
    */
   setEventListeners() {
     if (!this.showCityInfo) {
+      document.getElementById("cityListCloseBtn")?.addEventListener("click", this.closeCityList);
+      document.getElementById("addCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
+
       return;
     }
 
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
     document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
+
+    this.rootElement.addEventListener('touchstart', e => {
+      this.touchStartX = e.changedTouches[0].screenX
+    });
+
+    this.rootElement.addEventListener('touchend', e => {
+      this.touchEndX = e.changedTouches[0].screenX;
+      this.handleGesture();
+    });
+  }
+
+  handleGesture() {
+    this.citiesData = this.getCities();
+
+    // swiped left
+    if (this.touchEndX < this.touchStartX) {
+      console.log("left swipe")
+      console.log(this.citiesData[1])
+      this.setCurrentCity(this.citiesData[1]);
+      this.create();
+      // ...
+    }
+
+    // swiped right
+    if (this.touchEndX > this.touchStartX) {
+      console.log("right swipe")
+    }
   }
 
   /**
@@ -352,6 +386,14 @@ export default class App {
   }
 
   /**
+   * @property {Function} closeCityList
+   */
+  closeCityList = () => {
+    this.showCityInfo = true;
+    this.create();
+  }
+
+  /**
    * @property {Function} create central app's point
    */
   create = () => {
@@ -366,8 +408,8 @@ export default class App {
       case "dashboard":
         this.dashBoard.create(
           this.getCities(),
+          this.getCurrentCity(),
           this.onCityWidgetClick,
-          this.getCurrentCity,
           this.getSettingsState,
           this.widgetsData,
           this.showCityInfo,
@@ -376,13 +418,6 @@ export default class App {
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
-
-        document.getElementById("cityListCloseBtn")?.addEventListener("click", () => {
-          this.showCityInfo = true;
-          this.create();
-        });
-
-        document.getElementById("addCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
 
         break;
       default:
