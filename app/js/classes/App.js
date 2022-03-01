@@ -309,8 +309,8 @@ export default class App {
 
     const currentCityIndex = this.citiesData.findIndex((city) => city.id === currentCity.id);
 
-    // swiped left
-    if (this.touchEndX < this.touchStartX) {
+    // swiped left | 100 is for correct behavior (don't swipe on 1px change, for example)
+    if (this.touchEndX + 100 < this.touchStartX) {
       if (currentCityIndex < this.citiesData.length - 1 && currentCityIndex >= 0) {
         this.setCurrentCity(this.citiesData[currentCityIndex + 1]);
 
@@ -318,8 +318,8 @@ export default class App {
       }
     }
 
-    // swiped right
-    if (this.touchEndX > this.touchStartX) {
+    // swiped right | 100 is for correct behavior (don't swipe on 1px change, for example)
+    if (this.touchEndX - 100 > this.touchStartX) {
       if (currentCityIndex > 0) {
         this.setCurrentCity(this.citiesData[currentCityIndex - 1]);
 
@@ -385,9 +385,12 @@ export default class App {
       const circle = document.createElement("i");
 
       circle.classList.add("icon");
-      circle.classList.add("clickable");
       circle.classList.add("icon-dot");
       circle.classList.add("navigation__circle");
+
+      if (city.id === this.getCurrentCity().id) {
+        circle.classList.add("navigation__circle--active")
+      }
 
       circle.addEventListener("click", () => {
         // check to avoid unnecessary re-rendering
