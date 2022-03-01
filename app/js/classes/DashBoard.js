@@ -102,6 +102,7 @@ export default class DashBoard {
       cityInfoGrid.appendChild(widget);
     });
 
+    contentWrapper.id = "city-info";
     contentWrapper.classList.add("city-info");
     contentWrapper.appendChild(cityInfoGrid);
 
@@ -279,13 +280,11 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
-    const cities = this.cities;
-
-    if (cities.length === 0) {
+    if (this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
 
-    const list = this.createCityList(cities, this.onCityWidgetClick);
+    const list = this.createCityList(this.cities, this.onCityWidgetClick);
     const listWrapper = document.createElement("div");
 
     listWrapper.classList.add("city-list");
@@ -325,14 +324,21 @@ export default class DashBoard {
    * @returns {Array<Object>}
    */
   generateDashBoard() {
-    const output = [];
+    let output = [];
 
-    if (this.currentCity.name || this.showCityInfo) {
+    if (this.showCityInfo) {
       output.push(this.generateCityInfo());
     } else {
-      output.push(this.createCloseCityListBtn());
-      this.generateCityList();
+      if (this.cities.length > 0 && this.currentCity.title) {
+        output.push(this.createCloseCityListBtn());
+      }
+      
+      if (Array.isArray(this.generateCityList())) {
+        output = [...output, ...this.generateCityList()];
+      }
     }
+
+    this.smoothTransition();
 
     return output;
   }
@@ -346,6 +352,8 @@ export default class DashBoard {
    * @param {Function} widgetsData 
    * @param {Function} showCityInfo 
    * @param {Function} mountModal 
+   * @param {Function} closeCityAddModal 
+   * @param {Function} smoothTransition 
    * @returns {Array<Object>}
    */
   create(
@@ -356,7 +364,8 @@ export default class DashBoard {
     widgetsData,
     showCityInfo,
     mountModal,
-    closeCityAddModal
+    closeCityAddModal,
+    smoothTransition
   ) {
     /**
      * @property {Array} cities latest city data
@@ -390,6 +399,10 @@ export default class DashBoard {
      * @property {Function} closeCityAddModal
      */
     this.closeCityAddModal = closeCityAddModal;
+    /**
+     * @property {Function} smoothTransition
+     */
+    this.smoothTransition = smoothTransition;
 
     return this.generateDashBoard();
   }

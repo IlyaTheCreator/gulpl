@@ -282,7 +282,7 @@
 }
 
 .empty-city-list-container {
-  padding-top: 60px;
+  padding: 60px 24px 24px 24px;
   display: flex;
   flex-direction: column;
 
@@ -291,21 +291,25 @@
     text-align: justify;
     padding-right: 5px;
   }
-}
 
-.city-info {
-  padding: 24px;
+  & + button {
+    margin-right: 24px;
+  }
 }
 
 .close-settings-modal-btn {
   top: 210px;
-  right: 6px;
+  right: 8px;
   color: $color-black;
   z-index: 9999;
+
+  @media screen and (min-width: 410px) {
+    right: 14px;
+  }
 }
 
 .close-add-city-btn {
-  top: 210px;
+  top: 235px;
   right: 14px;
   z-index: 10000;
 }
@@ -362,4 +366,26 @@
     border-radius: 10px;
     font-size: 1.6rem;
   }
+}
+
+.city-info {
+  padding: 24px;
+  min-height: 100%;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes change-city {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.change-animate {
+  animation-name: change-city;
+  animation-duration: 0.4s;
+  animation-direction: forwards;
 }

@@ -140,3 +140,9 @@ i {
 .close-add-city-btn {
   color: $color-black;
 }
+
+.clickable {
+  &:focus {
+    border: 3px solid red;
+  }
+}

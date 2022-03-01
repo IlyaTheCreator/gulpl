@@ -135,7 +135,13 @@ export default class App {
      */
     this.cityLcKey = "";
 
+    /**
+     * @property {number} touchStartX property for swiping
+     */
     this.touchStartX = 0;
+    /**
+     * @property {number} touchEndX property for swiping
+     */
     this.touchEndX = 0;
 
     this.setupLocalStorage();
@@ -226,8 +232,9 @@ export default class App {
 
     this.lsManager.set(this.settingsLcKey, newSettings);
 
-    this.create();
     this.createSettings();
+
+    document.getElementById("settingsCloseBtn")?.addEventListener("click", this.closeSettings);
   }
 
   /**
@@ -266,6 +273,11 @@ export default class App {
    * @property {Function} setEventListeners setting event listeners when single city "page" is loaded
    */
   setEventListeners() {
+    // for smooth transitioning between "pages"
+    this.rootElement.addEventListener("webkitAnimationEnd", () => {
+      this.rootElement.classList.remove("change-animate");
+    }, false)
+
     if (!this.showCityInfo) {
       document.getElementById("cityListCloseBtn")?.addEventListener("click", this.closeCityList);
       document.getElementById("addCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
@@ -273,34 +285,46 @@ export default class App {
       return;
     }
 
+    const cityInfo = document.getElementById("city-info");
+
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
     document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
 
-    this.rootElement.addEventListener('touchstart', e => {
+    cityInfo.addEventListener('touchstart', e => {
       this.touchStartX = e.changedTouches[0].screenX
     });
 
-    this.rootElement.addEventListener('touchend', e => {
+    cityInfo.addEventListener('touchend', e => {
       this.touchEndX = e.changedTouches[0].screenX;
       this.handleGesture();
     });
   }
 
+  /**
+   * @property {Function} handleGesture swipe realization
+   */
   handleGesture() {
+    const currentCity = this.getCurrentCity();
     this.citiesData = this.getCities();
+
+    const currentCityIndex = this.citiesData.findIndex((city) => city.id === currentCity.id);
 
     // swiped left
     if (this.touchEndX < this.touchStartX) {
-      console.log("left swipe")
-      console.log(this.citiesData[1])
-      this.setCurrentCity(this.citiesData[1]);
-      this.create();
-      // ...
+      if (currentCityIndex < this.citiesData.length - 1 && currentCityIndex >= 0) {
+        this.setCurrentCity(this.citiesData[currentCityIndex + 1]);
+
+        this.create();
+      }
     }
 
     // swiped right
     if (this.touchEndX > this.touchStartX) {
-      console.log("right swipe")
+      if (currentCityIndex > 0) {
+        this.setCurrentCity(this.citiesData[currentCityIndex - 1]);
+
+        this.create();
+      }
     }
   }
 
@@ -320,6 +344,13 @@ export default class App {
   }
 
   /**
+   * @property {Function} smoothTransition
+   */
+  smoothTransition = () => {
+    this.rootElement.classList.add("change-animate");
+  }
+
+  /**
    * @property {Function} createNavigation creating navigation element
    */
   createNavigation() {
@@ -330,12 +361,7 @@ export default class App {
       <div class="navigation__settings" id="settingsOpenBtn">
           <i class="icon icon-figma-settings"></i>
       </div>
-      <div class="navigation__pages">
-          <i class="icon icon-dot navigation__circle navigation__circle--active"></i>
-          <i class="icon icon-dot navigation__circle"></i>
-          <i class="icon icon-dot navigation__circle"></i>
-          <i class="icon icon-dot navigation__circle"></i>
-      </div>
+      <div class="navigation__pages" id="nav-circles"></div>
       <div class="navigation__cities">
           <a class="link" id="showCitiesListBtn">
               <div class="navigation__cities-link-wrapper">
@@ -346,6 +372,35 @@ export default class App {
     `;
 
     this.rootElement.appendChild(navigation);
+    this.createNavCircles();
+  }
+
+  /**
+   * @property {Function} createNavCircles
+   */
+  createNavCircles() {
+    const circlesWrapper = document.getElementById("nav-circles");
+
+    this.getCities().forEach((city) => {
+      const circle = document.createElement("i");
+
+      circle.classList.add("icon");
+      circle.classList.add("clickable");
+      circle.classList.add("icon-dot");
+      circle.classList.add("navigation__circle");
+
+      circle.addEventListener("click", () => {
+        // check to avoid unnecessary re-rendering
+        if (city.id !== this.getCurrentCity().id) {
+          this.setCurrentCity(city);
+          this.create();
+        }
+      });
+
+      circlesWrapper.appendChild(circle);
+    })
+    
+    return circlesWrapper;
   }
 
   /**
@@ -362,7 +417,7 @@ export default class App {
       [],
       "settings"
     );
-
+    
     document.getElementById("settingsCloseBtn")?.addEventListener("click", this.create);
   }
 
@@ -415,6 +470,7 @@ export default class App {
           this.showCityInfo,
           this.mountModal,
           this.closeCityAddModal,
+          this.smoothTransition
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
