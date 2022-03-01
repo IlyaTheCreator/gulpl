@@ -263,16 +263,18 @@ export default class DashBoard {
   }
 
   generateAddCityModal() {
-    this.mountModal(
-      "add-city",
-      () => [
-        this.createCloseAddCityBtn(),
-        this.createAddCityContentWrapper(this.closeCityAddModal),
-        this.createAddCityContent()
-      ],
-      ["add-city-modal"],
-      "settings"
-    );
+    if (!document.getElementById("add-city")) {
+      this.mountModal(
+        "add-city",
+        () => [
+          this.createCloseAddCityBtn(),
+          this.createAddCityContentWrapper(this.closeCityAddModal),
+          this.createAddCityContent()
+        ],
+        ["add-city-modal"],
+        "add-city"
+      );
+    }
   }
 
   /**
