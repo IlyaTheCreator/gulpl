@@ -233,8 +233,6 @@ export default class App {
     this.lsManager.set(this.settingsLcKey, newSettings);
 
     this.createSettings();
-
-    document.getElementById("settingsCloseBtn")?.addEventListener("click", this.closeSettings);
   }
 
   /**
@@ -310,7 +308,7 @@ export default class App {
     const currentCityIndex = this.citiesData.findIndex((city) => city.id === currentCity.id);
 
     // swiped left | 100 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX + 100 < this.touchStartX) {
+    if (this.touchEndX + 24 < this.touchStartX) {
       if (currentCityIndex < this.citiesData.length - 1 && currentCityIndex >= 0) {
         this.setCurrentCity(this.citiesData[currentCityIndex + 1]);
 
@@ -319,7 +317,7 @@ export default class App {
     }
 
     // swiped right | 100 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX - 100 > this.touchStartX) {
+    if (this.touchEndX - 24 > this.touchStartX) {
       if (currentCityIndex > 0) {
         this.setCurrentCity(this.citiesData[currentCityIndex - 1]);
 
@@ -413,7 +411,7 @@ export default class App {
     this.mountModal(
       "settings",
       () => [
-        this.settings.createCloseSettingsBtn(),
+        this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),
         this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick)
       ],
@@ -421,7 +419,10 @@ export default class App {
       "settings"
     );
     
-    document.getElementById("settingsCloseBtn")?.addEventListener("click", this.create);
+    document.getElementById("settingsCloseBtn")?.addEventListener("click", () => {
+      console.log("chel")
+      this.closeSettings()
+    });
   }
 
   /**

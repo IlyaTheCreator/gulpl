@@ -56,7 +56,7 @@ export default class Settings {
    * @property {Function} createCloseSettingsBtn creating btn for closing setting modal
    * @returns {Object}
    */
-   createCloseSettingsBtn() {
+   createCloseSettingsBtn(onClick) {
     const btn = document.createElement("button");
 
     btn.classList.add("close-modal-btn");
@@ -66,6 +66,8 @@ export default class Settings {
     btn.innerHTML = `
       <i class="icon-cancel-squared"></i>
     `;
+
+    btn.addEventListener("click", onClick);
 
     return btn;
   }
