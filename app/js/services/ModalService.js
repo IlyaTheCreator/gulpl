@@ -1,5 +1,5 @@
 import Modal from "../classes/Modal";
-import * as modalTypes from "../constants/modalTypes";
+import { modalTypes } from "../constants";
 
 /**
  * @namespace services 

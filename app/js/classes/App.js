@@ -1,7 +1,7 @@
 import MOCK_CITIES from "../mocks/cities";
 import MOCK_WIDGETS_DATA from "../mocks/widgetsData";
 import MOCK_SETTINGS_DATA from "../mocks/settingsData";
-import { SETTINGS } from "../constants/modalTypes";
+import { modalTypes } from "../constants";
 
 import modalService from "../services/ModalService";
 import LsService from "../services/LsService";
@@ -347,7 +347,7 @@ export default class App {
    */
   createSettings = () => {
     this.mountModal(
-      SETTINGS,
+      modalTypes.SETTINGS,
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),

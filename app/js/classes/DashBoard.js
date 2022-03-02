@@ -1,5 +1,4 @@
-import { ADD_CITY, CITY_LIST } from "../constants/modalTypes";
-import { CITY, LIST } from "../constants/widgetTypes";
+import { modalTypes, widgetTypes } from "../constants";
 import Widget from "./Widget";
 
 /**
@@ -18,7 +17,6 @@ export default class DashBoard {
    */
   createContentWrapper(city) {
     const contentWrapper = document.createElement("div");
-    const i = 2;
 
     contentWrapper.innerHTML = `
       <h1 class="screen__header">${city.title}</h1>
@@ -99,7 +97,7 @@ export default class DashBoard {
     
     Object.keys(citiesData).forEach((key) => {
       const content = this.createCityWidgetContent(currentCity, key);
-      const widget = Widget.create(content, CITY, ["city-info-grid__grid-item"]);
+      const widget = Widget.create(content, widgetTypes.CITY, ["city-info-grid__grid-item"]);
     
       cityInfoGrid.appendChild(widget);
     });
@@ -148,7 +146,7 @@ export default class DashBoard {
 
       const cityWidget = Widget.create(
         this.createContent(city),
-        LIST,
+        widgetTypes.LIST,
         ["screen__city"],
         onClick
       );
@@ -267,7 +265,7 @@ export default class DashBoard {
   generateAddCityModal() {
     if (!document.getElementById("add-city")) {
       this.mountModal(
-        ADD_CITY,
+        modalTypes.ADD_CITY,
         () => [
           this.createCloseAddCityBtn(),
           this.createAddCityContentWrapper(this.closeCityAddModal),
@@ -295,7 +293,7 @@ export default class DashBoard {
     list.forEach((item) => listWrapper.appendChild(item));
 
     this.mountModal(
-      CITY_LIST,
+      modalTypes.CITY_LIST,
       () => list,
       ["city-list"]
     );

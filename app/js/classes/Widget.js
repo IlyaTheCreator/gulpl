@@ -1,4 +1,4 @@
-import * as widgetTypes from "../constants/widgetTypes";
+import { widgetTypes } from "../constants";
 
 /**
  * @namespace entities
