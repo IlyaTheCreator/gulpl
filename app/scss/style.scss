@@ -19,20 +19,12 @@
 }
 
 .screen {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  height: 100%;
+  height: 824px;
   width: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-
-  @media only screen and (min-device-width: 768px) {
-    &--wider {
-      width: calc(100% + 17px);
-      padding-right: 23px;
-    }
-  }
 
   &__header {
     font-weight: normal;
@@ -54,7 +46,7 @@
   }
 
   &__city {
-    margin: 35px 0;
+    margin: 20px 0;
   
     &-name {
       font-size: 30px;
@@ -103,6 +95,7 @@
   }
 
   &__add-btn {
+    margin-top: 20px;
     align-self: flex-end;
     display: grid;
     place-content: center;
@@ -148,7 +141,6 @@
   &__grid-item {
     flex: 1 0 44%;
     min-height: 100px;
-    // margin: 0 0 25px 0;
 
     &:first-child {
       margin-right: 0px;
@@ -195,14 +187,9 @@
   position: relative;
   height: 823px;
   width: 411px;
-  overflow: hidden;
 
   @media screen and (max-width: 411px) {
     width: 100vw;
-  }
-
-  @media screen and (max-device-width: 512px) {
-    height: 100vh;
   }
 }
 
@@ -230,7 +217,7 @@
 
   &__circle {
     font-size: 1.5em;
-    color: $color-gray;
+    color: $color-dark-gray;
     width: 20px;
     margin: 0 5px;
     display: grid;
@@ -254,6 +241,11 @@
 }
 
 .settings {
+  position: absolute;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 358px;
   background: $color-gray;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
@@ -283,4 +275,115 @@
   }
 }
 
+.city-list {
+  align-self: flex-start !important;
+  display: flex;
+  flex-direction: column;
+}
 
+.empty-city-list-container {
+  padding: 60px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+
+  &__text {
+    font-size: 30px;
+    text-align: justify;
+    padding-right: 5px;
+  }
+
+  & + button {
+    margin-right: 24px;
+  }
+}
+
+.close-settings-modal-btn {
+  top: 210px;
+  right: 8px;
+  color: $color-black;
+  z-index: 9999;
+
+  @media screen and (min-width: 410px) {
+    right: 14px;
+  }
+}
+
+.close-add-city-btn {
+  top: 235px;
+  right: 14px;
+  z-index: 10000;
+}
+
+.add-city {
+  margin-top: calc(50vh - 50%);
+  z-index: 10000;
+  padding: 1.7em;
+}
+
+.close-city-list-btn {
+  top: -5px;
+  z-index: 9999;
+}
+
+.add-city-form {
+  display: flex;
+  flex-direction: column;
+
+  .input-wrapper {
+    position: relative;
+
+    input[type="text"] {
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, #DBDBDB 0%, rgba(228, 228, 228, 0.96) 100%);
+      border-radius: 10px;
+      border: 0;
+      padding: 0.8em 2em 0.8em 2.6em;
+      font-size: 0.95rem;
+  
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .icon-wrapper {
+      position: absolute;
+      top: 8px;
+      left: 5px;
+
+      i {
+        font-size: 20px;
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    background: green;
+    margin-top: 50px;
+    padding: 0.3em 2em;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    font-size: 1.6rem;
+  }
+}
+
+.city-info {
+  padding: 24px 24px 40px 24px;
+}
+
+@keyframes change-city {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.change-animate {
+  animation-name: change-city;
+  animation-duration: 0.4s;
+  animation-direction: forwards;
+}
