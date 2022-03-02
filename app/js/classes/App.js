@@ -1,5 +1,10 @@
-import LsManager from "./LsManager";
 import MOCK_CITIES from "../mocks/cities";
+import MOCK_WIDGETS_DATA from "../mocks/widgetsData";
+import MOCK_SETTINGS_DATA from "../mocks/settingsData";
+import { SETTINGS } from "../constants/modalTypes";
+
+import modalService from "../services/ModalService";
+import LsService from "../services/LsService";
 
 /**
  * @namespace entities
@@ -11,84 +16,12 @@ import MOCK_CITIES from "../mocks/cities";
  */
 export default class App {
   /**
-   * Property for holding and managing individual widgets on single city page.
-   */
-  widgetsData = {
-    maxTemp: {
-      id: 0,
-      name: "max temp",
-      value: 67,
-      text: "min",
-    },
-    minTemp: {
-      id: 1,
-      name: "min temp",
-      value: 40,
-      text: "max",
-    },
-    feltTemp: {
-      id: 2,
-      name: "felt temp",
-      value: 50,
-    },
-    uvIndicator: {
-      id: 3,
-      name: "uv indicator",
-      value: 1,
-      additional: "some optional text...",
-      text: "low",
-    },
-    pressure: {
-      id: 4,
-      name: "pressure",
-      value: 1040,
-      text: "hPa",
-    },
-    airQuality: {
-      id: 5,
-      name: "air quality",
-      value: "good air ;)",
-    },
-  };
-
-  /**
-   * Property for holding and managing city settings on single city page.
-   * (notice how keys are matched with the widgetsData object above)
-   */
-  settingsData = {
-    minTemp: {
-      text: "Min. Temp.",
-      isActive: true,
-    },
-    maxTemp: {
-      text: "Max. Temp.",
-      isActive: true,
-    },
-    uvIndicator: {
-      text: "Uv Indicator",
-      isActive: true,
-    },
-    feltTemp: {
-      text: "Felt Temp",
-      isActive: false,
-    },
-    pressure: {
-      text: "Pressure",
-      isActive: false,
-    },
-    airQuality: {
-      text: "Air quality",
-      isActive: false,
-    },
-  };
-
-  /**
    * @param {Object} dashBoard  DashBoard instance
    * @param {Object} settings Settings instance
    * @param {Object} modalService modalService instance
    * @param {HTMLBodyElement} rootElement DOM element to attach the app to
    */
-  constructor(dashBoard, settings, modalService, rootElement) {
+  constructor(dashBoard, settings, rootElement) {
     /**
      * @property {Object} dashBoard  DashBoard instance
      */
@@ -100,19 +33,25 @@ export default class App {
     /**
      * @property {Object} settings ModalService instance
      */
-     this.modalService = modalService;
+    this.modalService = new modalService();
     /**
      * @property {HTMLBodyElement} rootElement DOM element to attach the app to
      */
     this.rootElement = rootElement;
     /**
-     * @property {Object} lsManager instance of localstorage manager
-     */
-    this.lsManager = new LsManager();
-    /**
      * @property {Object} citiesData weather information
      */
     this.citiesData = [];
+    /**
+     * @property {Object} widgetsData Property for holding and managing individual widgets on single city page.
+     */
+    this.widgetsData = MOCK_WIDGETS_DATA;
+    /**
+     * Property for holding and managing city settings on single city page.
+     * (notice how keys are matched with the widgetsData object above)
+     * @property {Object} settingsData
+     */
+    this.settingsData = MOCK_SETTINGS_DATA;
     /**
      * "dashboard" || something else
      * @property {string} displayMode defines what "page" to display (kind of SPA)
@@ -134,7 +73,6 @@ export default class App {
      * @property {string} cityLcKey localstorage key for keeping individual city's data
      */
     this.cityLcKey = "";
-
     /**
      * @property {number} touchStartX property for swiping
      */
@@ -161,15 +99,15 @@ export default class App {
     
     // Inital launching checks
     if (lcSettings === null) {
-      this.lsManager.init(this.settingsLcKey, this.settingsData);
+      LsService.set(this.settingsLcKey, this.settingsData);
     }
 
     if (lcCitiesList === null || !lcCitiesList.length) {
-      this.lsManager.init(this.citiesListLcKey, MOCK_CITIES);
+      LsService.set(this.citiesListLcKey, MOCK_CITIES);
     }
 
     if (lcCity === null || !Object.keys(lcCity).length) {
-      this.lsManager.init(this.cityLcKey, {});
+      LsService.set(this.cityLcKey, {});
       this.showCityList();
     }
   }
@@ -178,9 +116,9 @@ export default class App {
    * @property {Function} mountModal function for creating and mounting a modal 
    * For props description see Modal's constructor
    */
-  mountModal = (modalType, modalData, modalContentCreateMethod, classes, id) => {
+  mountModal = (modalType, modalContentCreateMethod, classes = [], id = modalType) => {
     this.rootElement.appendChild(
-      this.modalService.createModal(modalType, modalData, modalContentCreateMethod, classes, id)
+      this.modalService.createModal(modalType, modalContentCreateMethod, classes, id)
     )
   }
 
@@ -198,39 +136,39 @@ export default class App {
    * @property {Function} onCityWidgetClick Individual setting trigger onClick handler
    * @param {Object} e event object
    */
-  toggleWidgetDisplay = (e) => {
+  toggleWidgetDisplay = ({ target: { id, classList }}) => {
     // check if there's an id
-    if (!e.target.id.trim()) {
+    if (!id.trim()) {
       this.create();
     }
 
     // check if there's a '-' sign in the id
-    if (!e.target.id.search("-")) {
+    if (!id.search("-")) {
       this.create();
     }
 
     // check if there's a class
-    if (!e.target.classList[1]) {
+    if (!classList[1]) {
       this.create();
     }
 
     // check if there's a '-' sign in the class
-    if (!e.target.classList[1].split("-")) {
+    if (!classList[1].split("-")) {
       this.create();
     }
 
     // check if there's a division of the class
-    if (!e.target.classList[1].split("-")[2]) {
+    if (!classList[1].split("-")[2]) {
       this.create();
     }
 
-    const key = e.target.id.split("-")[2];
-    const newSettings = this.lsManager.get(this.settingsLcKey);
-    const active = e.target.classList[1].split("-")[2];
+    const key = id.split("-")[2];
+    const newSettings = LsService.get(this.settingsLcKey);
+    const active = classList[1].split("-")[2];
     const isActive = active === "on";
     newSettings[key].isActive = !isActive;
 
-    this.lsManager.set(this.settingsLcKey, newSettings);
+    LsService.set(this.settingsLcKey, newSettings);
 
     this.createSettings();
   }
@@ -240,7 +178,7 @@ export default class App {
    * @returns {Object}
    */
   getSettingsState = () => {
-    return this.lsManager.get(this.settingsLcKey);
+    return LsService.get(this.settingsLcKey);
   }
 
   /**
@@ -248,7 +186,7 @@ export default class App {
    * @returns {Object}
    */
   getCities = () => {
-    return this.lsManager.get(this.citiesListLcKey);
+    return LsService.get(this.citiesListLcKey);
     // return []
   }
 
@@ -256,7 +194,7 @@ export default class App {
    * @property {Function} getCurrentCity Current city localstorage getter
    */
   getCurrentCity = () => {
-    return this.lsManager.get(this.cityLcKey);
+    return LsService.get(this.cityLcKey);
   }
 
   /**
@@ -264,7 +202,7 @@ export default class App {
    * @param {Object} city city to set
    */
   setCurrentCity(city) {
-    this.lsManager.set(this.cityLcKey, city);
+    LsService.set(this.cityLcKey, city);
   }
 
   /**
@@ -409,14 +347,12 @@ export default class App {
    */
   createSettings = () => {
     this.mountModal(
-      "settings",
+      SETTINGS,
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),
         this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick)
-      ],
-      [],
-      "settings"
+      ]
     );
     
     document.getElementById("settingsCloseBtn")?.addEventListener("click", () => {

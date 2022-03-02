@@ -1,8 +1,9 @@
+import Modal from "../classes/Modal";
+import * as modalTypes from "../constants/modalTypes";
+
 /**
  * @namespace services 
  */
-
-import Modal from "../classes/Modal";
 
 /**
  * A class for managing modal windows 
@@ -13,7 +14,7 @@ export default class ModalService {
         /**
          * @property {Array<String>} availableModalTypes these types match element's ids in the dom
          */
-        this.availableModalTypes = ["city-list", "settings", "add-city"];
+        this.availableModalTypes = [modalTypes.SETTINGS, modalTypes.CITY_LIST, modalTypes.ADD_CITY];
         /**
          * @property {Array<Object>} registeredModals registered modals
          */

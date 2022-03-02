@@ -1,3 +1,5 @@
+import { ADD_CITY, CITY_LIST } from "../constants/modalTypes";
+import { CITY, LIST } from "../constants/widgetTypes";
 import Widget from "./Widget";
 
 /**
@@ -97,7 +99,7 @@ export default class DashBoard {
     
     Object.keys(citiesData).forEach((key) => {
       const content = this.createCityWidgetContent(currentCity, key);
-      const widget = Widget.create(content, "city", undefined, ["city-info-grid__grid-item"])
+      const widget = Widget.create(content, CITY, ["city-info-grid__grid-item"]);
     
       cityInfoGrid.appendChild(widget);
     });
@@ -146,9 +148,9 @@ export default class DashBoard {
 
       const cityWidget = Widget.create(
         this.createContent(city),
-        "list",
-        onClick,
-        ["screen__city"]
+        LIST,
+        ["screen__city"],
+        onClick
       );
 
       return cityWidget;
@@ -265,14 +267,13 @@ export default class DashBoard {
   generateAddCityModal() {
     if (!document.getElementById("add-city")) {
       this.mountModal(
-        "add-city",
+        ADD_CITY,
         () => [
           this.createCloseAddCityBtn(),
           this.createAddCityContentWrapper(this.closeCityAddModal),
           this.createAddCityContent()
         ],
-        ["add-city-modal"],
-        "add-city"
+        ["add-city-modal"]
       );
     }
   }
@@ -294,10 +295,9 @@ export default class DashBoard {
     list.forEach((item) => listWrapper.appendChild(item));
 
     this.mountModal(
-      "city-list",
+      CITY_LIST,
       () => list,
-      ["city-list"], 
-      "city-list"
+      ["city-list"]
     );
   }
 
@@ -311,12 +311,8 @@ export default class DashBoard {
     const filteredCityWidgets = {};
 
     Object.keys(currentSettingsState)
-      .filter((key) => {
-        return currentSettingsState[key].isActive;
-      })
-      .forEach((key) => {
-        filteredCityWidgets[key] = this.widgetsData[key];
-      });
+      .filter((key) => currentSettingsState[key].isActive)
+      .forEach((key) => filteredCityWidgets[key] = this.widgetsData[key]);
 
     return this.createCity(filteredCityWidgets, this.currentCity);
   }

@@ -1,3 +1,5 @@
+import * as widgetTypes from "../constants/widgetTypes";
+
 /**
  * @namespace entities
  */
@@ -15,14 +17,14 @@ export default class Widget {
    * @param {Array} classes 
    * @returns {HTMLBodyElement}
    */
-  static create(content, type, onClick, classes = []) {
+  static create(content, type, classes = [], onClick) {
     const widget = document.createElement("div");
 
-    if (type === "list") {
+    if (type === widgetTypes.LIST) {
       classes.push("widget");
     }
 
-    if (type === "city") {
+    if (type === widgetTypes.CITY) {
       classes.push("widget");
       classes.push("widget-rounded");
     }
