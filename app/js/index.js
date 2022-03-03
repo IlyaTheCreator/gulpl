@@ -16,12 +16,6 @@ const testFreeWeather = async () => {
     console.log(result);
 }
 
-const testYandex = async () => {
-    const result = await weatherAPIService.yandexSearch();
-
-    console.log(result);
-}
-
 testOpenWeather();
 testFreeWeather();
 
