@@ -1,3 +1,5 @@
+import axios from "axios";
+
 /**
  * @namespace services
  */
@@ -8,35 +10,37 @@
  */
 export default class WeatherAPIService {
     constructor() {
-        this.#apiTypes = apiTypes;
         this.selectedApiType = null;
+
+        this.testLatitude = 55.7558;
+        this.testLongitude = 37.6173;
 
         this.apisData = {
             "yandex-weather": {
                 apiKey: "b7132815-d46e-4085-8e9c-1e549b2c8b2b",
-                apiPath: "https://api.weather.yandex.ru/v2/forecast"
+                apiPath: "http://api.weather.yandex.ru/v2/forecast"
             },
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
-                apiPath: "http://api.openweathermap.org/data/2.5/weather"
+                apiPath: "http://api.openweathermap.org/data/2.5/onecall"
             },
             "free-weather-api": {
                 apiKey: "c4256c0653c74259adb84822220203",
-                apiPath: "http://api.weatherapi.com/v1/history.json"
+                apiPath: "http://api.weatherapi.com/v1/forecast.json"
             }
         }
     }
 
     // прогноз на определенный день / history apis. У яндекса такого нет.
 
-    getForecast(date) {
+    async getForecast() {
         switch(this.selectedApiType) {
             case "yandex-weather":
-                return this.yandexSearch();
+                return await this.yandexSearch();
             case "open-weather-map":
-                return this.openWeatherMapSearch(date);
+                return await this.openWeatherMapSearch();
             case "free-weather-api":
-                return this.freeWeatherApiSearch(date);
+                return await this.freeWeatherApiSearch();
             default:
                 break;
         }
@@ -52,26 +56,107 @@ export default class WeatherAPIService {
      * [extra=<подробный прогноз осадков>]
      * 
      */
-    yandexSearch() {
-        // url, params, headers
+    async yandexSearch() {
+        try {
+            const forecastData = await this.fetchData(
+                this.apisData["yandex-weather"].apiPath, 
+                [
+                    { name: "lat", value: this.testLatitude },
+                    { name: "lon", value: this.testLongitude },
+                    { name: "lang", value: "ru_RU" }
+                ],
+                {
+                    "X-Yandex-API-Key": this.apisData["yandex-weather"].apiKey,
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                } 
+            );
 
-        return this.fetchWeatherData(url, params, headers);
+            console.log(forecastData);
+    
+            // return {
+            //     temp: forecastData.daily[0].temp.day,
+            //     description: forecastData.daily[0].weather[0].description,
+            //     minTemp: forecastData.daily[0].temp.min,
+            //     maxtemp: forecastData.daily[0].temp.max,
+            //     feelsLike: forecastData.hourly[0].feels_like,
+            //     uvIndicator: forecastData.daily[0].uvi,
+            //     pressure: forecastData.hourly[0].pressure,
+            //     wind_speed: forecastData.hourly[0].wind_speed // instead of air quality
+            // };
+        } catch {
+            return console.warn("could not fetch weather data");
+        }
     }
 
-    openWeatherMapSearch(date) {
-        // url, params, headers
-
-        return this.fetchWeatherData(
-            this.apisData["open-weather-map"], 
-            [
-                { name: "lat", value: 9999 }
-            ], 
-            headers
-        );
+    async openWeatherMapSearch() {
+        try {
+            const forecastData = await this.fetchData(
+                this.apisData["open-weather-map"].apiPath, 
+                [
+                    { name: "lat", value: this.testLatitude },
+                    { name: "lon", value: this.testLongitude },
+                    { name: "appid", value: this.apisData["open-weather-map"].apiKey },
+                    { name: "units", value: "metric" },
+                    { name: "lang", value: "ru"}
+                ] 
+            );
+    
+            return {
+                temp: forecastData.daily[0].temp.day,
+                description: forecastData.daily[0].weather[0].description,
+                minTemp: forecastData.daily[0].temp.min,
+                maxtemp: forecastData.daily[0].temp.max,
+                feelsLike: forecastData.hourly[0].feels_like,
+                uvIndicator: forecastData.daily[0].uvi,
+                pressure: forecastData.hourly[0].pressure,
+                wind_speed: forecastData.hourly[0].wind_speed // instead of air quality
+            };
+        } catch {
+            return console.warn("could not fetch weather data");
+        }
     }
 
-    freeWeatherApiSearch(date) {
+    async freeWeatherApiSearch() {
+        try {
+            const forecastData = await this.fetchData(
+                this.apisData["free-weather-api"].apiPath, 
+                [
+                    { name: "q", value: "Moscow" },
+                    { name: "key", value: this.apisData["free-weather-api"].apiKey },
+                    { name: "lang", value: "ru"}
+                ] 
+            );
+    
+            return {
+                temp: forecastData.current.temp_c,
+                description: forecastData.forecast.forecastday[0].day.condition.text,
+                minTemp: forecastData.forecast.forecastday[0].day.mintemp_c,
+                maxtemp: forecastData.forecast.forecastday[0].day.maxtemp_c,
+                feelsLike: forecastData.current.feelslike_c,
+                uvIndicator: forecastData.forecast.forecastday[0].day.uv,
+                pressure: forecastData.current.pressure_mb,
+                wind_speed: forecastData.current.wind_kph // instead of air quality
+            };
+        } catch {
+            return console.warn("could not fetch weather data");
+        }
+    }
 
+    async fetchData(url, params, headers = {}) {
+        let urlParams = "?";
+
+        params.forEach((param, index) => {
+            urlParams += `${param.name}=${param.value}`
+
+            if (index !== params.length - 1) {
+                urlParams += "&";
+            }
+        });
+
+        const res = await fetch(url + urlParams, { headers: new Headers(headers) });
+
+        return await res.json();
     }
 
     getApiTypes() {

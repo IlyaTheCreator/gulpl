@@ -101,7 +101,7 @@ export default class App {
     if (lcSettings === null) {
       LsService.set(this.settingsLcKey, this.settingsData);
     }
-
+    
     if (lcCitiesList === null || !lcCitiesList.length) {
       LsService.set(this.citiesListLcKey, MOCK_CITIES);
     }
