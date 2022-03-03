@@ -3,6 +3,8 @@ const babel = require("gulp-babel");
 const sass = require("gulp-sass")(require("sass"));
 const postcss = require("gulp-postcss");
 const cssnano = require("cssnano");
+const webpackStream = require("webpack-stream");
+const { webpack } = require("webpack");
 const browserSync = require("browser-sync").create();
 
 // Sass Task
@@ -22,6 +24,7 @@ function jsTask() {
         presets: ["@babel/env"],
       })
     )
+    .pipe(webpackStream(), webpack)
     .pipe(dest("dist/js"));
 }
 

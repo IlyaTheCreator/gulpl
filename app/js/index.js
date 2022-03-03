@@ -22,8 +22,7 @@ const testYandex = async () => {
     console.log(result);
 }
 
-// testOpenWeather();
-// testFreeWeather();
-testYandex();
+testOpenWeather();
+testFreeWeather();
 
 document.addEventListener("DOMContentLoaded", AppModule.init());

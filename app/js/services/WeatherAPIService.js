@@ -1,5 +1,3 @@
-import axios from "axios";
-
 /**
  * @namespace services
  */
@@ -16,10 +14,6 @@ export default class WeatherAPIService {
         this.testLongitude = 37.6173;
 
         this.apisData = {
-            "yandex-weather": {
-                apiKey: "b7132815-d46e-4085-8e9c-1e549b2c8b2b",
-                apiPath: "http://api.weather.yandex.ru/v2/forecast"
-            },
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
                 apiPath: "http://api.openweathermap.org/data/2.5/onecall"
@@ -31,8 +25,6 @@ export default class WeatherAPIService {
         }
     }
 
-    // прогноз на определенный день / history apis. У яндекса такого нет.
-
     async getForecast() {
         switch(this.selectedApiType) {
             case "yandex-weather":
@@ -43,49 +35,6 @@ export default class WeatherAPIService {
                 return await this.freeWeatherApiSearch();
             default:
                 break;
-        }
-    }
-
-    /**
-     * available query params: 
-     * lat=<широта>
-     * lon=<долгота>
-     * [lang=<язык ответа>]
-     * [limit=<срок прогноза>]
-     * [hours=<наличие почасового прогноза>]
-     * [extra=<подробный прогноз осадков>]
-     * 
-     */
-    async yandexSearch() {
-        try {
-            const forecastData = await this.fetchData(
-                this.apisData["yandex-weather"].apiPath, 
-                [
-                    { name: "lat", value: this.testLatitude },
-                    { name: "lon", value: this.testLongitude },
-                    { name: "lang", value: "ru_RU" }
-                ],
-                {
-                    "X-Yandex-API-Key": this.apisData["yandex-weather"].apiKey,
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json"
-                } 
-            );
-
-            console.log(forecastData);
-    
-            // return {
-            //     temp: forecastData.daily[0].temp.day,
-            //     description: forecastData.daily[0].weather[0].description,
-            //     minTemp: forecastData.daily[0].temp.min,
-            //     maxtemp: forecastData.daily[0].temp.max,
-            //     feelsLike: forecastData.hourly[0].feels_like,
-            //     uvIndicator: forecastData.daily[0].uvi,
-            //     pressure: forecastData.hourly[0].pressure,
-            //     wind_speed: forecastData.hourly[0].wind_speed // instead of air quality
-            // };
-        } catch {
-            return console.warn("could not fetch weather data");
         }
     }
 
