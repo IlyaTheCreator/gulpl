@@ -28,7 +28,9 @@
   "dependencies": {
     "@babel/runtime": "^7.16.7",
     "axios": "^0.26.0",
+    "cities.json": "^1.1.5",
     "gh-pages": "^3.2.3",
-    "gulp-htmlmin": "^5.0.1"
+    "gulp-htmlmin": "^5.0.1",
+    "uuid": "^8.3.2"
   }
 }

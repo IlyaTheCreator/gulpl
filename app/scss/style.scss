@@ -314,7 +314,7 @@
   z-index: 10000;
 }
 
-.add-city {
+.add-city, .select-api-source {
   margin-top: calc(50vh - 50%);
   z-index: 10000;
   padding: 1.7em;
@@ -325,9 +325,10 @@
   z-index: 9999;
 }
 
-.add-city-form {
+.add-city-form, .select-api-source-form {
   display: flex;
   flex-direction: column;
+  z-index: 9999;
 
   .input-wrapper {
     position: relative;

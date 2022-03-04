@@ -1,10 +1,8 @@
-import MOCK_CITIES from "../mocks/cities";
-import MOCK_WIDGETS_DATA from "../mocks/widgetsData";
-import MOCK_SETTINGS_DATA from "../mocks/settingsData";
 import { modalTypes } from "../constants";
 
 import modalService from "../services/ModalService";
 import LsService from "../services/LsService";
+import WeatherAPIService from "../services/WeatherAPIService";
 
 /**
  * @namespace entities
@@ -43,15 +41,36 @@ export default class App {
      */
     this.citiesData = [];
     /**
-     * @property {Object} widgetsData Property for holding and managing individual widgets on single city page.
-     */
-    this.widgetsData = MOCK_WIDGETS_DATA;
-    /**
      * Property for holding and managing city settings on single city page.
-     * (notice how keys are matched with the widgetsData object above)
+     * (notice how keys are matched with widgetRelatedInfo property in a city)
      * @property {Object} settingsData
      */
-    this.settingsData = MOCK_SETTINGS_DATA;
+    this.settingsData = {
+      minTemp: {
+          text: "Min. Temp.",
+          isActive: true,
+      },
+      maxTemp: {
+          text: "Max. Temp.",
+          isActive: true,
+      },
+      uvIndicator: {
+          text: "Uv Indicator",
+          isActive: true,
+      },
+      feltTemp: {
+          text: "Felt Temp",
+          isActive: false,
+      },
+      pressure: {
+          text: "Pressure",
+          isActive: false,
+      },
+      windSpeed: {
+          text: "Wind Speed",
+          isActive: false,
+      },
+    };
     /**
      * "dashboard" || something else
      * @property {string} displayMode defines what "page" to display (kind of SPA)
@@ -60,7 +79,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = true;
+    this.showCityInfo = false;
     /**
      * @property {string} settingsLcKey localstorage key for keeping settings data
      */
@@ -82,13 +101,15 @@ export default class App {
      */
     this.touchEndX = 0;
 
+    this.weatherAPIService = new WeatherAPIService();
+
     this.setupLocalStorage();
   }
 
   /**
    * @property {Function} setupLocalStorage initial localstorage setup
    */
-  setupLocalStorage = () => {
+  setupLocalStorage = async () => {
     this.settingsLcKey = "weather";
     this.citiesListLcKey = "cities";
     this.cityLcKey = "city";
@@ -103,7 +124,13 @@ export default class App {
     }
     
     if (lcCitiesList === null || !lcCitiesList.length) {
-      LsService.set(this.citiesListLcKey, MOCK_CITIES);
+      // LsService.set(this.citiesListLcKey, MOCK_CITIES);
+      const citiesWeatherData = [
+        await this.weatherAPIService.openWeatherMapSearch("Vladivostok", "RU"),
+        await this.weatherAPIService.freeWeatherApiSearch("Kostroma", "RU"),
+      ]
+
+      LsService.set(this.citiesListLcKey, citiesWeatherData);
     }
 
     if (lcCity === null || !Object.keys(lcCity).length) {
@@ -120,6 +147,46 @@ export default class App {
     this.rootElement.appendChild(
       this.modalService.createModal(modalType, modalContentCreateMethod, classes, id)
     )
+  }
+
+  mountApiSourceModal() {
+    this.mountModal(
+      modalTypes.SELECT_API_SOURCE,
+      () => [
+        (function() {
+          const contentWrapper = document.createElement("div");
+
+          contentWrapper.id = "select-api-source-overlay";
+          contentWrapper.classList.add("modal-overlay");
+          contentWrapper.classList.add("modal-overlay--select-api-source");
+
+          return contentWrapper;
+        }()),
+        (function() {
+          const card = document.createElement("div");
+          const form = document.createElement("form");
+
+          form.classList.add("select-api-source-form");
+          card.classList.add("select-api-source");
+          card.classList.add("card");
+
+          form.innerHTML = `
+            <div class="input-wrapper">
+              <label for="api-source">Select weather data source:</label>
+              <select id="api-source">
+                <option value="open-weather-map">OpenWeatherMap API</div>
+                <option value="free-weather-api">Free Weather API</div>
+              </select>
+            </div>
+            <button class="btn">Submit</button>
+          `;
+
+          card.appendChild(form);
+
+          return card;
+        }())
+      ]
+    );
   }
 
   /**
@@ -394,34 +461,37 @@ export default class App {
   create = () => {
     this.clearRootElement();
 
-    if (this.showCityInfo) {
-      this.createNavigation();
-    }
+    this.mountApiSourceModal();
 
-    // central "router"
-    switch (this.displayMode) {
-      case "dashboard":
-        this.dashBoard.create(
-          this.getCities(),
-          this.getCurrentCity(),
-          this.onCityWidgetClick,
-          this.getSettingsState,
-          this.widgetsData,
-          this.showCityInfo,
-          this.mountModal,
-          this.closeCityAddModal,
-          this.smoothTransition
-        ).forEach((element) => this.rootElement.appendChild(element));
 
-        this.setEventListeners();
+    // if (this.showCityInfo) {
+    //   this.createNavigation();
+    // }
 
-        break;
-      default:
-        break;
-    }
+    // // central "router"
+    // switch (this.displayMode) {
+    //   case "dashboard":
+    //     this.dashBoard.create(
+    //       this.getCities(),
+    //       this.getCurrentCity(),
+    //       this.onCityWidgetClick,
+    //       this.getSettingsState,
+    //       this.widgetsData,
+    //       this.showCityInfo,
+    //       this.mountModal,
+    //       this.closeCityAddModal,
+    //       this.smoothTransition
+    //     ).forEach((element) => this.rootElement.appendChild(element));
 
-    if (this.showCityInfo) {
-      document.getElementById("city-list")?.remove();
-    }
+    //     this.setEventListeners();
+
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    // if (this.showCityInfo) {
+    //   document.getElementById("city-list")?.remove();
+    // }
   }
 }

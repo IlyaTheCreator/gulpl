@@ -67,20 +67,38 @@ export default class DashBoard {
    * @returns {string}
    */
   createCityWidgetContent(cityData, key) {
+    let uvText;
+
+    if (cityData.widgetRelatedInfo[key] === "uvIndicator") {
+      const uv = cityData.widgetRelatedInfo[key].value;
+
+      if (uv <= 1) {
+        uvText = "Low";
+      }
+
+      if (uv > 1 && uv <= 2) {
+        uvText = "Medium";
+      }
+
+      if (uv > 2) {
+        uvText = "High";
+      }
+    }
+
     return `
-      <p class="city-info-grid__widget-description">${cityData[key].name
-      }</p>
+      <p class="city-info-grid__widget-description">${cityData.widgetRelatedInfo[key].name}</p>
       <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-          <p class="city-info-grid__widget-number">${cityData[key].value
-      }</p>
-          ${cityData[key].text
-        ? `<p class="city-info-grid__widget-data">${cityData[key].text}</p>`
-        : ""
-      }
-          ${cityData[key].additional
-        ? `<p class="city-info-grid__widget-additional">${cityData[key].additional}</p>`
-        : ""
-      }
+        <p class="city-info-grid__widget-number">${cityData.widgetRelatedInfo[key].value}</p>
+        ${
+          uvText
+          ? `<p class="city-info-grid__widget-data">${uvText}</p>`
+          : ""
+        }
+        ${
+          cityData.widgetRelatedInfo[key].additional
+          ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
+          : ""
+        }
       </div>
      `;
   }
@@ -126,7 +144,10 @@ export default class DashBoard {
         </h3>
         <div class="screen__city-info">
           <span class="screen__city-weather-condition">${city.weatherCondition}</span>
-          <span class="screen__city-temperature-range">Max. ${city.maxTemp.value} Min. ${city.minTemp.value}</span>
+          <span class="screen__city-temperature-range">
+            Max. ${city.widgetRelatedInfo.maxTemp.value} 
+            Min. ${city.widgetRelatedInfo.minTemp.value}
+          </span>
         </div>
       </a>
     `;
@@ -310,7 +331,7 @@ export default class DashBoard {
 
     Object.keys(currentSettingsState)
       .filter((key) => currentSettingsState[key].isActive)
-      .forEach((key) => filteredCityWidgets[key] = this.widgetsData[key]);
+      .forEach((key) => filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key]);
 
     return this.createCity(filteredCityWidgets, this.currentCity);
   }

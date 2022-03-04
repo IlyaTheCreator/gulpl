@@ -1,3 +1,6 @@
+import cities from "cities.json";
+import { v4 as uuid } from "uuid";
+
 /**
  * @namespace services
  */
@@ -10,8 +13,8 @@ export default class WeatherAPIService {
     constructor() {
         this.selectedApiType = null;
 
-        this.testLatitude = 55.7558;
-        this.testLongitude = 37.6173;
+        this.lat = 0;
+        this.lon = 0;
 
         this.apisData = {
             "open-weather-map": {
@@ -38,54 +41,105 @@ export default class WeatherAPIService {
         }
     }
 
-    async openWeatherMapSearch() {
+    async openWeatherMapSearch(cityName, country) {
         try {
+            this.setCoordinates(cityName, country);
+
             const forecastData = await this.fetchData(
                 this.apisData["open-weather-map"].apiPath, 
                 [
-                    { name: "lat", value: this.testLatitude },
-                    { name: "lon", value: this.testLongitude },
+                    { name: "lat", value: this.lat },
+                    { name: "lon", value: this.lon },
                     { name: "appid", value: this.apisData["open-weather-map"].apiKey },
                     { name: "units", value: "metric" },
-                    { name: "lang", value: "ru"}
                 ] 
             );
-    
+
             return {
-                temp: forecastData.daily[0].temp.day,
-                description: forecastData.daily[0].weather[0].description,
-                minTemp: forecastData.daily[0].temp.min,
-                maxtemp: forecastData.daily[0].temp.max,
-                feelsLike: forecastData.hourly[0].feels_like,
-                uvIndicator: forecastData.daily[0].uvi,
-                pressure: forecastData.hourly[0].pressure,
-                wind_speed: forecastData.hourly[0].wind_speed // instead of air quality
+                id: uuid(),
+                title: cityName,
+                date: new Date(),
+                cityImage: "assets/images/cloudy.png",
+                currentTemp: forecastData.daily[0].temp.day,
+                weatherCondition: forecastData.daily[0].weather[0].description,
+                widgetRelatedInfo: {
+                    minTemp: {
+                        name: "MIN TEMP",
+                        value: forecastData.daily[0].temp.min + "°"
+                    },
+                    maxTemp: {
+                        name: "MAX TEMP",
+                        value: forecastData.daily[0].temp.max + "°"
+                    },
+                    feltTemp: {
+                        name: "FEELS LIKE",
+                        value: forecastData.hourly[0].feels_like + "°"
+                    },
+                    uvIndicator: {
+                        value: forecastData.daily[0].uvi,
+                        name: "Uv Indicator",
+                    },
+                    pressure: {
+                        name: "PRESSURE",
+                        value: forecastData.hourly[0].pressure + " hPa"
+                    },
+                    windSpeed: {
+                        name: "WIND SPEED",
+                        value: forecastData.hourly[0].wind_speed + " kph"
+                    } // instead of air quality
+                }
             };
         } catch {
             return console.warn("could not fetch weather data");
         }
     }
 
-    async freeWeatherApiSearch() {
+    async freeWeatherApiSearch(cityName, country) {
         try {
+            this.setCoordinates(cityName, country);
+
             const forecastData = await this.fetchData(
                 this.apisData["free-weather-api"].apiPath, 
                 [
-                    { name: "q", value: "Moscow" },
+                    { name: "q", value: `${this.lat},${this.lon}` },
                     { name: "key", value: this.apisData["free-weather-api"].apiKey },
-                    { name: "lang", value: "ru"}
                 ] 
             );
     
             return {
-                temp: forecastData.current.temp_c,
-                description: forecastData.forecast.forecastday[0].day.condition.text,
-                minTemp: forecastData.forecast.forecastday[0].day.mintemp_c,
-                maxtemp: forecastData.forecast.forecastday[0].day.maxtemp_c,
-                feelsLike: forecastData.current.feelslike_c,
-                uvIndicator: forecastData.forecast.forecastday[0].day.uv,
-                pressure: forecastData.current.pressure_mb,
-                wind_speed: forecastData.current.wind_kph // instead of air quality
+                id: uuid(),
+                title: cityName,
+                date: new Date(),
+                cityImage: "assets/images/cloudy.png",
+                currentTemp: forecastData.current.temp_c,
+                weatherCondition: forecastData.forecast.forecastday[0].day.condition.text,
+                widgetRelatedInfo: {
+                    minTemp: {
+                        name: "MIN TEMP",
+                        value: forecastData.forecast.forecastday[0].day.mintemp_c + "°"
+                    },
+                    maxTemp: {
+                        name: "MAX TEMP",
+                        value: forecastData.forecast.forecastday[0].day.maxtemp_c + "°"
+                    },
+                    feltTemp: {
+                        name: "FEELS LIKE",
+                        value: forecastData.current.feelslike_c + "°"
+                    },
+                    uvIndicator: {
+                        value: forecastData.forecast.forecastday[0].day.uv,
+                        name: "Uv Indicator",
+                        isUv: true
+                    },
+                    pressure: {
+                        name: "PRESSURE",
+                        value: forecastData.current.pressure_mb + " hPa"
+                    },
+                    windSpeed: {
+                        name: "WIND SPEED",
+                        value: forecastData.current.wind_kph + " kph"
+                    } // instead of air quality
+                }
             };
         } catch {
             return console.warn("could not fetch weather data");
@@ -106,6 +160,21 @@ export default class WeatherAPIService {
         const res = await fetch(url + urlParams, { headers: new Headers(headers) });
 
         return await res.json();
+    }
+
+    setCoordinates(cityName, country) {
+        const city = cities.find((city) => {
+            if (city.name === cityName && city.country === country) {
+                return true;
+            }
+        });
+
+        if (!city) {
+            throw new Error();
+        }
+
+        this.lat = city.lat;
+        this.lon = city.lng;
     }
 
     getApiTypes() {

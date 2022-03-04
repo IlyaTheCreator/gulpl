@@ -14,7 +14,7 @@ export default class ModalService {
         /**
          * @property {Array<String>} availableModalTypes these types match element's ids in the dom
          */
-        this.availableModalTypes = [modalTypes.SETTINGS, modalTypes.CITY_LIST, modalTypes.ADD_CITY];
+        this.availableModalTypes = Object.values(modalTypes);
         /**
          * @property {Array<Object>} registeredModals registered modals
          */
