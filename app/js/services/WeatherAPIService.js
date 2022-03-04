@@ -28,14 +28,12 @@ export default class WeatherAPIService {
         }
     }
 
-    async getForecast() {
-        switch(this.selectedApiType) {
-            case "yandex-weather":
-                return await this.yandexSearch();
-            case "open-weather-map":
-                return await this.openWeatherMapSearch();
-            case "free-weather-api":
-                return await this.freeWeatherApiSearch();
+    getForecast(cityName, country) {
+        switch(this.selectedApiType.apiPath) {
+            case this.apisData["open-weather-map"].apiPath:
+                return this.openWeatherMapSearch(cityName, country);
+            case this.apisData["free-weather-api"].apiPath:
+                return this.freeWeatherApiSearch(cityName, country);
             default:
                 break;
         }
@@ -62,32 +60,14 @@ export default class WeatherAPIService {
                 cityImage: "assets/images/cloudy.png",
                 currentTemp: forecastData.daily[0].temp.day,
                 weatherCondition: forecastData.daily[0].weather[0].description,
-                widgetRelatedInfo: {
-                    minTemp: {
-                        name: "MIN TEMP",
-                        value: forecastData.daily[0].temp.min + "°"
-                    },
-                    maxTemp: {
-                        name: "MAX TEMP",
-                        value: forecastData.daily[0].temp.max + "°"
-                    },
-                    feltTemp: {
-                        name: "FEELS LIKE",
-                        value: forecastData.hourly[0].feels_like + "°"
-                    },
-                    uvIndicator: {
-                        value: forecastData.daily[0].uvi,
-                        name: "Uv Indicator",
-                    },
-                    pressure: {
-                        name: "PRESSURE",
-                        value: forecastData.hourly[0].pressure + " hPa"
-                    },
-                    windSpeed: {
-                        name: "WIND SPEED",
-                        value: forecastData.hourly[0].wind_speed + " kph"
-                    } // instead of air quality
-                }
+                widgetRelatedInfo: this.generateWidgetRelatedInfo(
+                    forecastData.daily[0].temp.min,
+                    forecastData.daily[0].temp.max,
+                    forecastData.hourly[0].feels_like,
+                    forecastData.daily[0].uvi,
+                    forecastData.hourly[0].pressure,
+                    forecastData.hourly[0].wind_speed
+                ),
             };
         } catch {
             return console.warn("could not fetch weather data");
@@ -113,33 +93,14 @@ export default class WeatherAPIService {
                 cityImage: "assets/images/cloudy.png",
                 currentTemp: forecastData.current.temp_c,
                 weatherCondition: forecastData.forecast.forecastday[0].day.condition.text,
-                widgetRelatedInfo: {
-                    minTemp: {
-                        name: "MIN TEMP",
-                        value: forecastData.forecast.forecastday[0].day.mintemp_c + "°"
-                    },
-                    maxTemp: {
-                        name: "MAX TEMP",
-                        value: forecastData.forecast.forecastday[0].day.maxtemp_c + "°"
-                    },
-                    feltTemp: {
-                        name: "FEELS LIKE",
-                        value: forecastData.current.feelslike_c + "°"
-                    },
-                    uvIndicator: {
-                        value: forecastData.forecast.forecastday[0].day.uv,
-                        name: "Uv Indicator",
-                        isUv: true
-                    },
-                    pressure: {
-                        name: "PRESSURE",
-                        value: forecastData.current.pressure_mb + " hPa"
-                    },
-                    windSpeed: {
-                        name: "WIND SPEED",
-                        value: forecastData.current.wind_kph + " kph"
-                    } // instead of air quality
-                }
+                widgetRelatedInfo: this.generateWidgetRelatedInfo(
+                    forecastData.forecast.forecastday[0].day.mintemp_c,
+                    forecastData.forecast.forecastday[0].day.maxtemp_c,
+                    forecastData.current.feelslike_c,
+                    forecastData.forecast.forecastday[0].day.uv,
+                    forecastData.current.pressure_mb,
+                    forecastData.current.wind_kph
+                ),
             };
         } catch {
             return console.warn("could not fetch weather data");
@@ -177,8 +138,37 @@ export default class WeatherAPIService {
         this.lon = city.lng;
     }
 
+    generateWidgetRelatedInfo(minTemp, maxTemp, feltTemp, uvIndicator, pressure, windSpeed) {
+        return {
+            minTemp: {
+                name: "MIN TEMP",
+                value: minTemp + "°"
+            },
+            maxTemp: {
+                name: "MAX TEMP",
+                value: maxTemp + "°"
+            },
+            feltTemp: {
+                name: "FEELS LIKE",
+                value: feltTemp + "°"
+            },
+            uvIndicator: {
+                name: "Uv Indicator",
+                value: uvIndicator
+            },
+            pressure: {
+                name: "PRESSURE",
+                value: pressure + " hPa",
+            },
+            windSpeed: {
+                name: "WIND SPEED",
+                value: windSpeed + " kph"
+            } // instead of air quality
+        }
+    }
+
     getApiTypes() {
-        return this.apiTypes;
+        return this.apisData;
     }
 
     setApiType(apiType) {

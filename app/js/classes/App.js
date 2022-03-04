@@ -92,6 +92,7 @@ export default class App {
      * @property {string} cityLcKey localstorage key for keeping individual city's data
      */
     this.cityLcKey = "";
+    this.weatherAPITypeLcKey = "";
     /**
      * @property {number} touchStartX property for swiping
      */
@@ -113,29 +114,29 @@ export default class App {
     this.settingsLcKey = "weather";
     this.citiesListLcKey = "cities";
     this.cityLcKey = "city";
+    this.weatherAPITypeLcKey = "weather-api-type";
 
     const lcSettings = this.getSettingsState();
     const lcCitiesList = this.getCities();
     const lcCity = this.getCurrentCity();
+    const weatherApiType = this.getWeatherAPIType();
     
     // Inital launching checks
     if (lcSettings === null) {
-      LsService.set(this.settingsLcKey, this.settingsData);
+      this.setSettings(this.settingsData);
     }
     
     if (lcCitiesList === null || !lcCitiesList.length) {
-      // LsService.set(this.citiesListLcKey, MOCK_CITIES);
-      const citiesWeatherData = [
-        await this.weatherAPIService.openWeatherMapSearch("Vladivostok", "RU"),
-        await this.weatherAPIService.freeWeatherApiSearch("Kostroma", "RU"),
-      ]
-
-      LsService.set(this.citiesListLcKey, citiesWeatherData);
+      this.setCities([]);
     }
 
     if (lcCity === null || !Object.keys(lcCity).length) {
-      LsService.set(this.cityLcKey, {});
+      this.setCurrentCity({})
       this.showCityList();
+    }
+
+    if (weatherApiType === null || weatherApiType === "") {
+      this.setWeatherAPIType("");
     }
   }
 
@@ -147,46 +148,6 @@ export default class App {
     this.rootElement.appendChild(
       this.modalService.createModal(modalType, modalContentCreateMethod, classes, id)
     )
-  }
-
-  mountApiSourceModal() {
-    this.mountModal(
-      modalTypes.SELECT_API_SOURCE,
-      () => [
-        (function() {
-          const contentWrapper = document.createElement("div");
-
-          contentWrapper.id = "select-api-source-overlay";
-          contentWrapper.classList.add("modal-overlay");
-          contentWrapper.classList.add("modal-overlay--select-api-source");
-
-          return contentWrapper;
-        }()),
-        (function() {
-          const card = document.createElement("div");
-          const form = document.createElement("form");
-
-          form.classList.add("select-api-source-form");
-          card.classList.add("select-api-source");
-          card.classList.add("card");
-
-          form.innerHTML = `
-            <div class="input-wrapper">
-              <label for="api-source">Select weather data source:</label>
-              <select id="api-source">
-                <option value="open-weather-map">OpenWeatherMap API</div>
-                <option value="free-weather-api">Free Weather API</div>
-              </select>
-            </div>
-            <button class="btn">Submit</button>
-          `;
-
-          card.appendChild(form);
-
-          return card;
-        }())
-      ]
-    );
   }
 
   /**
@@ -235,7 +196,7 @@ export default class App {
     const isActive = active === "on";
     newSettings[key].isActive = !isActive;
 
-    LsService.set(this.settingsLcKey, newSettings);
+    this.setSettings(newSettings);
 
     this.createSettings();
   }
@@ -262,6 +223,22 @@ export default class App {
    */
   getCurrentCity = () => {
     return LsService.get(this.cityLcKey);
+  }
+
+  getWeatherAPIType = () => {
+    return LsService.get(this.weatherAPITypeLcKey);
+  }
+
+  setWeatherAPIType = (weatherApiType) => {
+    return LsService.set(this.weatherAPITypeLcKey, weatherApiType);
+  }
+
+  setCities = (citiesList) => {
+    LsService.set(this.citiesListLcKey, citiesList);
+  }
+
+  setSettings = (settings) => {
+    LsService.set(this.settingsLcKey, settings);
   }
 
   /**
@@ -423,7 +400,6 @@ export default class App {
     );
     
     document.getElementById("settingsCloseBtn")?.addEventListener("click", () => {
-      console.log("chel")
       this.closeSettings()
     });
   }
@@ -455,43 +431,74 @@ export default class App {
     this.create();
   }
 
+  async fetchCities(city, country) {
+    this.weatherAPIService.setApiType(this.getWeatherAPIType());
+
+    const newCity = await this.weatherAPIService.getForecast(city, country);
+
+    if (!newCity) {
+      return this.getCities();
+    }
+
+    return [...this.getCities(), newCity];
+  }
+
+  onSelectApiSourceClick = (e) => {
+    e.preventDefault();
+    
+    const selectField = e.target.elements["api-source-select"];
+    const apiTypes = this.weatherAPIService.getApiTypes();
+
+    this.setWeatherAPIType(apiTypes[selectField.value]);    
+    this.create();
+  }
+
+  addCityClickHandle = async () => {
+    const selectedCity = document.getElementById("add-city-input").value;
+    const selectedCountry = document.getElementById("add-city-input-country").value;
+    const newCities = await this.fetchCities(selectedCity, selectedCountry);
+
+    this.setCities(newCities);
+    this.create();
+  }
+
   /**
    * @property {Function} create central app's point
    */
   create = () => {
     this.clearRootElement();
 
-    this.mountApiSourceModal();
+    if (this.showCityInfo) {
+      this.createNavigation();
+    }
 
+    // central "router"
+    switch (this.displayMode) {
+      case "dashboard":
+        this.dashBoard.create(
+          this.getCities(),
+          this.getCurrentCity(),
+          this.onCityWidgetClick,
+          this.getSettingsState,
+          this.widgetsData,
+          this.showCityInfo,
+          this.mountModal,
+          this.closeCityAddModal,
+          this.smoothTransition,
+          this.onSelectApiSourceClick,
+          this.addCityClickHandle,
+          this.getWeatherAPIType()
+        ).forEach((element) => this.rootElement.appendChild(element));
 
-    // if (this.showCityInfo) {
-    //   this.createNavigation();
-    // }
+        this.setEventListeners();
 
-    // // central "router"
-    // switch (this.displayMode) {
-    //   case "dashboard":
-    //     this.dashBoard.create(
-    //       this.getCities(),
-    //       this.getCurrentCity(),
-    //       this.onCityWidgetClick,
-    //       this.getSettingsState,
-    //       this.widgetsData,
-    //       this.showCityInfo,
-    //       this.mountModal,
-    //       this.closeCityAddModal,
-    //       this.smoothTransition
-    //     ).forEach((element) => this.rootElement.appendChild(element));
+        break;
+      default:
+        break;
+    }
 
-    //     this.setEventListeners();
-
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // if (this.showCityInfo) {
-    //   document.getElementById("city-list")?.remove();
-    // }
+    if (this.showCityInfo) {
+      document.getElementById("city-list")?.remove();
+    }
   }
 }

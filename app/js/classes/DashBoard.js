@@ -1,5 +1,7 @@
 import { modalTypes, widgetTypes } from "../constants";
+import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
+import cities from "cities.json";
 
 /**
  * @namespace entities
@@ -30,6 +32,68 @@ export default class DashBoard {
     `;
 
     return contentWrapper;
+  }
+
+  createSelectApiSourceContentWrapper() {
+    const contentWrapper = document.createElement("div");
+
+    contentWrapper.id = "select-api-source-overlay";
+    contentWrapper.classList.add("modal-overlay");
+    contentWrapper.classList.add("modal-overlay--select-api-source");
+
+    return contentWrapper;
+  }
+
+  createCloseSelectApiSourceBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-modal-btn");
+    btn.classList.add("close-select-api-source-btn");
+    btn.id = "citySelectApiSourceCloseBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    return btn;
+  }
+
+  createSelectApiSourceCard() {
+    const card = document.createElement("div");
+    const form = document.createElement("form");
+
+    form.classList.add("select-api-source-form");
+    card.classList.add("select-api-source");
+    card.classList.add("card");
+
+    form.innerHTML = `
+      <div class="input-wrapper">
+        <label for="api-source-select">Please select weather data source:</label>
+        <select id="api-source-select">
+          <option value="open-weather-map">OpenWeatherMap API</div>
+          <option value="free-weather-api">Free Weather API</div>
+        </select>
+      </div>
+      <button class="btn">Select</button>
+    `;
+
+    form.addEventListener("submit", e => this.onSelectApiSourceClick(e))
+
+    card.appendChild(form);
+
+    return card;
+  }
+
+  createSelectApiSourceModal() {
+    this.mountModal(
+      modalTypes.SELECT_API_SOURCE,
+      () => [
+        this.createSelectApiSourceContentWrapper(),
+        this.createCloseSelectApiSourceBtn(),
+        this.createSelectApiSourceCard()
+      ],
+      ["select-api-source-modal"]
+    );
   }
 
   /**
@@ -69,7 +133,7 @@ export default class DashBoard {
   createCityWidgetContent(cityData, key) {
     let uvText;
 
-    if (cityData.widgetRelatedInfo[key] === "uvIndicator") {
+    if (cityData.widgetRelatedInfo[key].name === "Uv Indicator") {
       const uv = cityData.widgetRelatedInfo[key].value;
 
       if (uv <= 1) {
@@ -235,20 +299,38 @@ export default class DashBoard {
     return btn;
   }
 
+  createAddCitySubmitButton() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("btn");
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    btn.addEventListener("click", this.addCityClickHandle);
+
+    return btn;
+  }
+
   createAddCityForm() {
     const form = document.createElement("form");
+    const btn = this.createAddCitySubmitButton();
 
     form.classList.add("add-city-form");
 
     form.innerHTML = `
       <div class="input-wrapper">
-        <input type="text" placeholder="Enter City Name..." />
+        <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
+        <input type="hidden" id="add-city-input-country" />
         <div class="icon-wrapper">
           <i class="icon-map"></i>
         </div>
       </div>
-      <button class="btn">Add</button>
     `;
+
+    btn.innerText = "Add";
+    form.appendChild(btn);
 
     return form;
   }
@@ -294,6 +376,8 @@ export default class DashBoard {
         ],
         ["add-city-modal"]
       );
+      
+      autocomplete(document.getElementById("add-city-input"), cities)
     }
   }
 
@@ -302,6 +386,10 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
+    if (this.weatherAPIType === null || this.weatherAPIType === "") {
+      this.createSelectApiSourceModal();
+    }
+
     if (this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
@@ -371,6 +459,9 @@ export default class DashBoard {
    * @param {Function} mountModal 
    * @param {Function} closeCityAddModal 
    * @param {Function} smoothTransition 
+   * @param {Function} onSelectApiSourceClick 
+   * @param {Function} addCityClickHandle 
+   * @param {Object} weatherAPIType 
    * @returns {Array<Object>}
    */
   create(
@@ -382,7 +473,10 @@ export default class DashBoard {
     showCityInfo,
     mountModal,
     closeCityAddModal,
-    smoothTransition
+    smoothTransition,
+    onSelectApiSourceClick,
+    addCityClickHandle,
+    weatherAPIType
   ) {
     /**
      * @property {Array} cities latest city data
@@ -420,6 +514,18 @@ export default class DashBoard {
      * @property {Function} smoothTransition
      */
     this.smoothTransition = smoothTransition;
+    /**
+     * @property {Function} onSelectApiSourceClick
+     */
+    this.onSelectApiSourceClick = onSelectApiSourceClick;
+    /**
+     * @property {Function} addCityClickHandle
+     */
+    this.addCityClickHandle = addCityClickHandle;
+    /**
+     * @property {Function} weatherAPIType
+     */
+    this.weatherAPIType = weatherAPIType;
 
     return this.generateDashBoard();
   }

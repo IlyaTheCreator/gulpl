@@ -308,10 +308,11 @@
   }
 }
 
-.close-add-city-btn {
+.close-add-city-btn, .close-select-api-source-btn {
   top: 235px;
   right: 14px;
   z-index: 10000;
+  color: #000;
 }
 
 .add-city, .select-api-source {
@@ -356,6 +357,17 @@
         font-size: 20px;
       }
     }
+
+    label {
+      font-size: 18px;
+    }
+
+    select {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 0;
+      font-size: 18px;
+    }
   }
 
   button {
@@ -387,4 +399,8 @@
   animation-name: change-city;
   animation-duration: 0.4s;
   animation-direction: forwards;
+}
+
+.select-api-source-modal {
+  z-index: 10000;
 }
