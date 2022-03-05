@@ -41,6 +41,8 @@ export default class DashBoard {
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--select-api-source");
 
+    contentWrapper.addEventListener("click", this.onCloseSelectApiSource);
+
     return contentWrapper;
   }
 
@@ -54,6 +56,8 @@ export default class DashBoard {
     btn.innerHTML = `
       <i class="icon-cancel-squared"></i>
     `;
+
+    btn.addEventListener("click", this.onCloseSelectApiSource);
 
     return btn;
   }
@@ -386,6 +390,8 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
+    const list = this.createCityList(this.cities, this.onCityWidgetClick);
+
     if (this.weatherAPIType === null || this.weatherAPIType === "") {
       this.createSelectApiSourceModal();
     }
@@ -393,13 +399,6 @@ export default class DashBoard {
     if (this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
-
-    const list = this.createCityList(this.cities, this.onCityWidgetClick);
-    const listWrapper = document.createElement("div");
-
-    listWrapper.classList.add("city-list");
-
-    list.forEach((item) => listWrapper.appendChild(item));
 
     this.mountModal(
       modalTypes.CITY_LIST,
@@ -462,6 +461,7 @@ export default class DashBoard {
    * @param {Function} onSelectApiSourceClick 
    * @param {Function} addCityClickHandle 
    * @param {Object} weatherAPIType 
+   * @param {Function} onCloseSelectApiSource 
    * @returns {Array<Object>}
    */
   create(
@@ -476,7 +476,8 @@ export default class DashBoard {
     smoothTransition,
     onSelectApiSourceClick,
     addCityClickHandle,
-    weatherAPIType
+    weatherAPIType,
+    onCloseSelectApiSource
   ) {
     /**
      * @property {Array} cities latest city data
@@ -523,9 +524,14 @@ export default class DashBoard {
      */
     this.addCityClickHandle = addCityClickHandle;
     /**
-     * @property {Function} weatherAPIType
+     * @property {Object} weatherAPIType
      */
     this.weatherAPIType = weatherAPIType;
+    /**
+     * @property {Function} onCloseSelectApiSource
+     */
+    this.onCloseSelectApiSource = onCloseSelectApiSource;
+
 
     return this.generateDashBoard();
   }

@@ -1,5 +1,6 @@
 import cities from "cities.json";
 import { v4 as uuid } from "uuid";
+import simpleRound from "../helpers/simpleRound";
 
 /**
  * @namespace services
@@ -39,9 +40,14 @@ export default class WeatherAPIService {
         }
     }
 
-    async openWeatherMapSearch(cityName, country) {
+    async openWeatherMapSearch(cityName, country, coordinates) {
         try {
-            this.setCoordinates(cityName, country);
+            if (!coordinates) {
+                this.setCoordinates(cityName, country);
+            } else {
+                this.lat = coordinates.lat;
+                this.lon = coordinates.lon;
+            }
 
             const forecastData = await this.fetchData(
                 this.apisData["open-weather-map"].apiPath, 
@@ -57,8 +63,10 @@ export default class WeatherAPIService {
                 id: uuid(),
                 title: cityName,
                 date: new Date(),
+                lat: this.lat,
+                lon: this.lon,
                 cityImage: "assets/images/cloudy.png",
-                currentTemp: forecastData.daily[0].temp.day,
+                currentTemp: simpleRound(forecastData.daily[0].temp.day),
                 weatherCondition: forecastData.daily[0].weather[0].description,
                 widgetRelatedInfo: this.generateWidgetRelatedInfo(
                     forecastData.daily[0].temp.min,
@@ -76,7 +84,12 @@ export default class WeatherAPIService {
 
     async freeWeatherApiSearch(cityName, country) {
         try {
-            this.setCoordinates(cityName, country);
+            if (!coordinates) {
+                this.setCoordinates(cityName, country);
+            } else {
+                this.lat = coordinates.lat;
+                this.lon = coordinates.lon;
+            }
 
             const forecastData = await this.fetchData(
                 this.apisData["free-weather-api"].apiPath, 
@@ -90,8 +103,10 @@ export default class WeatherAPIService {
                 id: uuid(),
                 title: cityName,
                 date: new Date(),
+                lat: this.lat,
+                lon: this.lon,
                 cityImage: "assets/images/cloudy.png",
-                currentTemp: forecastData.current.temp_c,
+                currentTemp: simpleRound(forecastData.current.temp_c),
                 weatherCondition: forecastData.forecast.forecastday[0].day.condition.text,
                 widgetRelatedInfo: this.generateWidgetRelatedInfo(
                     forecastData.forecast.forecastday[0].day.mintemp_c,
@@ -142,19 +157,19 @@ export default class WeatherAPIService {
         return {
             minTemp: {
                 name: "MIN TEMP",
-                value: minTemp + "°"
+                value: simpleRound(minTemp) + "°"
             },
             maxTemp: {
                 name: "MAX TEMP",
-                value: maxTemp + "°"
+                value: simpleRound(maxTemp) + "°"
             },
             feltTemp: {
                 name: "FEELS LIKE",
-                value: feltTemp + "°"
+                value: simpleRound(feltTemp) + "°"
             },
             uvIndicator: {
                 name: "Uv Indicator",
-                value: uvIndicator
+                value: simpleRound(uvIndicator)
             },
             pressure: {
                 name: "PRESSURE",

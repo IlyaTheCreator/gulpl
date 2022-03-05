@@ -34,17 +34,16 @@ export default class ModalService {
             return document.createElement("div");
         } 
 
-        let registeredModal = this.checkRegisteredModal(modalType);
+        let registeredModalIndex = this.checkRegisteredModal(modalType);
 
-        if (!registeredModal) {
-            this.registeredModals.push(
-                new Modal(modalType, modalContentCreateMethod, classes, id)
-            );
+        if (!registeredModalIndex) {
+            registeredModalIndex = this.registeredModals.length - 1;
+        } 
 
-            registeredModal = this.registeredModals[this.registeredModals.length - 1];
-        }
+        this.registeredModals[registeredModalIndex] = new Modal(modalType, modalContentCreateMethod, classes, id)
 
-        return registeredModal.create();
+
+        return this.registeredModals[registeredModalIndex].create();
     }
 
     /**
@@ -58,6 +57,6 @@ export default class ModalService {
      * @property {Function} checkRegisteredModal
      */
     checkRegisteredModal(modalType) {
-        return this.registeredModals.find((modal) => modal.modalType === modalType);
+        return this.registeredModals.findIndex((modal) => modal.modalType === modalType);
     }
 };
