@@ -44,6 +44,7 @@ export default class ModalService {
             registeredModal = this.registeredModals[this.registeredModals.length - 1];
         }
 
+        // in case modal already exists
         registeredModal.modalContentCreateMethod = modalContentCreateMethod;
 
         return registeredModal.create();

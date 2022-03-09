@@ -14,7 +14,7 @@ import cities from "cities.json";
 export default class DashBoard {
   /**
    * @property {Function} createContentWrapper creating markup/styles wrapper for displayed city
-   * @param {*} city current city to be displayed
+   * @param {Object} city current city to be displayed
    * @returns {Object}
    */
   createContentWrapper(city) {
@@ -34,6 +34,10 @@ export default class DashBoard {
     return contentWrapper;
   }
 
+  /**
+   * @property {Function} createSelectApiSourceContentWrapper creating content wrapper for selecting inital api source
+   * @returns {Object}
+   */
   createSelectApiSourceContentWrapper() {
     const contentWrapper = document.createElement("div");
 
@@ -46,6 +50,10 @@ export default class DashBoard {
     return contentWrapper;
   }
 
+  /**
+   * @property {Function} createCloseSelectApiSourceBtn creating close btn for selecting inital api source
+   * @returns {Object}
+   */
   createCloseSelectApiSourceBtn() {
     const btn = document.createElement("button");
 
@@ -62,6 +70,10 @@ export default class DashBoard {
     return btn;
   }
 
+  /**
+   * @property {Function} createSelectApiSourceCard creating form|card for selecting inital api source
+   * @returns {Object}
+   */
   createSelectApiSourceCard() {
     const card = document.createElement("div");
     const form = document.createElement("form");
@@ -88,6 +100,9 @@ export default class DashBoard {
     return card;
   }
 
+  /**
+   * @property {Function} createSelectApiSourceModal creating modal for selecting inital api source
+   */
   createSelectApiSourceModal() {
     this.mountModal(
       modalTypes.SELECT_API_SOURCE,
@@ -101,7 +116,7 @@ export default class DashBoard {
   }
 
   /**
-   * @property {Function} createCloseCityBtn creating btn for closing current city
+   * @property {Function} createCloseCityListBtn creating btn for closing current city
    * @returns {Object}
    */
   createCloseCityListBtn() {
@@ -168,7 +183,7 @@ export default class DashBoard {
           : ""
         }
       </div>
-     `;
+    `;
   }
 
   /**
@@ -303,6 +318,10 @@ export default class DashBoard {
     return btn;
   }
 
+  /**
+   * @property {Function} createAddCitySubmitButton creating btn submitting adding a city
+   * @returns {Object}
+   */
   createAddCitySubmitButton() {
     const btn = document.createElement("button");
 
@@ -317,6 +336,10 @@ export default class DashBoard {
     return btn;
   }
 
+  /**
+   * @property {Function} createAddCityForm creating form for adding a city
+   * @returns {Object}
+   */
   createAddCityForm() {
     const form = document.createElement("form");
     const btn = this.createAddCitySubmitButton();
@@ -339,6 +362,10 @@ export default class DashBoard {
     return form;
   }
 
+  /**
+   * @property {Function} createAddCityForm creating content for adding city form
+   * @returns {Object}
+   */
   createAddCityContent() {
     const addCityCard = document.createElement("div");
     
@@ -369,6 +396,9 @@ export default class DashBoard {
     return container;
   }
 
+  /**
+   * @property {Function} generateAddCityModal creating add city modal
+   */
   generateAddCityModal() {
     if (!document.getElementById("add-city")) {
       this.mountModal(
@@ -381,6 +411,7 @@ export default class DashBoard {
         ["add-city-modal"]
       );
       
+      // SEE helpers/inputAutocomplete.js
       autocomplete(document.getElementById("add-city-input"), cities)
     }
   }

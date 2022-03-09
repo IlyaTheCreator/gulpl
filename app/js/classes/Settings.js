@@ -72,6 +72,10 @@ export default class Settings {
     return btn;
   }
 
+  /**
+   * @property {Function} createSelectAPIContent creating content for api selection card
+   * @returns {Object}
+   */
   createSelectAPIContent(selectHandle) {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");

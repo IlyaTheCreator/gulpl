@@ -88,6 +88,9 @@ export default class App {
      * @property {string} cityLsKey localstorage key for keeping individual city's data
      */
     this.cityLsKey = "";
+    /**
+     * @property {string} weatherAPITypeLsKey localstorage key for keeping weather api type (object - secret key + api url)
+     */
     this.weatherAPITypeLsKey = "";
     /**
      * @property {number} touchStartX property for swiping
@@ -98,6 +101,9 @@ export default class App {
      */
     this.touchEndX = 0;
 
+    /**
+     * @property {WeatherAPIService} weatherAPIService api service
+     */
     this.weatherAPIService = new WeatherAPIService();
 
     this.setupLocalStorage();
@@ -191,7 +197,6 @@ export default class App {
     newSettings[key].isActive = !isActive;
 
     this.setSettings(newSettings);
-
     this.createSettings();
   }
 
@@ -219,25 +224,36 @@ export default class App {
     return LsService.get(this.cityLsKey);
   }
 
+  /**
+   * @property {Function} getWeatherAPIType Current weather api type localstorage getter
+   */
   getWeatherAPIType = () => {
     return LsService.get(this.weatherAPITypeLsKey);
   }
 
+  /**
+   * @property {Function} setWeatherAPIType Current weather api type localstorage setter
+   */
   setWeatherAPIType = (weatherApiType) => {
     return LsService.set(this.weatherAPITypeLsKey, weatherApiType);
   }
 
+  /**
+   * @property {Function} setCities Current cities list localstorage setter
+   */
   setCities = (citiesList) => {
     LsService.set(this.citiesListLsKey, citiesList);
   }
 
+  /**
+   * @property {Function} setSettings Current settings localstorage setter
+   */
   setSettings = (settings) => {
     LsService.set(this.settingsLsKey, settings);
   }
 
   /**
    * @property {Function} setCurrentCity Current city localstorage setter
-   * @param {Object} city city to set
    */
   setCurrentCity = (city) => {
     LsService.set(this.cityLsKey, city);
@@ -283,7 +299,7 @@ export default class App {
 
     const currentCityIndex = citiesData.findIndex((city) => city.id === currentCity.id);
 
-    // swiped left | 100 is for correct behavior (don't swipe on 1px change, for example)
+    // swiped left | 24 is for correct behavior (don't swipe on 1px change, for example)
     if (this.touchEndX + 24 < this.touchStartX) {
       if (currentCityIndex < citiesData.length - 1 && currentCityIndex >= 0) {
         this.setCurrentCity(citiesData[currentCityIndex + 1]);
@@ -292,7 +308,7 @@ export default class App {
       }
     }
 
-    // swiped right | 100 is for correct behavior (don't swipe on 1px change, for example)
+    // swiped right | 24 is for correct behavior (don't swipe on 1px change, for example)
     if (this.touchEndX - 24 > this.touchStartX) {
       if (currentCityIndex > 0) {
         this.setCurrentCity(citiesData[currentCityIndex - 1]);
@@ -398,6 +414,9 @@ export default class App {
     });
   }
 
+  /**
+   * @property {Function} selectHandle function triggered on weather api type select in settings modal
+   */
   selectHandle = (e) => {
     const selectField = e.target;
     const apiTypes = this.weatherAPIService.getApiTypes();
@@ -411,11 +430,15 @@ export default class App {
     this.updateCities(apiTypes[selectField.value]);
   }
 
+  /**
+   * method for fetching existent cities but with new selected api type 
+   * @property {Function} updateCities 
+   */
   updateCities = async (newAPIType) => {
+    const oldCities = this.getCities();
+
     this.setWeatherAPIType(newAPIType);
     this.weatherAPIService.setApiType(newAPIType);
-
-    const oldCities = this.getCities();
     this.setCities([]);
     this.setCurrentCity({});
     this.showCityInfo = false;
@@ -435,6 +458,9 @@ export default class App {
     this.create();
   }
 
+  /**
+   * @property {Function} closeCityAddModal Closing add city modal
+   */
   closeCityAddModal = () => {
     this.create();
     this.showCityInfo = false;
@@ -455,6 +481,9 @@ export default class App {
     this.create();
   }
 
+  /**
+   * @property {Function} fetchCities get a new city + all the old ones
+   */
   fetchCities = async (city, country) => {
     this.weatherAPIService.setApiType(this.getWeatherAPIType());
 
@@ -467,10 +496,16 @@ export default class App {
     return [...this.getCities(), newCity];
   }
 
+  /**
+   * @property {Function} fetchCity getting a new city from an api
+   */
   fetchCity = async (city, country, coordinates) => {
     return await this.weatherAPIService.getForecast(city, country, coordinates);
   }
 
+  /**
+   * @property {Function} onSelectApiSourceClick function triggered when api type is being selected for the first time
+   */
   onSelectApiSourceClick = (e) => {
     e.preventDefault();
     
@@ -481,6 +516,9 @@ export default class App {
     this.create();
   }
 
+  /**
+   * @property {Function} addCityClickHandle handling adding a city
+   */
   addCityClickHandle = (e) => {
     e.preventDefault();
 
@@ -488,9 +526,6 @@ export default class App {
     const selectedCountry = document.getElementById("add-city-input-country").value;
 
     this.fetchCities(selectedCity, selectedCountry).then((cities) => {
-      console.log("CLICK HANDLE:")
-      console.log(cities)
-
       this.setCities(cities);
       this.setCurrentCity(cities[cities.length -1]);
       this.showCityInfo = true;
@@ -499,6 +534,9 @@ export default class App {
     })
   }
 
+  /**
+   * @property {Function} onCloseSelectApiSource closing select api source modal
+   */
   onCloseSelectApiSource = () => {
     if (!this.getWeatherAPIType()) {
       const apiTypes = this.weatherAPIService.getApiTypes();

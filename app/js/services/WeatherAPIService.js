@@ -7,13 +7,19 @@ import simpleRound from "../helpers/simpleRound";
  */
 
 /**
- * Class for searching weather with different apis by dates 
+ * Class for searching current weather with different apis by coordinates
  * @memberof services
  */
 export default class WeatherAPIService {
     constructor() {
+        /**
+         * @property {Object} selectedApiType api type selected
+         */
         this.selectedApiType = null;
 
+        /**
+         * @property {Object} apisData available api types
+         */
         this.apisData = {
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
@@ -26,6 +32,14 @@ export default class WeatherAPIService {
         }
     }
 
+    /**
+     * Main data fetching method
+     * @property {Function} getForecast
+     * @param {string} cityName 
+     * @param {string} country 
+     * @param {Object} coordinates object with lat & lon properties
+     * @returns {Object}
+     */
     getForecast(cityName, country, coordinates) {
         switch(this.selectedApiType.apiPath) {
             case this.apisData["open-weather-map"].apiPath:
@@ -37,6 +51,13 @@ export default class WeatherAPIService {
         }
     }
 
+    /**
+     * OpenWeatherMap search
+     * @property {Function} openWeatherMapSearch
+     * @param {string} cityName 
+     * @param {string} country 
+     * @param {Object} coordinates 
+     */
     async openWeatherMapSearch(cityName, country, coordinates) {
         try {
             let lat, lon;
@@ -83,6 +104,13 @@ export default class WeatherAPIService {
         }
     }
 
+    /**
+     * FreeWeather API search
+     * @property {Function} freeWeatherApiSearch
+     * @param {string} cityName 
+     * @param {string} country 
+     * @param {Object} coordinates 
+     */
     async freeWeatherApiSearch(cityName, country, coordinates) {
         try {
             let lat, lon;
@@ -126,6 +154,14 @@ export default class WeatherAPIService {
         }
     }
 
+    /**
+     * Universal fetching method
+     * @property {Function} fetchData
+     * @param {string} url 
+     * @param {Object} params 
+     * @param {Object} headers 
+     * @returns {Object}
+     */
     async fetchData(url, params, headers = {}) {
         let urlParams = "?";
 
@@ -142,6 +178,13 @@ export default class WeatherAPIService {
         return await res.json();
     }
 
+    /**
+     * Method for getting city coordinates based on its name and country
+     * @property {Function} getCoordinates
+     * @param {string} cityName
+     * @param {string} country 
+     * @returns {Object}
+     */
     getCoordinates(cityName, country) {
         const city = cities.find((city) => {
             if (city.name === cityName && city.country === country) {
@@ -158,6 +201,17 @@ export default class WeatherAPIService {
         return { lat: city.lat, lon: city.lng }
     }
 
+    /**
+     * Helper method for fetching methods (shorter return statement)
+     * @property {Function} generateWidgetRelatedInfo
+     * @param {number} minTemp 
+     * @param {number} maxTemp 
+     * @param {number} feltTemp
+     * @param {number} uvIndicator 
+     * @param {number} pressure 
+     * @param {number} windSpeed 
+     * @returns {Object}
+     */
     generateWidgetRelatedInfo(minTemp, maxTemp, feltTemp, uvIndicator, pressure, windSpeed) {
         return {
             minTemp: {
@@ -187,10 +241,16 @@ export default class WeatherAPIService {
         }
     }
 
+    /**
+     * @property {Function} getApiTypes
+     */
     getApiTypes() {
         return this.apisData;
     }
 
+    /**
+     * @property {Function} setApiType
+     */
     setApiType(apiType) {
         this.selectedApiType = apiType;
     }
