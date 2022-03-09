@@ -404,19 +404,28 @@ export default class App {
     const oldType = this.getWeatherAPIType();
     const newType = apiTypes[selectField.value];
 
-    if (oldType === newType) {
+    if (oldType.apiKey === newType.apiKey) {
       return;
     }
 
-    this.setWeatherAPIType(apiTypes[selectField.value]);
-    
-    this.setCities(
-      this.getCities().map((city) => this.weatherAPIService.getForecast(
-        undefined, undefined, { lat: city.lat, lon: city.lon}
-      ))
-    );
-    
-    this.create();
+    this.updateCities(apiTypes[selectField.value]);
+  }
+
+  updateCities = async (newAPIType) => {
+    this.setWeatherAPIType(newAPIType);
+    this.weatherAPIService.setApiType(newAPIType);
+
+    const oldCities = this.getCities();
+    this.setCities([]);
+    this.setCurrentCity({});
+    this.showCityInfo = false;
+
+    oldCities.forEach(city => {
+      this.fetchCity(city.title, undefined, { lat: city.lat, lon: city.lon }).then(fetchedCity => {
+        this.setCities([...this.getCities(), fetchedCity])
+        this.create();
+      })
+    })
   }
 
   /**
@@ -449,13 +458,17 @@ export default class App {
   fetchCities = async (city, country) => {
     this.weatherAPIService.setApiType(this.getWeatherAPIType());
 
-    const newCity = await this.weatherAPIService.getForecast(city, country);
+    const newCity = await this.fetchCity(city, country);
 
     if (!newCity) {
       return this.getCities();
     }
 
     return [...this.getCities(), newCity];
+  }
+
+  fetchCity = async (city, country, coordinates) => {
+    return await this.weatherAPIService.getForecast(city, country, coordinates);
   }
 
   onSelectApiSourceClick = (e) => {
@@ -475,6 +488,9 @@ export default class App {
     const selectedCountry = document.getElementById("add-city-input-country").value;
 
     this.fetchCities(selectedCity, selectedCountry).then((cities) => {
+      console.log("CLICK HANDLE:")
+      console.log(cities)
+
       this.setCities(cities);
       this.setCurrentCity(cities[cities.length -1]);
       this.showCityInfo = true;

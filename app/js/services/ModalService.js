@@ -46,8 +46,6 @@ export default class ModalService {
 
         registeredModal.modalContentCreateMethod = modalContentCreateMethod;
 
-        console.log(this.registeredModals)
-
         return registeredModal.create();
     }
 

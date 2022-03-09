@@ -14,9 +14,6 @@ export default class WeatherAPIService {
     constructor() {
         this.selectedApiType = null;
 
-        this.lat = 0;
-        this.lon = 0;
-
         this.apisData = {
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
@@ -29,12 +26,12 @@ export default class WeatherAPIService {
         }
     }
 
-    getForecast(cityName, country) {
+    getForecast(cityName, country, coordinates) {
         switch(this.selectedApiType.apiPath) {
             case this.apisData["open-weather-map"].apiPath:
-                return this.openWeatherMapSearch(cityName, country);
+                return this.openWeatherMapSearch(cityName, country, coordinates);
             case this.apisData["free-weather-api"].apiPath:
-                return this.freeWeatherApiSearch(cityName, country);
+                return this.freeWeatherApiSearch(cityName, country, coordinates);
             default:
                 break;
         }
@@ -42,18 +39,21 @@ export default class WeatherAPIService {
 
     async openWeatherMapSearch(cityName, country, coordinates) {
         try {
+            let lat, lon;
+
             if (!coordinates) {
-                this.setCoordinates(cityName, country);
+                lat = this.getCoordinates(cityName, country).lat;
+                lon = this.getCoordinates(cityName, country).lon;
             } else {
-                this.lat = coordinates.lat;
-                this.lon = coordinates.lon;
+                lat = coordinates.lat;
+                lon = coordinates.lon;
             }
 
             const forecastData = await this.fetchData(
                 this.apisData["open-weather-map"].apiPath, 
                 [
-                    { name: "lat", value: this.lat },
-                    { name: "lon", value: this.lon },
+                    { name: "lat", value: lat },
+                    { name: "lon", value: lon },
                     { name: "appid", value: this.apisData["open-weather-map"].apiKey },
                     { name: "units", value: "metric" },
                 ] 
@@ -63,8 +63,8 @@ export default class WeatherAPIService {
                 id: uuid(),
                 title: cityName,
                 date: new Date(),
-                lat: this.lat,
-                lon: this.lon,
+                lat: lat,
+                lon: lon,
                 cityImage: "assets/images/cloudy.png",
                 currentTemp: simpleRound(forecastData.daily[0].temp.day),
                 weatherCondition: forecastData.daily[0].weather[0].description,
@@ -77,24 +77,28 @@ export default class WeatherAPIService {
                     forecastData.hourly[0].wind_speed
                 ),
             };
-        } catch {
+        } catch (e) {
+            console.log(e)
             return console.warn("could not fetch weather data");
         }
     }
 
-    async freeWeatherApiSearch(cityName, country) {
+    async freeWeatherApiSearch(cityName, country, coordinates) {
         try {
+            let lat, lon;
+
             if (!coordinates) {
-                this.setCoordinates(cityName, country);
+                lat = this.getCoordinates(cityName, country).lat;
+                lon = this.getCoordinates(cityName, country).lon;
             } else {
-                this.lat = coordinates.lat;
-                this.lon = coordinates.lon;
+                lat = coordinates.lat;
+                lon = coordinates.lon;
             }
 
             const forecastData = await this.fetchData(
                 this.apisData["free-weather-api"].apiPath, 
                 [
-                    { name: "q", value: `${this.lat},${this.lon}` },
+                    { name: "q", value: `${lat},${lon}` },
                     { name: "key", value: this.apisData["free-weather-api"].apiKey },
                 ] 
             );
@@ -103,8 +107,8 @@ export default class WeatherAPIService {
                 id: uuid(),
                 title: cityName,
                 date: new Date(),
-                lat: this.lat,
-                lon: this.lon,
+                lat: lat,
+                lon: lon,
                 cityImage: "assets/images/cloudy.png",
                 currentTemp: simpleRound(forecastData.current.temp_c),
                 weatherCondition: forecastData.forecast.forecastday[0].day.condition.text,
@@ -138,7 +142,7 @@ export default class WeatherAPIService {
         return await res.json();
     }
 
-    setCoordinates(cityName, country) {
+    getCoordinates(cityName, country) {
         const city = cities.find((city) => {
             if (city.name === cityName && city.country === country) {
                 return true;
@@ -149,8 +153,9 @@ export default class WeatherAPIService {
             throw new Error();
         }
 
-        this.lat = city.lat;
-        this.lon = city.lng;
+        console.log(city)
+
+        return { lat: city.lat, lon: city.lng }
     }
 
     generateWidgetRelatedInfo(minTemp, maxTemp, feltTemp, uvIndicator, pressure, windSpeed) {
