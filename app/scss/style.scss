@@ -26,6 +26,11 @@
   flex-direction: column;
   overflow-y: auto;
 
+  @media screen and (min-width: 411px) {
+    border: 1px solid $color-dark-gray;
+    border-left: 1px solid $color-gray;
+  }
+
   &__header {
     font-weight: normal;
     font-size: 30px;
@@ -343,7 +348,7 @@
 }
 
 .close-city-list-btn {
-  top: -5px;
+  top: 2px;
   z-index: 9999;
 }
 
