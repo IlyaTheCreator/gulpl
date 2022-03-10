@@ -23,11 +23,11 @@ export default class WeatherAPIService {
         this.apisData = {
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
-                apiPath: "http://api.openweathermap.org/data/2.5/onecall"
+                apiPath: "https://api.openweathermap.org/data/2.5/onecall"
             },
             "free-weather-api": {
                 apiKey: "c4256c0653c74259adb84822220203",
-                apiPath: "http://api.weatherapi.com/v1/forecast.json"
+                apiPath: "https://api.weatherapi.com/v1/forecast.json"
             }
         }
     }
