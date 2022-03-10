@@ -1,5 +1,7 @@
-import { modalTypes, widgetTypes } from "../constants";
+import { modalTypes, widgetTypes, uvTypes } from "../constants";
+import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
+import cities from "cities.json";
 
 /**
  * @namespace entities
@@ -12,7 +14,7 @@ import Widget from "./Widget";
 export default class DashBoard {
   /**
    * @property {Function} createContentWrapper creating markup/styles wrapper for displayed city
-   * @param {*} city current city to be displayed
+   * @param {Object} city current city to be displayed
    * @returns {Object}
    */
   createContentWrapper(city) {
@@ -33,7 +35,88 @@ export default class DashBoard {
   }
 
   /**
-   * @property {Function} createCloseCityBtn creating btn for closing current city
+   * @property {Function} createSelectApiSourceContentWrapper creating content wrapper for selecting inital api source
+   * @returns {Object}
+   */
+  createSelectApiSourceContentWrapper() {
+    const contentWrapper = document.createElement("div");
+
+    contentWrapper.id = "select-api-source-overlay";
+    contentWrapper.classList.add("modal-overlay");
+    contentWrapper.classList.add("modal-overlay--select-api-source");
+
+    contentWrapper.addEventListener("click", this.onCloseSelectApiSource);
+
+    return contentWrapper;
+  }
+
+  /**
+   * @property {Function} createCloseSelectApiSourceBtn creating close btn for selecting inital api source
+   * @returns {Object}
+   */
+  createCloseSelectApiSourceBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-modal-btn");
+    btn.classList.add("close-select-api-source-btn");
+    btn.id = "citySelectApiSourceCloseBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    btn.addEventListener("click", this.onCloseSelectApiSource);
+
+    return btn;
+  }
+
+  /**
+   * @property {Function} createSelectApiSourceCard creating form|card for selecting inital api source
+   * @returns {Object}
+   */
+  createSelectApiSourceCard() {
+    const card = document.createElement("div");
+    const form = document.createElement("form");
+
+    form.classList.add("select-api-source-form");
+    card.classList.add("select-api-source");
+    card.classList.add("card");
+
+    form.innerHTML = `
+      <div class="input-wrapper">
+        <label for="api-source-select">Please select weather data source:</label>
+        <select id="api-source-select">
+          <option value="open-weather-map">OpenWeatherMap API</div>
+          <option value="free-weather-api">Free Weather API</div>
+        </select>
+      </div>
+      <button class="btn">Select</button>
+    `;
+
+    form.addEventListener("submit", e => this.onSelectApiSourceClick(e))
+
+    card.appendChild(form);
+
+    return card;
+  }
+
+  /**
+   * @property {Function} createSelectApiSourceModal creating modal for selecting inital api source
+   */
+  createSelectApiSourceModal() {
+    this.mountModal(
+      modalTypes.SELECT_API_SOURCE,
+      () => [
+        this.createSelectApiSourceContentWrapper(),
+        this.createCloseSelectApiSourceBtn(),
+        this.createSelectApiSourceCard()
+      ],
+      ["select-api-source-modal"]
+    );
+  }
+
+  /**
+   * @property {Function} createCloseCityListBtn creating btn for closing current city
    * @returns {Object}
    */
   createCloseCityListBtn() {
@@ -67,22 +150,40 @@ export default class DashBoard {
    * @returns {string}
    */
   createCityWidgetContent(cityData, key) {
+    let uvText;
+
+    if (cityData.widgetRelatedInfo[key].name === "Uv Indicator") {
+      const uv = cityData.widgetRelatedInfo[key].value;
+
+      if (uv <= 1) {
+        uvText = uvTypes.LOW;
+      }
+
+      if (uv > 1 && uv <= 2) {
+        uvText = uvTypes.MEDIUM;
+      }
+
+      if (uv > 2) {
+        uvText = uvTypes.HIGH;
+      }
+    }
+
     return `
-      <p class="city-info-grid__widget-description">${cityData[key].name
-      }</p>
+      <p class="city-info-grid__widget-description">${cityData.widgetRelatedInfo[key].name}</p>
       <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-          <p class="city-info-grid__widget-number">${cityData[key].value
-      }</p>
-          ${cityData[key].text
-        ? `<p class="city-info-grid__widget-data">${cityData[key].text}</p>`
-        : ""
-      }
-          ${cityData[key].additional
-        ? `<p class="city-info-grid__widget-additional">${cityData[key].additional}</p>`
-        : ""
-      }
+        <p class="city-info-grid__widget-number">${cityData.widgetRelatedInfo[key].value}</p>
+        ${
+          uvText
+          ? `<p class="city-info-grid__widget-data">${uvText}</p>`
+          : ""
+        }
+        ${
+          cityData.widgetRelatedInfo[key].additional
+          ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
+          : ""
+        }
       </div>
-     `;
+    `;
   }
 
   /**
@@ -126,7 +227,10 @@ export default class DashBoard {
         </h3>
         <div class="screen__city-info">
           <span class="screen__city-weather-condition">${city.weatherCondition}</span>
-          <span class="screen__city-temperature-range">Max. ${city.maxTemp.value} Min. ${city.minTemp.value}</span>
+          <span class="screen__city-temperature-range">
+            Max. ${city.widgetRelatedInfo.maxTemp.value} 
+            Min. ${city.widgetRelatedInfo.minTemp.value}
+          </span>
         </div>
       </a>
     `;
@@ -214,24 +318,54 @@ export default class DashBoard {
     return btn;
   }
 
+  /**
+   * @property {Function} createAddCitySubmitButton creating btn submitting adding a city
+   * @returns {Object}
+   */
+  createAddCitySubmitButton() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("btn");
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    btn.addEventListener("click", this.addCityClickHandle);
+
+    return btn;
+  }
+
+  /**
+   * @property {Function} createAddCityForm creating form for adding a city
+   * @returns {Object}
+   */
   createAddCityForm() {
     const form = document.createElement("form");
+    const btn = this.createAddCitySubmitButton();
 
     form.classList.add("add-city-form");
 
     form.innerHTML = `
       <div class="input-wrapper">
-        <input type="text" placeholder="Enter City Name..." />
+        <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
+        <input type="hidden" id="add-city-input-country" />
         <div class="icon-wrapper">
           <i class="icon-map"></i>
         </div>
       </div>
-      <button class="btn">Add</button>
     `;
+
+    btn.innerText = "Add";
+    form.appendChild(btn);
 
     return form;
   }
 
+  /**
+   * @property {Function} createAddCityForm creating content for adding city form
+   * @returns {Object}
+   */
   createAddCityContent() {
     const addCityCard = document.createElement("div");
     
@@ -262,6 +396,9 @@ export default class DashBoard {
     return container;
   }
 
+  /**
+   * @property {Function} generateAddCityModal creating add city modal
+   */
   generateAddCityModal() {
     if (!document.getElementById("add-city")) {
       this.mountModal(
@@ -273,6 +410,9 @@ export default class DashBoard {
         ],
         ["add-city-modal"]
       );
+      
+      // SEE helpers/inputAutocomplete.js
+      autocomplete(document.getElementById("add-city-input"), cities)
     }
   }
 
@@ -281,16 +421,15 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
+    const list = this.createCityList(this.cities, this.onCityWidgetClick);
+
+    if (this.weatherAPIType === null || this.weatherAPIType === "") {
+      this.createSelectApiSourceModal();
+    }
+
     if (this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
-
-    const list = this.createCityList(this.cities, this.onCityWidgetClick);
-    const listWrapper = document.createElement("div");
-
-    listWrapper.classList.add("city-list");
-
-    list.forEach((item) => listWrapper.appendChild(item));
 
     this.mountModal(
       modalTypes.CITY_LIST,
@@ -310,7 +449,7 @@ export default class DashBoard {
 
     Object.keys(currentSettingsState)
       .filter((key) => currentSettingsState[key].isActive)
-      .forEach((key) => filteredCityWidgets[key] = this.widgetsData[key]);
+      .forEach((key) => filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key]);
 
     return this.createCity(filteredCityWidgets, this.currentCity);
   }
@@ -350,6 +489,10 @@ export default class DashBoard {
    * @param {Function} mountModal 
    * @param {Function} closeCityAddModal 
    * @param {Function} smoothTransition 
+   * @param {Function} onSelectApiSourceClick 
+   * @param {Function} addCityClickHandle 
+   * @param {Object} weatherAPIType 
+   * @param {Function} onCloseSelectApiSource 
    * @returns {Array<Object>}
    */
   create(
@@ -361,7 +504,11 @@ export default class DashBoard {
     showCityInfo,
     mountModal,
     closeCityAddModal,
-    smoothTransition
+    smoothTransition,
+    onSelectApiSourceClick,
+    addCityClickHandle,
+    weatherAPIType,
+    onCloseSelectApiSource
   ) {
     /**
      * @property {Array} cities latest city data
@@ -399,6 +546,23 @@ export default class DashBoard {
      * @property {Function} smoothTransition
      */
     this.smoothTransition = smoothTransition;
+    /**
+     * @property {Function} onSelectApiSourceClick
+     */
+    this.onSelectApiSourceClick = onSelectApiSourceClick;
+    /**
+     * @property {Function} addCityClickHandle
+     */
+    this.addCityClickHandle = addCityClickHandle;
+    /**
+     * @property {Object} weatherAPIType
+     */
+    this.weatherAPIType = weatherAPIType;
+    /**
+     * @property {Function} onCloseSelectApiSource
+     */
+    this.onCloseSelectApiSource = onCloseSelectApiSource;
+
 
     return this.generateDashBoard();
   }

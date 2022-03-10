@@ -73,22 +73,60 @@ export default class Settings {
   }
 
   /**
+   * @property {Function} createSelectAPIContent creating content for api selection card
+   * @returns {Object}
+   */
+  createSelectAPIContent(selectHandle) {
+    const content = document.createElement("div");
+    const inputSelect = document.createElement("select");
+
+    inputSelect.addEventListener("change", selectHandle);
+    inputSelect.innerHTML =  `
+      <h3>Weather data source:</h3>
+      <select id="api-source-select">
+        <option value="select city">Select API type:</div>
+        <option value="open-weather-map">OpenWeatherMap API</div>
+        <option value="free-weather-api">Free Weather API</div>
+      </select>
+    `;
+
+    content.innerHTML = `
+      <h3>Weather data source:</h3>
+    `;
+
+    content.appendChild(inputSelect);
+
+    return content;
+  }
+
+  /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
    * @returns {Object}
    */
-  createSettings(lcData, setOnSettingClick) {
-    const settingsCard = document.createElement("div");
+  createSettings(lcData, setOnSettingClick, selectHandle) {
+    const settingsModalWrapper = document.createElement("div");
+    const settingsTogglesCard = document.createElement("div");
+    const settingsSelectAPICard = document.createElement("div");
     
-    settingsCard.classList.add("card");
-    settingsCard.classList.add("settings");
+    settingsModalWrapper.classList.add("settings-modal-wrapper");
+    settingsTogglesCard.classList.add("card");
+    settingsTogglesCard.classList.add("settings");
+    settingsSelectAPICard.classList.add("card");
+    settingsSelectAPICard.classList.add("settings");
+    settingsSelectAPICard.classList.add("card-select-api");
 
     Object.keys(lcData).forEach((key) => {
       const setting = lcData[key];
 
-      settingsCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
+      settingsTogglesCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
     });
 
-    return settingsCard;
+    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectHandle));
+
+    settingsModalWrapper.appendChild(settingsTogglesCard);
+    settingsModalWrapper.appendChild(settingsSelectAPICard);
+
+    return settingsModalWrapper;
   }
 }

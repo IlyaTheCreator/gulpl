@@ -26,6 +26,11 @@
   flex-direction: column;
   overflow-y: auto;
 
+  @media screen and (min-width: 511px) {
+    border: 1px solid $color-dark-gray;
+    border-left: 1px solid $color-gray;
+  }
+
   &__header {
     font-weight: normal;
     font-size: 30px;
@@ -97,11 +102,18 @@
   &__add-btn {
     margin-top: 20px;
     align-self: flex-end;
-    display: grid;
-    place-content: center;
     font-size: 30px;
     width: 75px;
     height: 75px;
+    display: grid;
+    place-content: center;
+
+    i {
+      width: 75px;
+      height: 75px;
+      display: grid;
+      place-content: center;
+    }
   }
 
   &__weather {
@@ -240,13 +252,27 @@
   }
 }
 
-.settings {
+.settings-modal-wrapper {
   position: absolute;
   z-index: 9999;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 358px;
+}
+
+.card-select-api {
+  margin-top: 30px;
+
+  select {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 0;
+    font-size: 18px;
+  }
+}
+
+.settings {
   background: $color-gray;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
@@ -298,7 +324,7 @@
 }
 
 .close-settings-modal-btn {
-  top: 210px;
+  top: 130px;
   right: 8px;
   color: $color-black;
   z-index: 9999;
@@ -308,26 +334,28 @@
   }
 }
 
-.close-add-city-btn {
+.close-add-city-btn, .close-select-api-source-btn {
   top: 235px;
   right: 14px;
   z-index: 10000;
+  color: #000;
 }
 
-.add-city {
+.add-city, .select-api-source {
   margin-top: calc(50vh - 50%);
   z-index: 10000;
   padding: 1.7em;
 }
 
 .close-city-list-btn {
-  top: -5px;
+  top: 2px;
   z-index: 9999;
 }
 
-.add-city-form {
+.add-city-form, .select-api-source-form {
   display: flex;
   flex-direction: column;
+  z-index: 9999;
 
   .input-wrapper {
     position: relative;
@@ -354,6 +382,17 @@
       i {
         font-size: 20px;
       }
+    }
+
+    label {
+      font-size: 18px;
+    }
+
+    select {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 0;
+      font-size: 18px;
     }
   }
 
@@ -386,4 +425,8 @@
   animation-name: change-city;
   animation-duration: 0.4s;
   animation-direction: forwards;
+}
+
+.select-api-source-modal {
+  z-index: 10000;
 }

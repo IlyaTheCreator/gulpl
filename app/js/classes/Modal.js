@@ -38,6 +38,7 @@ export default class Modal {
         modal.classList.add("modal");
         this.classes.forEach((className) => modal.classList.add(className));
         modal.id = this.id;
+
         this.modalContentCreateMethod().forEach((child) => modal.appendChild(child));
 
         return modal;

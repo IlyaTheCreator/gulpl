@@ -1,10 +1,8 @@
-import MOCK_CITIES from "../mocks/cities";
-import MOCK_WIDGETS_DATA from "../mocks/widgetsData";
-import MOCK_SETTINGS_DATA from "../mocks/settingsData";
 import { modalTypes } from "../constants";
 
 import modalService from "../services/ModalService";
 import LsService from "../services/LsService";
+import WeatherAPIService from "../services/WeatherAPIService";
 
 /**
  * @namespace entities
@@ -39,19 +37,36 @@ export default class App {
      */
     this.rootElement = rootElement;
     /**
-     * @property {Object} citiesData weather information
-     */
-    this.citiesData = [];
-    /**
-     * @property {Object} widgetsData Property for holding and managing individual widgets on single city page.
-     */
-    this.widgetsData = MOCK_WIDGETS_DATA;
-    /**
      * Property for holding and managing city settings on single city page.
-     * (notice how keys are matched with the widgetsData object above)
+     * (notice how keys are matched with widgetRelatedInfo property in a city)
      * @property {Object} settingsData
      */
-    this.settingsData = MOCK_SETTINGS_DATA;
+    this.settingsData = {
+      minTemp: {
+          text: "Min. Temp.",
+          isActive: true,
+      },
+      maxTemp: {
+          text: "Max. Temp.",
+          isActive: true,
+      },
+      uvIndicator: {
+          text: "Uv Indicator",
+          isActive: true,
+      },
+      feltTemp: {
+          text: "Felt Temp",
+          isActive: false,
+      },
+      pressure: {
+          text: "Pressure",
+          isActive: false,
+      },
+      windSpeed: {
+          text: "Wind Speed",
+          isActive: false,
+      },
+    };
     /**
      * "dashboard" || something else
      * @property {string} displayMode defines what "page" to display (kind of SPA)
@@ -62,17 +77,21 @@ export default class App {
      */
     this.showCityInfo = true;
     /**
-     * @property {string} settingsLcKey localstorage key for keeping settings data
+     * @property {string} settingsLsKey localstorage key for keeping settings data
      */
-    this.settingsLcKey = "";
+    this.settingsLsKey = "";
     /**
-     * @property {string} citiesListLcKey localstorage key for keeping cities' weather list data
+     * @property {string} citiesListLsKey localstorage key for keeping cities' weather list data
      */
-    this.citiesListLcKey = "";
+    this.citiesListLsKey = "";
     /**
-     * @property {string} cityLcKey localstorage key for keeping individual city's data
+     * @property {string} cityLsKey localstorage key for keeping individual city's data
      */
-    this.cityLcKey = "";
+    this.cityLsKey = "";
+    /**
+     * @property {string} weatherAPITypeLsKey localstorage key for keeping weather api type (object - secret key + api url)
+     */
+    this.weatherAPITypeLsKey = "";
     /**
      * @property {number} touchStartX property for swiping
      */
@@ -82,33 +101,44 @@ export default class App {
      */
     this.touchEndX = 0;
 
+    /**
+     * @property {WeatherAPIService} weatherAPIService api service
+     */
+    this.weatherAPIService = new WeatherAPIService();
+
     this.setupLocalStorage();
   }
 
   /**
    * @property {Function} setupLocalStorage initial localstorage setup
    */
-  setupLocalStorage = () => {
-    this.settingsLcKey = "weather";
-    this.citiesListLcKey = "cities";
-    this.cityLcKey = "city";
+  setupLocalStorage = async () => {
+    this.settingsLsKey = "weather";
+    this.citiesListLsKey = "cities";
+    this.cityLsKey = "city";
+    this.weatherAPITypeLsKey = "weather-api-type";
 
-    const lcSettings = this.getSettingsState();
-    const lcCitiesList = this.getCities();
-    const lcCity = this.getCurrentCity();
+    const lsSettings = this.getSettingsState();
+    const lsCitiesList = this.getCities();
+    const lsCity = this.getCurrentCity();
+    const weatherApiType = this.getWeatherAPIType();
     
     // Inital launching checks
-    if (lcSettings === null) {
-      LsService.set(this.settingsLcKey, this.settingsData);
+    if (lsSettings === null) {
+      this.setSettings(this.settingsData);
+    }
+    
+    if (lsCitiesList === null || !lsCitiesList.length) {
+      this.setCities([]);
     }
 
-    if (lcCitiesList === null || !lcCitiesList.length) {
-      LsService.set(this.citiesListLcKey, MOCK_CITIES);
-    }
-
-    if (lcCity === null || !Object.keys(lcCity).length) {
-      LsService.set(this.cityLcKey, {});
+    if (lsCity === null || !Object.keys(lsCity).length) {
+      this.setCurrentCity({})
       this.showCityList();
+    }
+
+    if (weatherApiType === null || weatherApiType === "") {
+      this.setWeatherAPIType("");
     }
   }
 
@@ -117,9 +147,7 @@ export default class App {
    * For props description see Modal's constructor
    */
   mountModal = (modalType, modalContentCreateMethod, classes = [], id = modalType) => {
-    this.rootElement.appendChild(
-      this.modalService.createModal(modalType, modalContentCreateMethod, classes, id)
-    )
+    this.rootElement.appendChild(this.modalService.createModal(modalType, modalContentCreateMethod, classes, id))
   }
 
   /**
@@ -163,13 +191,12 @@ export default class App {
     }
 
     const key = id.split("-")[2];
-    const newSettings = LsService.get(this.settingsLcKey);
+    const newSettings = LsService.get(this.settingsLsKey);
     const active = classList[1].split("-")[2];
     const isActive = active === "on";
     newSettings[key].isActive = !isActive;
 
-    LsService.set(this.settingsLcKey, newSettings);
-
+    this.setSettings(newSettings);
     this.createSettings();
   }
 
@@ -178,7 +205,7 @@ export default class App {
    * @returns {Object}
    */
   getSettingsState = () => {
-    return LsService.get(this.settingsLcKey);
+    return LsService.get(this.settingsLsKey);
   }
 
   /**
@@ -186,7 +213,7 @@ export default class App {
    * @returns {Object}
    */
   getCities = () => {
-    return LsService.get(this.citiesListLcKey);
+    return LsService.get(this.citiesListLsKey);
     // return []
   }
 
@@ -194,15 +221,42 @@ export default class App {
    * @property {Function} getCurrentCity Current city localstorage getter
    */
   getCurrentCity = () => {
-    return LsService.get(this.cityLcKey);
+    return LsService.get(this.cityLsKey);
+  }
+
+  /**
+   * @property {Function} getWeatherAPIType Current weather api type localstorage getter
+   */
+  getWeatherAPIType = () => {
+    return LsService.get(this.weatherAPITypeLsKey);
+  }
+
+  /**
+   * @property {Function} setWeatherAPIType Current weather api type localstorage setter
+   */
+  setWeatherAPIType = (weatherApiType) => {
+    return LsService.set(this.weatherAPITypeLsKey, weatherApiType);
+  }
+
+  /**
+   * @property {Function} setCities Current cities list localstorage setter
+   */
+  setCities = (citiesList) => {
+    LsService.set(this.citiesListLsKey, citiesList);
+  }
+
+  /**
+   * @property {Function} setSettings Current settings localstorage setter
+   */
+  setSettings = (settings) => {
+    LsService.set(this.settingsLsKey, settings);
   }
 
   /**
    * @property {Function} setCurrentCity Current city localstorage setter
-   * @param {Object} city city to set
    */
-  setCurrentCity(city) {
-    LsService.set(this.cityLcKey, city);
+  setCurrentCity = (city) => {
+    LsService.set(this.cityLsKey, city);
   }
 
   /**
@@ -241,23 +295,23 @@ export default class App {
    */
   handleGesture() {
     const currentCity = this.getCurrentCity();
-    this.citiesData = this.getCities();
+    const citiesData = this.getCities();
 
-    const currentCityIndex = this.citiesData.findIndex((city) => city.id === currentCity.id);
+    const currentCityIndex = citiesData.findIndex((city) => city.id === currentCity.id);
 
-    // swiped left | 100 is for correct behavior (don't swipe on 1px change, for example)
+    // swiped left | 24 is for correct behavior (don't swipe on 1px change, for example)
     if (this.touchEndX + 24 < this.touchStartX) {
-      if (currentCityIndex < this.citiesData.length - 1 && currentCityIndex >= 0) {
-        this.setCurrentCity(this.citiesData[currentCityIndex + 1]);
+      if (currentCityIndex < citiesData.length - 1 && currentCityIndex >= 0) {
+        this.setCurrentCity(citiesData[currentCityIndex + 1]);
 
         this.create();
       }
     }
 
-    // swiped right | 100 is for correct behavior (don't swipe on 1px change, for example)
+    // swiped right | 24 is for correct behavior (don't swipe on 1px change, for example)
     if (this.touchEndX - 24 > this.touchStartX) {
       if (currentCityIndex > 0) {
-        this.setCurrentCity(this.citiesData[currentCityIndex - 1]);
+        this.setCurrentCity(citiesData[currentCityIndex - 1]);
 
         this.create();
       }
@@ -267,7 +321,7 @@ export default class App {
   /**
    * @property {Function} clearRootElement emptying roolElement's content
    */
-  clearRootElement() {
+  clearRootElement = () => {
     this.rootElement.innerHTML = "";
   }
 
@@ -351,14 +405,58 @@ export default class App {
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),
-        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick)
+        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick, this.selectHandle)
       ]
     );
     
     document.getElementById("settingsCloseBtn")?.addEventListener("click", () => {
-      console.log("chel")
-      this.closeSettings()
+      this.closeSettings();
     });
+  }
+
+  /**
+   * @property {Function} selectHandle function triggered on weather api type select in settings modal
+   */
+  selectHandle = (e) => {
+    const selectField = e.target;
+    const apiTypes = this.weatherAPIService.getApiTypes();
+    const oldType = this.getWeatherAPIType();
+    const newType = apiTypes[selectField.value];
+
+    if (oldType.apiKey === newType.apiKey) {
+      return;
+    }
+
+    this.updateCities(apiTypes[selectField.value]);
+  }
+
+  /**
+   * method for fetching existent cities but with new selected api type 
+   * @property {Function} updateCities 
+   */
+  updateCities = async (newAPIType) => {
+    const oldCities = this.getCities();
+
+    this.setWeatherAPIType(newAPIType);
+    this.weatherAPIService.setApiType(newAPIType);
+    this.setCities([]);
+    this.setCurrentCity({});
+    this.showCityInfo = false;
+
+    oldCities.forEach(city => {
+      this.fetchCity(city.title, undefined, { lat: city.lat, lon: city.lon })
+        .then(fetchedCity => {
+          this.setCities([...this.getCities(), fetchedCity])
+          this.create();
+        })
+        .catch(() => {
+          alert("Could not fetch city");
+          this.setCities([]);
+          this.showCityList();
+
+          return;
+        })
+    })
   }
 
   /**
@@ -368,6 +466,9 @@ export default class App {
     this.create();
   }
 
+  /**
+   * @property {Function} closeCityAddModal Closing add city modal
+   */
   closeCityAddModal = () => {
     this.create();
     this.showCityInfo = false;
@@ -386,6 +487,79 @@ export default class App {
   closeCityList = () => {
     this.showCityInfo = true;
     this.create();
+  }
+
+  /**
+   * @property {Function} fetchCities get a new city + all the old ones
+   */
+  fetchCities = async (city, country) => {
+    this.weatherAPIService.setApiType(this.getWeatherAPIType());
+
+    const newCity = await this.fetchCity(city, country);
+
+    if (!newCity) {
+      alert("Could not fetch city");
+      this.setCities([]);
+      this.showCityList();
+
+      return;
+    }
+
+    if (!newCity) {
+      return this.getCities();
+    }
+
+    return [...this.getCities(), newCity];
+  }
+
+  /**
+   * @property {Function} fetchCity getting a new city from an api
+   */
+  fetchCity = async (city, country, coordinates) => {
+    return await this.weatherAPIService.getForecast(city, country, coordinates);
+  }
+
+  /**
+   * @property {Function} onSelectApiSourceClick function triggered when api type is being selected for the first time
+   */
+  onSelectApiSourceClick = (e) => {
+    e.preventDefault();
+    
+    const selectField = e.target.elements["api-source-select"];
+    const apiTypes = this.weatherAPIService.getApiTypes();
+
+    this.setWeatherAPIType(apiTypes[selectField.value]);    
+    this.create();
+  }
+
+  /**
+   * @property {Function} addCityClickHandle handling adding a city
+   */
+  addCityClickHandle = (e) => {
+    e.preventDefault();
+
+    const selectedCity = document.getElementById("add-city-input").value;
+    const selectedCountry = document.getElementById("add-city-input-country").value;
+
+    this.fetchCities(selectedCity, selectedCountry).then((cities) => {
+      this.setCities(cities);
+      this.setCurrentCity(cities[cities.length -1]);
+      this.showCityInfo = true;
+
+      this.create();
+    })
+  }
+
+  /**
+   * @property {Function} onCloseSelectApiSource closing select api source modal
+   */
+  onCloseSelectApiSource = () => {
+    if (!this.getWeatherAPIType()) {
+      const apiTypes = this.weatherAPIService.getApiTypes();
+
+      this.setWeatherAPIType(apiTypes["open-weather-map"]);    
+      this.create();
+    }
   }
 
   /**
@@ -410,7 +584,11 @@ export default class App {
           this.showCityInfo,
           this.mountModal,
           this.closeCityAddModal,
-          this.smoothTransition
+          this.smoothTransition,
+          this.onSelectApiSourceClick,
+          this.addCityClickHandle,
+          this.getWeatherAPIType(),
+          this.onCloseSelectApiSource
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();

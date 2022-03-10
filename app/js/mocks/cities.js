@@ -62,8 +62,8 @@ export default [
       name: "PRESSURE",
       value: "1044 hPa",
     },
-    airQuality: {
-      name: "Air quality",
+    windSpeed: {
+      name: "WindSpeed",
       value: "hello hello hello",
     },
   },

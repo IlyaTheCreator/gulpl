@@ -121,6 +121,11 @@ i {
     z-index: 9999;
     background: $color-normal;
   }
+
+  &--select-api-source {
+    background: $color-normal;
+    z-index: 10000;
+  }
 }
 
 .close-modal-btn {

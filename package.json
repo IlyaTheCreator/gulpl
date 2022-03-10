@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.16.10",
+    "@babel/core": "^7.17.5",
     "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "^7.16.11",
     "browser-sync": "^2.27.7",
@@ -22,12 +22,15 @@
     "gulp-terser": "^2.1.0",
     "node-sass": "^7.0.1",
     "postcss": "^8.1.0",
-    "sass": "^1.49.0"
+    "sass": "^1.49.0",
+    "webpack-stream": "^7.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.7",
+    "axios": "^0.26.0",
+    "cities.json": "^1.1.5",
     "gh-pages": "^3.2.3",
     "gulp-htmlmin": "^5.0.1",
-    "webpack-stream": "^7.0.0"
+    "uuid": "^8.3.2"
   }
 }
