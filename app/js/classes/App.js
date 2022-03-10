@@ -444,10 +444,18 @@ export default class App {
     this.showCityInfo = false;
 
     oldCities.forEach(city => {
-      this.fetchCity(city.title, undefined, { lat: city.lat, lon: city.lon }).then(fetchedCity => {
-        this.setCities([...this.getCities(), fetchedCity])
-        this.create();
-      })
+      this.fetchCity(city.title, undefined, { lat: city.lat, lon: city.lon })
+        .then(fetchedCity => {
+          this.setCities([...this.getCities(), fetchedCity])
+          this.create();
+        })
+        .catch(() => {
+          alert("Could not fetch city");
+          this.setCities([]);
+          this.showCityList();
+
+          return;
+        })
     })
   }
 
@@ -488,6 +496,14 @@ export default class App {
     this.weatherAPIService.setApiType(this.getWeatherAPIType());
 
     const newCity = await this.fetchCity(city, country);
+
+    if (!newCity) {
+      alert("Could not fetch city");
+      this.setCities([]);
+      this.showCityList();
+
+      return;
+    }
 
     if (!newCity) {
       return this.getCities();
