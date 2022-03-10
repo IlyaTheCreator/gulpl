@@ -1,4 +1,4 @@
-import { modalTypes, widgetTypes } from "../constants";
+import { modalTypes, widgetTypes, uvTypes } from "../constants";
 import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
 import cities from "cities.json";
@@ -156,15 +156,15 @@ export default class DashBoard {
       const uv = cityData.widgetRelatedInfo[key].value;
 
       if (uv <= 1) {
-        uvText = "Low";
+        uvText = uvTypes.LOW;
       }
 
       if (uv > 1 && uv <= 2) {
-        uvText = "Medium";
+        uvText = uvTypes.MEDIUM;
       }
 
       if (uv > 2) {
-        uvText = "High";
+        uvText = uvTypes.HIGH;
       }
     }
 

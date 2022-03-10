@@ -1,5 +1,6 @@
 import cities from "cities.json";
 import { v4 as uuid } from "uuid";
+import { apiTypes } from "../constants";
 import simpleRound from "../helpers/simpleRound";
 
 /**
@@ -16,18 +17,22 @@ export default class WeatherAPIService {
          * @property {Object} selectedApiType api type selected
          */
         this.selectedApiType = null;
+    }
 
-        /**
-         * @property {Object} apisData available api types
-         */
-        this.apisData = {
+    /**
+     * @property {Function} apisData returns available api types
+     */
+    static #apisData() {
+        return {
             "open-weather-map": {
                 apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
-                apiPath: "https://api.openweathermap.org/data/2.5/onecall"
+                apiPath: "https://api.openweathermap.org/data/2.5/onecall",
+                apiType: apiTypes.OPEN_WEATHER_MAP,
             },
             "free-weather-api": {
                 apiKey: "c4256c0653c74259adb84822220203",
-                apiPath: "https://api.weatherapi.com/v1/forecast.json"
+                apiPath: "https://api.weatherapi.com/v1/forecast.json",
+                apiType: apiTypes.FREE_WEATHER_API,
             }
         }
     }
@@ -41,10 +46,10 @@ export default class WeatherAPIService {
      * @returns {Object}
      */
     getForecast(cityName, country, coordinates) {
-        switch(this.selectedApiType.apiPath) {
-            case this.apisData["open-weather-map"].apiPath:
+        switch(this.selectedApiType.apiType) {
+            case apiTypes.OPEN_WEATHER_MAP:
                 return this.openWeatherMapSearch(cityName, country, coordinates);
-            case this.apisData["free-weather-api"].apiPath:
+            case apiTypes.FREE_WEATHER_API:
                 return this.freeWeatherApiSearch(cityName, country, coordinates);
             default:
                 break;
@@ -60,22 +65,21 @@ export default class WeatherAPIService {
      */
     async openWeatherMapSearch(cityName, country, coordinates) {
         try {
-            let lat, lon;
+            let lat;
+            let lon;
 
             if (!coordinates) {
-                lat = this.getCoordinates(cityName, country).lat;
-                lon = this.getCoordinates(cityName, country).lon;
+                [lat, lon] = this.getCoordinates(cityName, country);
             } else {
-                lat = coordinates.lat;
-                lon = coordinates.lon;
+                [lat, lon] = coordinates;
             }
 
             const forecastData = await this.fetchData(
-                this.apisData["open-weather-map"].apiPath, 
+                WeatherAPIService.#apisData()["open-weather-map"].apiPath, 
                 [
                     { name: "lat", value: lat },
                     { name: "lon", value: lon },
-                    { name: "appid", value: this.apisData["open-weather-map"].apiKey },
+                    { name: "appid", value: WeatherAPIService.#apisData()["open-weather-map"].apiKey },
                     { name: "units", value: "metric" },
                 ] 
             );
@@ -124,10 +128,10 @@ export default class WeatherAPIService {
             }
 
             const forecastData = await this.fetchData(
-                this.apisData["free-weather-api"].apiPath, 
+                WeatherAPIService.#apisData()["free-weather-api"].apiPath, 
                 [
                     { name: "q", value: `${lat},${lon}` },
-                    { name: "key", value: this.apisData["free-weather-api"].apiKey },
+                    { name: "key", value: WeatherAPIService.#apisData()["free-weather-api"].apiKey },
                 ] 
             );
     
@@ -186,11 +190,7 @@ export default class WeatherAPIService {
      * @returns {Object}
      */
     getCoordinates(cityName, country) {
-        const city = cities.find((city) => {
-            if (city.name === cityName && city.country === country) {
-                return true;
-            }
-        });
+        const city = cities.find((city) => city.name === cityName && city.country === country);
 
         if (!city) {
             throw new Error();
@@ -243,7 +243,7 @@ export default class WeatherAPIService {
      * @property {Function} getApiTypes
      */
     getApiTypes() {
-        return this.apisData;
+        return WeatherAPIService.#apisData();
     }
 
     /**

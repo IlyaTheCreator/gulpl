@@ -9,3 +9,14 @@ export const widgetTypes = {
     LIST: "list",
     CITY: "city",
 };
+
+export const uvTypes = {
+    LOW: "Low",
+    MEDIUM: "Medium",
+    HIGH: "High",
+};
+
+export const apiTypes = {
+    OPEN_WEATHER_MAP: "open-weather-map",
+    FREE_WEATHER_API: "free-weather-api",
+};

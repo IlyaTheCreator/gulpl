@@ -26,7 +26,7 @@
   flex-direction: column;
   overflow-y: auto;
 
-  @media screen and (min-width: 411px) {
+  @media screen and (min-width: 511px) {
     border: 1px solid $color-dark-gray;
     border-left: 1px solid $color-gray;
   }
