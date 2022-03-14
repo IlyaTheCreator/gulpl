@@ -430,3 +430,9 @@
 .select-api-source-modal {
   z-index: 10000;
 }
+
+// map related stuff 
+.mapboxgl-ctrl-top-right {
+  width: 100%;
+  padding-left: 30px;
+}
