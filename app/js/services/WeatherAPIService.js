@@ -196,7 +196,7 @@ export default class WeatherAPIService {
             throw new Error();
         }
 
-        return { lat: city.lat, lon: city.lng }
+        return [ city.lat, city.lng ]
     }
 
     /**

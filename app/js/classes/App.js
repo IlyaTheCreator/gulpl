@@ -128,7 +128,7 @@ export default class App {
       this.setSettings(this.settingsData);
     }
     
-    if (lsCitiesList === null || !lsCitiesList.length) {
+    if (!lsCitiesList || !lsCitiesList.length) {
       this.setCities([]);
     }
 
