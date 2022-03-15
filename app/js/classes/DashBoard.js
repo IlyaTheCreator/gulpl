@@ -584,7 +584,7 @@ export default class DashBoard {
     /**
      * @property {Object} mapType
      */
-    this.mapType = mapData.mapType;
+    this.mapType = mapData?.mapType;
 
 
     return this.generateDashBoard();

@@ -153,7 +153,9 @@ export default class App {
     }
 
     if (mapType === null || mapType === "") {
-      this.setMapType(this.mapService.getMapTypes()["open-street-map"]);
+      const type = this.mapService.getMapTypes()["open-street-map"];
+      this.setMapType(type);
+      this.mapService.setMapType(type);
     }
   }
 
