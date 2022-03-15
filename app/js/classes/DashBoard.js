@@ -3,10 +3,6 @@ import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
 import cities from "cities.json";
 
-import ymaps from 'ymaps';
-import mapboxgl from 'mapbox-gl'
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-
 /**
  * @namespace entities
  */
@@ -116,89 +112,6 @@ export default class DashBoard {
         this.createSelectApiSourceCard()
       ],
       ["select-api-source-modal"]
-    );
-  }
-
-  createMapModal() {
-    this.mountModal(
-      modalTypes.MAP,
-      () => [
-        (function(){
-          const contentWrapper = document.createElement("div");
-
-          contentWrapper.classList.add("modal-overlay");
-          contentWrapper.classList.add("modal-overlay--select-api-source");
-
-          return contentWrapper;
-        })(),
-        (function(){
-          const element = document.createElement("div");
-
-          element.style.zIndex = 10000;
-          element.style.width = "100%";
-          element.style.height = "100vh";
-
-          element.innerHTML = `
-            <div id="ymap" style="width: 100%; height: 100%"></div>
-          `;
-
-          return element;
-        })(),
-        (function(){
-          ymaps
-            .load("https://api-maps.yandex.ru/2.1/?079377f5-7ba4-4ffa-aa07-682636080af0&lang=en_US")
-            .then(maps => {
-              new maps.Map("ymap", {
-                // Координаты центра карты.
-                // Порядок по умолчанию: «широта, долгота».
-                // Чтобы не определять координаты центра карты вручную,
-                // воспользуйтесь инструментом Определение координат.
-                center: [55.76, 37.64],
-                // Уровень масштабирования. Допустимые значения:
-                // от 0 (весь мир) до 19.
-                zoom: 7
-              });
-            })
-
-          return document.createElement("div");
-        })()
-        // (function(){
-        //   const element = document.createElement("div");
-
-        //   element.style.zIndex = 10000;
-        //   element.style.width = "100%";
-        //   element.style.height = "100vh";
-
-        //   element.innerHTML = `
-        //     <div id="omap" style="width: 100%; height: 100%"></div>
-        //   `;
-
-        //   return element;
-        // })(),
-        // (function(){
-        //   setTimeout(() => {
-        //     mapboxgl.accessToken = 'pk.eyJ1IjoiaWx5YXRoZXN1bmZsb3dlciIsImEiOiJjbDBxcmpwNGwwMGVhM2NyejQ2OXQ0aGc4In0.eSAushmUDuWDAqcbUEswtA';
-        //     const map = new mapboxgl.Map({
-        //       container: 'omap',
-        //       style: 'mapbox://styles/ilyathesunflower/cl0qt3t5x004d15s8ss6q38ui',
-        //     });
-
-        //     const geocoder = new MapboxGeocoder({
-        //       // Initialize the geocoder
-        //       accessToken: 'pk.eyJ1IjoiaWx5YXRoZXN1bmZsb3dlciIsImEiOiJjbDBxcmpwNGwwMGVhM2NyejQ2OXQ0aGc4In0.eSAushmUDuWDAqcbUEswtA', // Set the access token
-        //       mapboxgl: mapboxgl, // Set the mapbox-gl instance
-        //       marker: false // Do not use the default marker style
-        //     });
-
-        //     map.addControl(geocoder);
-        //     map.addControl(new mapboxgl.NavigationControl());
-        //     map.addControl(new mapboxgl.GeolocateControl());
-        //     map.addControl(new mapboxgl.FullscreenControl());
-        //   }, 200)
-
-        //   return document.createElement("div");
-        // })()
-      ]
     );
   }
 
@@ -430,20 +343,29 @@ export default class DashBoard {
   createAddCityForm() {
     const form = document.createElement("form");
     const btn = this.createAddCitySubmitButton();
+    const inputWrapper = document.createElement("div");
+    const iconWrapper = document.createElement("div");
+
+    inputWrapper.classList.add("input-wrapper");
+    iconWrapper.classList.add("icon-wrapper");
+
+    inputWrapper.innerHTML = `
+      <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
+      <input type="hidden" id="add-city-input-country" />
+    `;
+
+    iconWrapper.innerHTML = `
+      <i class="icon-map"></i>
+    `;
 
     form.classList.add("add-city-form");
 
-    form.innerHTML = `
-      <div class="input-wrapper">
-        <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
-        <input type="hidden" id="add-city-input-country" />
-        <div class="icon-wrapper">
-          <i class="icon-map"></i>
-        </div>
-      </div>
-    `;
-
     btn.innerText = "Add";
+
+    iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
+
+    inputWrapper.appendChild(iconWrapper);
+    form.appendChild(inputWrapper);
     form.appendChild(btn);
 
     return form;
@@ -562,7 +484,7 @@ export default class DashBoard {
 
     this.smoothTransition();
 
-    this.createMapModal();
+    // this.createMapModal();
 
     return output;
   }
@@ -582,6 +504,8 @@ export default class DashBoard {
    * @param {Function} addCityClickHandle 
    * @param {Object} weatherAPIType 
    * @param {Function} onCloseSelectApiSource 
+   * @param {Function} createMap 
+   * @param {Object} mapData 
    * @returns {Array<Object>}
    */
   create(
@@ -597,7 +521,9 @@ export default class DashBoard {
     onSelectApiSourceClick,
     addCityClickHandle,
     weatherAPIType,
-    onCloseSelectApiSource
+    onCloseSelectApiSource,
+    createMap,
+    mapData
   ) {
     /**
      * @property {Array} cities latest city data
@@ -651,6 +577,14 @@ export default class DashBoard {
      * @property {Function} onCloseSelectApiSource
      */
     this.onCloseSelectApiSource = onCloseSelectApiSource;
+    /**
+     * @property {Function} createMap
+     */
+    this.createMap = createMap;
+    /**
+     * @property {Object} mapType
+     */
+    this.mapType = mapData.mapType;
 
 
     return this.generateDashBoard();

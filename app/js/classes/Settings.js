@@ -80,14 +80,12 @@ export default class Settings {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");
 
+    inputSelect.id = "api-source-select";
     inputSelect.addEventListener("change", selectHandle);
     inputSelect.innerHTML =  `
-      <h3>Weather data source:</h3>
-      <select id="api-source-select">
-        <option value="select city">Select API type:</div>
-        <option value="open-weather-map">OpenWeatherMap API</div>
-        <option value="free-weather-api">Free Weather API</div>
-      </select>
+      <option value="select city">Select API type:</div>
+      <option value="open-weather-map">OpenWeatherMap API</div>
+      <option value="free-weather-api">Free Weather API</div>
     `;
 
     content.innerHTML = `
@@ -100,21 +98,50 @@ export default class Settings {
   }
 
   /**
+   * @property {Function} createSelectAPIContent creating content for map selection card
+   * @returns {Object}
+   */
+  createSelectMapContent(selectHandle) {
+    const content = document.createElement("div");
+    const inputSelect = document.createElement("select");
+
+    inputSelect.id = "map-type-select";
+    inputSelect.addEventListener("change", selectHandle);
+    inputSelect.innerHTML =  `
+      <option value="select city">Select map type:</div>
+      <option value="yandex-map">Yandex</div>
+      <option value="open-street-map">Open Street Map</div>
+    `;
+
+    content.innerHTML = `
+      <h3>Map type:</h3>
+    `;
+
+    content.appendChild(inputSelect);
+
+    return content;
+  }
+
+  /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
    * @returns {Object}
    */
-  createSettings(lcData, setOnSettingClick, selectHandle) {
+  createSettings(lcData, setOnSettingClick, selectAPIHandle, selectMapHandle) {
     const settingsModalWrapper = document.createElement("div");
     const settingsTogglesCard = document.createElement("div");
     const settingsSelectAPICard = document.createElement("div");
+    const settingsSelectMapCard = document.createElement("div");
     
     settingsModalWrapper.classList.add("settings-modal-wrapper");
     settingsTogglesCard.classList.add("card");
     settingsTogglesCard.classList.add("settings");
     settingsSelectAPICard.classList.add("card");
     settingsSelectAPICard.classList.add("settings");
-    settingsSelectAPICard.classList.add("card-select-api");
+    settingsSelectAPICard.classList.add("card-select");
+    settingsSelectMapCard.classList.add("card");
+    settingsSelectMapCard.classList.add("settings");
+    settingsSelectMapCard.classList.add("card-select");
 
     Object.keys(lcData).forEach((key) => {
       const setting = lcData[key];
@@ -122,10 +149,12 @@ export default class Settings {
       settingsTogglesCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
     });
 
-    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectHandle));
+    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectAPIHandle));
+    settingsSelectMapCard.appendChild(this.createSelectMapContent(selectMapHandle));
 
     settingsModalWrapper.appendChild(settingsTogglesCard);
     settingsModalWrapper.appendChild(settingsSelectAPICard);
+    settingsModalWrapper.appendChild(settingsSelectMapCard);
 
     return settingsModalWrapper;
   }

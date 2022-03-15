@@ -3,6 +3,7 @@ import { modalTypes } from "../constants";
 import modalService from "../services/ModalService";
 import LsService from "../services/LsService";
 import WeatherAPIService from "../services/WeatherAPIService";
+import MapService from "../services/MapService";
 
 /**
  * @namespace entities
@@ -93,6 +94,10 @@ export default class App {
      */
     this.weatherAPITypeLsKey = "";
     /**
+     * @property {string} mapTypeLsKey localstorage key for keeping map type (object - secret key + url)
+     */
+    this.mapTypeLsKey = "";
+    /**
      * @property {number} touchStartX property for swiping
      */
     this.touchStartX = 0;
@@ -105,6 +110,10 @@ export default class App {
      * @property {WeatherAPIService} weatherAPIService api service
      */
     this.weatherAPIService = new WeatherAPIService();
+    /**
+     * @property {MapService} MapService map service
+     */
+    this.mapService = new MapService();
 
     this.setupLocalStorage();
   }
@@ -117,11 +126,13 @@ export default class App {
     this.citiesListLsKey = "cities";
     this.cityLsKey = "city";
     this.weatherAPITypeLsKey = "weather-api-type";
+    this.mapTypeLsKey = "map-type";
 
     const lsSettings = this.getSettingsState();
     const lsCitiesList = this.getCities();
     const lsCity = this.getCurrentCity();
     const weatherApiType = this.getWeatherAPIType();
+    const mapType = this.getMapType();
     
     // Inital launching checks
     if (lsSettings === null) {
@@ -139,6 +150,10 @@ export default class App {
 
     if (weatherApiType === null || weatherApiType === "") {
       this.setWeatherAPIType("");
+    }
+
+    if (mapType === null || mapType === "") {
+      this.setMapType(this.mapService.getMapTypes()["open-street-map"]);
     }
   }
 
@@ -232,10 +247,24 @@ export default class App {
   }
 
   /**
+   * @property {Function} getMapType Current map type localstorage getter
+   */
+  getMapType = () => {
+    return LsService.get(this.mapTypeLsKey);
+  }
+
+  /**
    * @property {Function} setWeatherAPIType Current weather api type localstorage setter
    */
   setWeatherAPIType = (weatherApiType) => {
     return LsService.set(this.weatherAPITypeLsKey, weatherApiType);
+  }
+
+  /**
+   * @property {Function} setMapType Current map type localstorage setter
+   */
+  setMapType = (mapType) => {
+    return LsService.set(this.mapTypeLsKey, mapType);
   }
 
   /**
@@ -316,6 +345,78 @@ export default class App {
         this.create();
       }
     }
+  }
+
+  /**
+   * @property {Function} createMapModalContentWrapper 
+   */
+  createMapModalContentWrapper() {
+    const contentWrapper = document.createElement("div");
+    
+    contentWrapper.classList.add("modal-overlay");
+    contentWrapper.classList.add("modal-overlay--select-api-source");
+
+    contentWrapper.addEventListener("click", this.closeMapModal);
+
+    return contentWrapper;
+  }
+
+  /**
+   * @property {Function} closeMapModal 
+   */
+  closeMapModal() {
+    document.getElementById(modalTypes.MAP).remove();
+  }
+
+  /**
+   * @property {Function} createCloseMapModalBtn 
+   */
+  createCloseMapModalBtn() {
+    const btn = document.createElement("button");
+
+    btn.classList.add("close-modal-btn");
+    btn.classList.add("close-map-modal-btn");
+    btn.id = "mapCloseBtn";
+
+    btn.innerHTML = `
+      <i class="icon-cancel-squared"></i>
+    `;
+
+    btn.addEventListener("click", this.closeMapModal);
+
+    return btn;
+  }
+
+  /**
+   * @property {Function} createMapModalContainer 
+   */
+  createMapModalContainer(id) { 
+    const container = document.createElement("div");
+
+    container.classList.add("map-wrapper");
+
+    container.innerHTML = `
+      <div id=${id} class="map-element"></div>
+    `;
+
+    return container;
+  }
+
+  /**
+   * @property {Function} createMap 
+   */
+  createMap = (id) => {
+    this.mountModal(
+      modalTypes.MAP,
+      () => [
+        this.createMapModalContentWrapper(),
+        this.createCloseMapModalBtn(),
+        this.createMapModalContainer(id)
+      ]
+    );
+    
+    this.mapService.setMapType(this.getMapType());
+    this.mapService.createMap(id);
   }
 
   /**
@@ -405,7 +506,7 @@ export default class App {
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),
-        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick, this.selectHandle)
+        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick, this.selectAPIHandle, this.selectMapHandle)
       ]
     );
     
@@ -417,7 +518,7 @@ export default class App {
   /**
    * @property {Function} selectHandle function triggered on weather api type select in settings modal
    */
-  selectHandle = (e) => {
+  selectAPIHandle = (e) => {
     const selectField = e.target;
     const apiTypes = this.weatherAPIService.getApiTypes();
     const oldType = this.getWeatherAPIType();
@@ -428,6 +529,22 @@ export default class App {
     }
 
     this.updateCities(apiTypes[selectField.value]);
+  }
+
+  /**
+   * @property {Function} selectMapHandle function triggered on map type select in settings modal
+   */
+  selectMapHandle = (e) => {
+    const selectField = e.target;
+    const mapTypes = this.mapService.getMapTypes();
+    const oldType = this.getMapType();
+    const newType = mapTypes[selectField.value];
+
+    if (oldType.secretKey === newType.secretKey) {
+      return;
+    }
+
+    this.setMapType(newType);
   }
 
   /**
@@ -444,7 +561,7 @@ export default class App {
     this.showCityInfo = false;
 
     oldCities.forEach(city => {
-      this.fetchCity(city.title, undefined, { lat: city.lat, lon: city.lon })
+      this.fetchCity(city.title, undefined, [ city.lat, city.lon ])
         .then(fetchedCity => {
           this.setCities([...this.getCities(), fetchedCity])
           this.create();
@@ -588,7 +705,9 @@ export default class App {
           this.onSelectApiSourceClick,
           this.addCityClickHandle,
           this.getWeatherAPIType(),
-          this.onCloseSelectApiSource
+          this.onCloseSelectApiSource,
+          this.createMap,
+          this.getMapType()
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();

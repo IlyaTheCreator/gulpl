@@ -117,14 +117,13 @@ export default class WeatherAPIService {
      */
     async freeWeatherApiSearch(cityName, country, coordinates) {
         try {
-            let lat, lon;
+            let lat;
+            let lon;
 
             if (!coordinates) {
-                lat = this.getCoordinates(cityName, country).lat;
-                lon = this.getCoordinates(cityName, country).lon;
+                [lat, lon] = this.getCoordinates(cityName, country);
             } else {
-                lat = coordinates.lat;
-                lon = coordinates.lon;
+                [lat, lon] = coordinates;
             }
 
             const forecastData = await this.fetchData(

@@ -23,6 +23,6 @@ export const apiTypes = {
 };
 
 export const mapTypes = {
-    YANDEX: "yandex",
+    YANDEX: "yandex-map",
     OPEN_STREET_MAP: "open-street-map",
 };
