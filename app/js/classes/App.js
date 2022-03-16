@@ -76,7 +76,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = true;
+    this.showCityInfo = false;
     /**
      * @property {string} settingsLsKey localstorage key for keeping settings data
      */
@@ -105,7 +105,6 @@ export default class App {
      * @property {number} touchEndX property for swiping
      */
     this.touchEndX = 0;
-
     /**
      * @property {WeatherAPIService} weatherAPIService api service
      */
@@ -114,6 +113,14 @@ export default class App {
      * @property {MapService} MapService map service
      */
     this.mapService = new MapService();
+    /**
+     * @property {LsService} LsService localStorage service
+     */
+    this.lsService = new LsService();
+    /**
+     * @property {string} appVerson version number for managing localstorage data differences
+     */
+    this.appVersion = "0.3";
 
     this.setupLocalStorage();
   }
@@ -121,8 +128,9 @@ export default class App {
   /**
    * @property {Function} setupLocalStorage initial localstorage setup
    */
-  setupLocalStorage = async () => {
-    this.settingsLsKey = "weather";
+  setupLocalStorage = () => {
+    this.lsDataKey = "weather" + "-" + this.appVersion;
+    this.settingsLsKey = "settings";
     this.citiesListLsKey = "cities";
     this.cityLsKey = "city";
     this.weatherAPITypeLsKey = "weather-api-type";
@@ -133,29 +141,60 @@ export default class App {
     const lsCity = this.getCurrentCity();
     const weatherApiType = this.getWeatherAPIType();
     const mapType = this.getMapType();
-    
+
+    const defaultMapType = this.mapService.getMapTypes()["open-street-map"];
+
+    const initialLsState = {
+      cities: [],
+      settings: this.settingsData,
+      city: {},
+      "weather-api-type": {},
+      "map-type": defaultMapType
+    };
+
     // Inital launching checks
-    if (lsSettings === null) {
-      this.setSettings(this.settingsData);
-    }
-    
-    if (!lsCitiesList || !lsCitiesList.length) {
-      this.setCities([]);
+    if (!this.getLsData()) {
+      this.lsService.init(this.lsDataKey);
+      LsService.set(this.lsDataKey, initialLsState);
+
+      return;
     }
 
-    if (lsCity === null || !Object.keys(lsCity).length) {
-      this.setCurrentCity({})
-      this.showCityList();
+    if (!lsSettings) {
+      LsService.set(this.lsDataKey, {
+        ...this.getLsData(),
+        [this.settingsLsKey]: this.settingsData
+      });
     }
 
-    if (weatherApiType === null || weatherApiType === "") {
-      this.setWeatherAPIType("");
+    if (!lsCitiesList) {
+      LsService.set(this.lsDataKey, {
+        ...this.getLsData(),
+        [this.citiesListLsKey]: []
+      });
     }
 
-    if (mapType === null || mapType === "") {
-      const type = this.mapService.getMapTypes()["open-street-map"];
-      this.setMapType(type);
-      this.mapService.setMapType(type);
+    if (!lsCity) {
+      LsService.set(this.lsDataKey, {
+        ...this.getLsData(),
+        [this.cityLsKey]: {}
+      });
+    }
+
+    if (!weatherApiType) {
+      LsService.set(this.lsDataKey, {
+        ...this.getLsData(),
+        [this.weatherAPITypeLsKey]: {}
+      });
+    }
+
+    if (!mapType) {
+      LsService.set(this.lsDataKey, {
+        ...this.getLsData(),
+        [this.mapTypeLsKey]: defaultMapType
+      });
+
+      this.mapService.setMapType(this.mapService.getMapTypes()["open-street-map"]);
     }
   }
 
@@ -208,7 +247,7 @@ export default class App {
     }
 
     const key = id.split("-")[2];
-    const newSettings = LsService.get(this.settingsLsKey);
+    const newSettings = this.getSettingsState();
     const active = classList[1].split("-")[2];
     const isActive = active === "on";
     newSettings[key].isActive = !isActive;
@@ -218,11 +257,19 @@ export default class App {
   }
 
   /**
+   * @property {Function} getLsData getting entire current state from localstorage
+   * @returns {Object}
+   */
+  getLsData() {
+    return LsService.get(this.lsDataKey)
+  }
+
+  /**
    * @property {Function} getSettingsState getting current settings state from localstorage
    * @returns {Object}
    */
   getSettingsState = () => {
-    return LsService.get(this.settingsLsKey);
+    return LsService.get(this.lsDataKey)?.[this.settingsLsKey];
   }
 
   /**
@@ -230,7 +277,7 @@ export default class App {
    * @returns {Object}
    */
   getCities = () => {
-    return LsService.get(this.citiesListLsKey);
+    return LsService.get(this.lsDataKey)?.[this.citiesListLsKey];
     // return []
   }
 
@@ -238,56 +285,86 @@ export default class App {
    * @property {Function} getCurrentCity Current city localstorage getter
    */
   getCurrentCity = () => {
-    return LsService.get(this.cityLsKey);
+    return LsService.get(this.lsDataKey)?.[this.cityLsKey];
   }
 
   /**
    * @property {Function} getWeatherAPIType Current weather api type localstorage getter
    */
   getWeatherAPIType = () => {
-    return LsService.get(this.weatherAPITypeLsKey);
+    return LsService.get(this.lsDataKey)?.[this.weatherAPITypeLsKey];
   }
 
   /**
    * @property {Function} getMapType Current map type localstorage getter
    */
   getMapType = () => {
-    return LsService.get(this.mapTypeLsKey);
+    return LsService.get(this.lsDataKey)?.[this.mapTypeLsKey];
   }
 
   /**
    * @property {Function} setWeatherAPIType Current weather api type localstorage setter
    */
   setWeatherAPIType = (weatherApiType) => {
-    return LsService.set(this.weatherAPITypeLsKey, weatherApiType);
+    LsService.set(
+      this.lsDataKey, 
+      {
+        ...LsService.get(this.lsDataKey), 
+        [this.weatherAPITypeLsKey]: weatherApiType
+      }
+    );
   }
 
   /**
    * @property {Function} setMapType Current map type localstorage setter
    */
   setMapType = (mapType) => {
-    return LsService.set(this.mapTypeLsKey, mapType);
+    LsService.set(
+      this.lsDataKey, 
+      {
+        ...LsService.get(this.lsDataKey), 
+        [this.mapTypeLsKey]: mapType
+      }
+    );
   }
 
   /**
    * @property {Function} setCities Current cities list localstorage setter
    */
   setCities = (citiesList) => {
-    LsService.set(this.citiesListLsKey, citiesList);
+    LsService.set(
+      this.lsDataKey, 
+      {
+        ...LsService.get(this.lsDataKey), 
+        [this.citiesListLsKey]: citiesList
+      }
+    );
   }
 
   /**
    * @property {Function} setSettings Current settings localstorage setter
    */
   setSettings = (settings) => {
-    LsService.set(this.settingsLsKey, settings);
+    LsService.set(
+      this.lsDataKey, 
+      {
+        ...LsService.get(this.lsDataKey), 
+        [this.settingsLsKey]: settings
+      }
+    );
   }
 
   /**
    * @property {Function} setCurrentCity Current city localstorage setter
    */
   setCurrentCity = (city) => {
-    LsService.set(this.cityLsKey, city);
+    LsService.set(
+      this.lsDataKey, 
+      {
+        ...LsService.get(this.lsDataKey), 
+        [this.cityLsKey]: city
+      }
+    );
   }
 
   /**

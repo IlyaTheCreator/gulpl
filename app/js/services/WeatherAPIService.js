@@ -25,15 +25,23 @@ export default class WeatherAPIService {
     static #apisData() {
         return {
             "open-weather-map": {
-                apiKey: "cf33b9e5a1e26909a3ca013250b1a78c",
                 apiPath: "https://api.openweathermap.org/data/2.5/onecall",
                 apiType: apiTypes.OPEN_WEATHER_MAP,
             },
             "free-weather-api": {
-                apiKey: "c4256c0653c74259adb84822220203",
                 apiPath: "https://api.weatherapi.com/v1/forecast.json",
                 apiType: apiTypes.FREE_WEATHER_API,
             }
+        }
+    }
+
+    /**
+     * @property {Function} mapsData returns apis' keys
+     */
+     static #apiKeys() {
+        return {
+            "open-weather-map": "cf33b9e5a1e26909a3ca013250b1a78c",
+            "free-weather-api": "c4256c0653c74259adb84822220203",
         }
     }
 
@@ -79,7 +87,7 @@ export default class WeatherAPIService {
                 [
                     { name: "lat", value: lat },
                     { name: "lon", value: lon },
-                    { name: "appid", value: WeatherAPIService.#apisData()["open-weather-map"].apiKey },
+                    { name: "appid", value: WeatherAPIService.#apiKeys()["open-weather-map"] },
                     { name: "units", value: "metric" },
                 ] 
             );
@@ -130,7 +138,7 @@ export default class WeatherAPIService {
                 WeatherAPIService.#apisData()["free-weather-api"].apiPath, 
                 [
                     { name: "q", value: `${lat},${lon}` },
-                    { name: "key", value: WeatherAPIService.#apisData()["free-weather-api"].apiKey },
+                    { name: "key", value: WeatherAPIService.#apiKeys()["free-weather-api"] },
                 ] 
             );
     

@@ -20,7 +20,7 @@ export default class LsService {
    * @param {Object} data data to be put in the localstorage
    */
   init(appKey, data = {}) {
-    LsManager.set(appKey, data);
+    LsService.set(appKey, data);
     this.appKey = appKey;
   }
 

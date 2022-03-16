@@ -24,15 +24,23 @@ export default class MapService {
     static #mapsData() {
         return {
             "yandex-map": {
-                secretKey: "079377f5-7ba4-4ffa-aa07-682636080af0",
                 path: "https://api-maps.yandex.ru/2.1",
                 mapType: mapTypes.YANDEX,
             },
             "open-street-map": {
-                secretKey: "pk.eyJ1IjoiaWx5YXRoZXN1bmZsb3dlciIsImEiOiJjbDBxcmpwNGwwMGVhM2NyejQ2OXQ0aGc4In0.eSAushmUDuWDAqcbUEswtA",
                 path: "mapbox://styles/ilyathesunflower/cl0qt3t5x004d15s8ss6q38ui",
                 mapType: mapTypes.OPEN_STREET_MAP,
             }
+        }
+    }
+
+    /**
+     * @property {Function} mapsData returns map apis' keys
+     */
+    static #mapsKeys() {
+        return {
+            "yandex-map": "079377f5-7ba4-4ffa-aa07-682636080af0",
+            "open-street-map": "pk.eyJ1IjoiaWx5YXRoZXN1bmZsb3dlciIsImEiOiJjbDBxcmpwNGwwMGVhM2NyejQ2OXQ0aGc4In0.eSAushmUDuWDAqcbUEswtA",
         }
     }
 
@@ -60,9 +68,10 @@ export default class MapService {
      */
     createYandexMap(id) {
         const yandexMapData = MapService.#mapsData()["yandex-map"];
+        const key = MapService.#mapsKeys()["yandex-map"];
 
         ymaps
-        .load(`${yandexMapData.path}/?apikey=${yandexMapData.secretKey}&lang=en_US`)
+        .load(`${yandexMapData.path}/?apikey=${key}&lang=en_US`)
         .then(maps => {
           new maps.Map(id, {
             center: [55.76, 37.64],
@@ -78,8 +87,9 @@ export default class MapService {
      */
     createOpenStreetMap(id) {
         const openStreetMapData = MapService.#mapsData()["open-street-map"];
+        const key = MapService.#mapsKeys()["open-street-map"];
 
-        mapboxgl.accessToken = openStreetMapData.secretKey;
+        mapboxgl.accessToken = key;
 
         const map = new mapboxgl.Map({
           container: id,
@@ -87,7 +97,7 @@ export default class MapService {
         });
 
         const geocoder = new MapboxGeocoder({
-          accessToken: openStreetMapData.secretKey,
+          accessToken: key,
           mapboxgl: mapboxgl,
           marker: false
         });

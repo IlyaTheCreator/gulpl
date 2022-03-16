@@ -430,16 +430,16 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
-    if (!this.cities) {
+    if (!this.weatherAPIType.apiPath) {
+      this.createSelectApiSourceModal();
+    }
+
+    if (!this.cities || this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
 
     const list = this.createCityList(this.cities, this.onCityWidgetClick);
-
-    if (this.weatherAPIType === null || this.weatherAPIType === "") {
-      this.createSelectApiSourceModal();
-    }
-
+    
     this.mountModal(
       modalTypes.CITY_LIST,
       () => list,
