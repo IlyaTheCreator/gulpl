@@ -1,3 +1,3 @@
 import AppModule from "./modules/AppModule";
 
-document.addEventListener("DOMContentLoaded", AppModule.init());
+document.addEventListener('DOMContentLoaded', AppModule.init());
