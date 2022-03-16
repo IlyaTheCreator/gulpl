@@ -430,14 +430,14 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
+    if (!this.cities) {
+      return [this.createEmptyListMessage(), this.createAddBtn()];
+    }
+
     const list = this.createCityList(this.cities, this.onCityWidgetClick);
 
     if (this.weatherAPIType === null || this.weatherAPIType === "") {
       this.createSelectApiSourceModal();
-    }
-
-    if (this.cities.length === 0) {
-      return [this.createEmptyListMessage(), this.createAddBtn()];
     }
 
     this.mountModal(

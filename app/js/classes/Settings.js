@@ -84,7 +84,7 @@ export default class Settings {
     inputSelect.addEventListener("change", selectHandle);
     inputSelect.innerHTML =  `
       <option value="select city">Select API type:</div>
-      <option value="open-weather-map">OpenWeatherMap API</div>
+      <option value="open-weather-map">OpenWeather API</div>
       <option value="free-weather-api">Free Weather API</div>
     `;
 

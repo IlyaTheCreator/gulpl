@@ -62,7 +62,7 @@ export default class MapService {
         const yandexMapData = MapService.#mapsData()["yandex-map"];
 
         ymaps
-        .load(`${yandexMapData.path}/?${yandexMapData.secretKey}&lang=en_US`)
+        .load(`${yandexMapData.path}/?apikey=${yandexMapData.secretKey}&lang=en_US`)
         .then(maps => {
           new maps.Map(id, {
             center: [55.76, 37.64],
