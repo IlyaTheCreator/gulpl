@@ -2,7 +2,8 @@ export const modalTypes = {
     SETTINGS: "settings",
     CITY_LIST: "city-list",
     ADD_CITY: "add-city",
-    SELECT_API_SOURCE: "select-api-source"
+    SELECT_API_SOURCE: "select-api-source",
+    MAP: "map",
 };
 
 export const widgetTypes = {
@@ -19,4 +20,9 @@ export const uvTypes = {
 export const apiTypes = {
     OPEN_WEATHER_MAP: "open-weather-map",
     FREE_WEATHER_API: "free-weather-api",
+};
+
+export const mapTypes = {
+    YANDEX: "yandex-map",
+    OPEN_STREET_MAP: "open-street-map",
 };

@@ -343,20 +343,29 @@ export default class DashBoard {
   createAddCityForm() {
     const form = document.createElement("form");
     const btn = this.createAddCitySubmitButton();
+    const inputWrapper = document.createElement("div");
+    const iconWrapper = document.createElement("div");
+
+    inputWrapper.classList.add("input-wrapper");
+    iconWrapper.classList.add("icon-wrapper");
+
+    inputWrapper.innerHTML = `
+      <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
+      <input type="hidden" id="add-city-input-country" />
+    `;
+
+    iconWrapper.innerHTML = `
+      <i class="icon-map"></i>
+    `;
 
     form.classList.add("add-city-form");
 
-    form.innerHTML = `
-      <div class="input-wrapper">
-        <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
-        <input type="hidden" id="add-city-input-country" />
-        <div class="icon-wrapper">
-          <i class="icon-map"></i>
-        </div>
-      </div>
-    `;
-
     btn.innerText = "Add";
+
+    iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
+
+    inputWrapper.appendChild(iconWrapper);
+    form.appendChild(inputWrapper);
     form.appendChild(btn);
 
     return form;
@@ -421,16 +430,16 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityList() {
-    const list = this.createCityList(this.cities, this.onCityWidgetClick);
-
-    if (this.weatherAPIType === null || this.weatherAPIType === "") {
+    if (!this.weatherAPIType.apiPath) {
       this.createSelectApiSourceModal();
     }
 
-    if (this.cities.length === 0) {
+    if (!this.cities || this.cities.length === 0) {
       return [this.createEmptyListMessage(), this.createAddBtn()];
     }
 
+    const list = this.createCityList(this.cities, this.onCityWidgetClick);
+    
     this.mountModal(
       modalTypes.CITY_LIST,
       () => list,
@@ -475,6 +484,8 @@ export default class DashBoard {
 
     this.smoothTransition();
 
+    // this.createMapModal();
+
     return output;
   }
 
@@ -493,6 +504,8 @@ export default class DashBoard {
    * @param {Function} addCityClickHandle 
    * @param {Object} weatherAPIType 
    * @param {Function} onCloseSelectApiSource 
+   * @param {Function} createMap 
+   * @param {Object} mapData 
    * @returns {Array<Object>}
    */
   create(
@@ -508,7 +521,9 @@ export default class DashBoard {
     onSelectApiSourceClick,
     addCityClickHandle,
     weatherAPIType,
-    onCloseSelectApiSource
+    onCloseSelectApiSource,
+    createMap,
+    mapData
   ) {
     /**
      * @property {Array} cities latest city data
@@ -562,6 +577,14 @@ export default class DashBoard {
      * @property {Function} onCloseSelectApiSource
      */
     this.onCloseSelectApiSource = onCloseSelectApiSource;
+    /**
+     * @property {Function} createMap
+     */
+    this.createMap = createMap;
+    /**
+     * @property {Object} mapType
+     */
+    this.mapType = mapData?.mapType;
 
 
     return this.generateDashBoard();
