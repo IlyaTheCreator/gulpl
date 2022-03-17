@@ -142,7 +142,7 @@ export default class App {
     const weatherApiType = this.getWeatherAPIType();
     const mapType = this.getMapType();
 
-    const defaultMapType = this.mapService.getMapTypes()["open-street-map"];
+    const defaultMapType = this.mapService.getMapTypes()["yandex-map"];
 
     const initialLsState = {
       cities: [],
@@ -319,8 +319,6 @@ export default class App {
    * @property {Function} setMapType Current map type localstorage setter
    */
   setMapType = (mapType) => {
-    console.log(mapType)
-
     LsService.set(
       this.lsDataKey, 
       {

@@ -455,3 +455,27 @@
   z-index: 10000;
   color: $color-black;
 }
+
+.open-street-map-overlay-btn {
+  position: absolute;
+  cursor: pointer;
+  right: 30px;
+  font-size: 1.02em;
+  bottom: 80px;
+  background: $color-primary;
+  padding: 5px;
+  border: 0;
+  border-radius: 5px;
+
+  &:hover {
+    background: darken($color-primary, 5%);
+  }
+}
+
+.mapbox-popup {
+  color: $color-black;
+
+  h1 {
+    margin-bottom: 10px;
+  }
+}

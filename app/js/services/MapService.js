@@ -74,6 +74,21 @@ export default class MapService {
         const yandexMapData = MapService.#mapsData()["yandex-map"];
         const key = MapService.#mapsKeys()["yandex-map"];
 
+        const exitMap = (title, coordinates) => {
+            const mapSearchEvent = new CustomEvent("map-search", {
+                detail: {
+                    coordinates,
+                    title
+                },
+                bubbles: true,
+                cancelable: true,
+                composed: false
+            });
+
+            window.dispatchEvent(mapSearchEvent);
+            mapClicked = false;
+        }
+
         ymaps
             .load(`${yandexMapData.path}/?apikey=${key}&lang=en_US`)
             .then(maps => {
@@ -91,24 +106,50 @@ export default class MapService {
                     }
                 });
 
-                searchControl.events.add("resultshow", (e) => {
-                    const selectedIndex = e.originalEvent.index;
-                    const resultData = e.originalEvent.target.state._data.results[selectedIndex]
+                let mapClicked = false;
 
-                    const mapSearchEvent = new CustomEvent("map-search", {
-                        detail: {
-                            coordinates: resultData.geometry._coordinates,
-                            title: resultData.properties._data.name
-                        },
-                        bubbles: true,
-                        cancelable: true,
-                        composed: false
+                const btn = new maps.control.Button("Save");
+
+                btn.events.add("click", () => {
+                    const result = searchControl.getResult(0);
+
+                    result.then((res) => {
+                        if (mapClicked) {
+                            maps.geocode(myMap.getCenter())
+                                .then((innerRes) => {
+                                    const closestObject = innerRes.geoObjects.get(0);
+
+                                    exitMap(res.properties._data.name, closestObject.geometry._coordinates);
+                                });
+                        } else {
+                            exitMap(res.properties._data.name, res.geometry._coordinates);
+                        }
                     });
+                });
 
-                    window.dispatchEvent(mapSearchEvent)
-                })
+                myMap.events.add("click", (e) => {
+                    const coords = e.get("coords");
+                    myMap.center = coords;
+                    mapClicked = true;
+
+                    if (!myMap.balloon.isOpen()) {
+                        myMap.balloon.open(coords, {
+                            contentHeader: "Place selected",
+                            contentBody: "<p>Click save button to get weather <br> from this location</p>"
+                        })
+                    } else {
+                        myMap.balloon.close();
+                    }
+                });
 
                 myMap.controls.add(searchControl);
+                myMap.controls.add(btn, {
+                    float: "right",
+                    position: {
+                        right: 10,
+                        bottom: 50
+                    }
+                });
 
                 if (cityName) {
                     searchControl.search(cityName);
@@ -138,13 +179,26 @@ export default class MapService {
           marker: false,
         });
 
+        const mapContainer = document.getElementById(id);
+        const mapOverlayBtn = document.createElement("button");
 
+        mapOverlayBtn.classList.add("open-street-map-overlay-btn");
+        mapOverlayBtn.innerText = "Save";
 
-        geocoder.on("result", (e) => {
+        mapOverlayBtn.addEventListener("click", () => {
+            if (!geocoder.lastSelected) {
+                return;
+            }
+
+            const city = JSON.parse(geocoder.lastSelected);
+
+            console.log(city)
+            console.log(map.getCenter())
+
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
-                    coordinates: e.result.center,
-                    title: e.result.text
+                    coordinates: [map.getCenter().lng, map.getCenter().lat],
+                    title: city.text
                 },
                 bubbles: true,
                 cancelable: true,
@@ -153,6 +207,24 @@ export default class MapService {
 
             window.dispatchEvent(mapSearchEvent)
         })
+        
+        mapContainer.insertAdjacentElement("afterend", mapOverlayBtn);
+
+        map.on("click", (e) => {
+            const coordinates = [e.lngLat.lng, e.lngLat.lat];
+
+            new mapboxgl.Popup({ closeOnClick: true })
+                .setLngLat(coordinates)
+                .setHTML(`
+                    <div class="mapbox-popup">
+                        <h1>Place selected</h1>
+                        <p>Click save button to get weather <br> from this location</p>
+                    </div>
+                `)
+                .addTo(map);
+
+            map.setCenter(coordinates);
+        });
 
         map.addControl(geocoder);
         map.addControl(new mapboxgl.NavigationControl());
