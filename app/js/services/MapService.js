@@ -15,6 +15,9 @@
  */
 export default class MapService {
     constructor() {
+        /**
+         * @property {string} selectedMapType
+         */
         this.selectedMapType = null;
     }
 
@@ -49,13 +52,13 @@ export default class MapService {
      * @property {Function} createMap
      * @param {number} id  
      */
-    createMap(id) {
+    createMap(id, cityName) {
         switch(this.selectedMapType.mapType) {
             case mapTypes.YANDEX:
-                this.createYandexMap(id);
+                this.createYandexMap(id, cityName);
                 break;
             case mapTypes.OPEN_STREET_MAP:
-                this.createOpenStreetMap(id);
+                this.createOpenStreetMap(id, cityName);
                 break;
             default:
                 break;
@@ -64,28 +67,61 @@ export default class MapService {
 
     /**
      * @property {Function} createYandexMap
-     * @param {number} id  
+     * @param {number} id
+     * @param {string} cityName  
      */
-    createYandexMap(id) {
+    createYandexMap(id, cityName) {
         const yandexMapData = MapService.#mapsData()["yandex-map"];
         const key = MapService.#mapsKeys()["yandex-map"];
 
         ymaps
-        .load(`${yandexMapData.path}/?apikey=${key}&lang=en_US`)
-        .then(maps => {
-          new maps.Map(id, {
-            center: [55.76, 37.64],
-            zoom: 7,
-            controls: ["zoomControl", "searchControl", "fullscreenControl"]
-          });
-        })
+            .load(`${yandexMapData.path}/?apikey=${key}&lang=en_US`)
+            .then(maps => {
+                const myMap = new maps.Map(id, {
+                  center: [55.76, 37.64],
+                  zoom: 7,
+                  controls: ["zoomControl", "fullscreenControl"]
+                });
+
+                const searchControl = new maps.control.SearchControl({
+                    options: {
+                        provider: "yandex#search",
+                        size: "large",
+                        float: "left"
+                    }
+                });
+
+                searchControl.events.add("resultshow", (e) => {
+                    const selectedIndex = e.originalEvent.index;
+                    const resultData = e.originalEvent.target.state._data.results[selectedIndex]
+
+                    const mapSearchEvent = new CustomEvent("map-search", {
+                        detail: {
+                            coordinates: resultData.geometry._coordinates,
+                            title: resultData.properties._data.name
+                        },
+                        bubbles: true,
+                        cancelable: true,
+                        composed: false
+                    });
+
+                    window.dispatchEvent(mapSearchEvent)
+                })
+
+                myMap.controls.add(searchControl);
+
+                if (cityName) {
+                    searchControl.search(cityName);
+                }
+            })
     }
 
     /**
      * @property {Function} createOpenStreetMap
-     * @param {number} id  
+     * @param {number} id
+     * @param {string} cityName  
      */
-    createOpenStreetMap(id) {
+    createOpenStreetMap(id, cityName) {
         const openStreetMapData = MapService.#mapsData()["open-street-map"];
         const key = MapService.#mapsKeys()["open-street-map"];
 
@@ -99,13 +135,33 @@ export default class MapService {
         const geocoder = new MapboxGeocoder({
           accessToken: key,
           mapboxgl: mapboxgl,
-          marker: false
+          marker: false,
         });
+
+
+
+        geocoder.on("result", (e) => {
+            const mapSearchEvent = new CustomEvent("map-search", {
+                detail: {
+                    coordinates: e.result.center,
+                    title: e.result.text
+                },
+                bubbles: true,
+                cancelable: true,
+                composed: false
+            });
+
+            window.dispatchEvent(mapSearchEvent)
+        })
 
         map.addControl(geocoder);
         map.addControl(new mapboxgl.NavigationControl());
         map.addControl(new mapboxgl.GeolocateControl());
         map.addControl(new mapboxgl.FullscreenControl());
+
+        if (cityName) {
+            geocoder.setInput(cityName);
+        }
     }
 
     /**

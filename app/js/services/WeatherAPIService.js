@@ -1,4 +1,3 @@
-import cities from "cities.json";
 import { v4 as uuid } from "uuid";
 import { apiTypes } from "../constants";
 import simpleRound from "../helpers/simpleRound";
@@ -49,16 +48,15 @@ export default class WeatherAPIService {
      * Main data fetching method
      * @property {Function} getForecast
      * @param {string} cityName 
-     * @param {string} country 
      * @param {Object} coordinates object with lat & lon properties
      * @returns {Object}
      */
-    getForecast(cityName, country, coordinates) {
+    getForecast(cityName, coordinates) {
         switch(this.selectedApiType.apiType) {
             case apiTypes.OPEN_WEATHER_MAP:
-                return this.openWeatherMapSearch(cityName, country, coordinates);
+                return this.openWeatherMapSearch(cityName, coordinates);
             case apiTypes.FREE_WEATHER_API:
-                return this.freeWeatherApiSearch(cityName, country, coordinates);
+                return this.freeWeatherApiSearch(cityName, coordinates);
             default:
                 break;
         }
@@ -68,19 +66,11 @@ export default class WeatherAPIService {
      * OpenWeatherMap search
      * @property {Function} openWeatherMapSearch
      * @param {string} cityName 
-     * @param {string} country 
      * @param {Object} coordinates 
      */
-    async openWeatherMapSearch(cityName, country, coordinates) {
+    async openWeatherMapSearch(cityName, coordinates) {
         try {
-            let lat;
-            let lon;
-
-            if (!coordinates) {
-                [lat, lon] = this.getCoordinates(cityName, country);
-            } else {
-                [lat, lon] = coordinates;
-            }
+            const [lat, lon] = coordinates;
 
             const forecastData = await this.fetchData(
                 WeatherAPIService.#apisData()["open-weather-map"].apiPath, 
@@ -120,19 +110,11 @@ export default class WeatherAPIService {
      * FreeWeather API search
      * @property {Function} freeWeatherApiSearch
      * @param {string} cityName 
-     * @param {string} country 
      * @param {Object} coordinates 
      */
-    async freeWeatherApiSearch(cityName, country, coordinates) {
+    async freeWeatherApiSearch(cityName, coordinates) {
         try {
-            let lat;
-            let lon;
-
-            if (!coordinates) {
-                [lat, lon] = this.getCoordinates(cityName, country);
-            } else {
-                [lat, lon] = coordinates;
-            }
+            const [lat, lon] = coordinates;
 
             const forecastData = await this.fetchData(
                 WeatherAPIService.#apisData()["free-weather-api"].apiPath, 
@@ -187,23 +169,6 @@ export default class WeatherAPIService {
         const res = await fetch(url + urlParams, { headers: new Headers(headers) });
 
         return await res.json();
-    }
-
-    /**
-     * Method for getting city coordinates based on its name and country
-     * @property {Function} getCoordinates
-     * @param {string} cityName
-     * @param {string} country 
-     * @returns {Object}
-     */
-    getCoordinates(cityName, country) {
-        const city = cities.find((city) => city.name === cityName && city.country === country);
-
-        if (!city) {
-            throw new Error();
-        }
-
-        return [ city.lat, city.lng ]
     }
 
     /**

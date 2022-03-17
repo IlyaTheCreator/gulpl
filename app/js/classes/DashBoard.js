@@ -1,7 +1,5 @@
 import { modalTypes, widgetTypes, uvTypes } from "../constants";
-import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
-import cities from "cities.json";
 
 /**
  * @namespace entities
@@ -351,7 +349,6 @@ export default class DashBoard {
 
     inputWrapper.innerHTML = `
       <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
-      <input type="hidden" id="add-city-input-country" />
     `;
 
     iconWrapper.innerHTML = `
@@ -419,9 +416,6 @@ export default class DashBoard {
         ],
         ["add-city-modal"]
       );
-      
-      // SEE helpers/inputAutocomplete.js
-      autocomplete(document.getElementById("add-city-input"), cities)
     }
   }
 
@@ -483,8 +477,6 @@ export default class DashBoard {
     }
 
     this.smoothTransition();
-
-    // this.createMapModal();
 
     return output;
   }

@@ -120,7 +120,7 @@ export default class App {
     /**
      * @property {string} appVerson version number for managing localstorage data differences
      */
-    this.appVersion = "0.3";
+    this.appVersion = "1.0.0";
 
     this.setupLocalStorage();
   }
@@ -319,6 +319,8 @@ export default class App {
    * @property {Function} setMapType Current map type localstorage setter
    */
   setMapType = (mapType) => {
+    console.log(mapType)
+
     LsService.set(
       this.lsDataKey, 
       {
@@ -371,6 +373,26 @@ export default class App {
    * @property {Function} setEventListeners setting event listeners when single city "page" is loaded
    */
   setEventListeners() {
+    // Global events 
+    window.addEventListener("map-search", (e) => {
+      this.fetchCities(e.detail.title, e.detail.coordinates).then((cities) => {
+        let shouldExit = false;
+
+        // preventing unnecessary re-rendering & cities duplication
+        this.getCities().forEach((city) => city.title === e.detail.title ? shouldExit = true : false);
+
+        if (shouldExit) {
+          return;
+        }
+
+        this.setCities(cities);
+        this.setCurrentCity(cities[cities.length -1]);
+        this.showCityInfo = true;
+
+        this.create();
+      })
+    }, false, true)
+
     // for smooth transitioning between "pages"
     this.rootElement.addEventListener("webkitAnimationEnd", () => {
       this.rootElement.classList.remove("change-animate");
@@ -484,7 +506,7 @@ export default class App {
   /**
    * @property {Function} createMap 
    */
-  createMap = (id) => {
+  createMap = (id, cityName) => {
     this.mountModal(
       modalTypes.MAP,
       () => [
@@ -495,7 +517,7 @@ export default class App {
     );
     
     this.mapService.setMapType(this.getMapType());
-    this.mapService.createMap(id);
+    this.mapService.createMap(id, cityName);
   }
 
   /**
@@ -619,7 +641,7 @@ export default class App {
     const oldType = this.getMapType();
     const newType = mapTypes[selectField.value];
 
-    if (oldType.secretKey === newType.secretKey) {
+    if (oldType.mapType === newType.mapType) {
       return;
     }
 
@@ -640,7 +662,7 @@ export default class App {
     this.showCityInfo = false;
 
     oldCities.forEach(city => {
-      this.fetchCity(city.title, undefined, [ city.lat, city.lon ])
+      this.fetchCity(city.title, [ city.lat, city.lon ])
         .then(fetchedCity => {
           this.setCities([...this.getCities(), fetchedCity])
           this.create();
@@ -688,10 +710,10 @@ export default class App {
   /**
    * @property {Function} fetchCities get a new city + all the old ones
    */
-  fetchCities = async (city, country) => {
+  fetchCities = async (cityName, coordinates) => {
     this.weatherAPIService.setApiType(this.getWeatherAPIType());
 
-    const newCity = await this.fetchCity(city, country);
+    const newCity = await this.fetchCity(cityName, coordinates);
 
     if (!newCity) {
       alert("Could not fetch city");
@@ -711,8 +733,8 @@ export default class App {
   /**
    * @property {Function} fetchCity getting a new city from an api
    */
-  fetchCity = async (city, country, coordinates) => {
-    return await this.weatherAPIService.getForecast(city, country, coordinates);
+  fetchCity = async (cityName, coordinates) => {
+    return await this.weatherAPIService.getForecast(cityName, coordinates);
   }
 
   /**
@@ -735,15 +757,9 @@ export default class App {
     e.preventDefault();
 
     const selectedCity = document.getElementById("add-city-input").value;
-    const selectedCountry = document.getElementById("add-city-input-country").value;
 
-    this.fetchCities(selectedCity, selectedCountry).then((cities) => {
-      this.setCities(cities);
-      this.setCurrentCity(cities[cities.length -1]);
-      this.showCityInfo = true;
-
-      this.create();
-    })
+    this.mapService.setMapType(this.getMapType().mapType);
+    this.createMap(this.mapService.selectedMapType, selectedCity);
   }
 
   /**
