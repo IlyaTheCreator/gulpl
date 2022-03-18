@@ -140,6 +140,11 @@ export default class MapService {
 
                     const intervalId = setInterval(() => {
                         if (resultData.isLoaded) {
+                            // preventing infinite loop in case of invalid input
+                            if (resultData.results.length === 0) {
+                                clearInterval(intervalId);
+                            }
+
                             const coordinates = resultData.results[0].geometry._coordinates;
                             const title = resultData.results[0].properties._data.name;
 
