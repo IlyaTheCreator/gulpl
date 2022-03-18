@@ -112,7 +112,7 @@ export default class MapService {
                     data: { title: "Save" },
                     options: {
                         layout: maps.templateLayoutFactory.createClass(`
-                            <div class="yandex-select-button">{{ data.title }}</div>
+                            <div class="yandex-select-button map-save-btn">{{ data.title }}</div>
                         `)
                     }
                 });
@@ -190,6 +190,7 @@ export default class MapService {
         const mapOverlayBtn = document.createElement("button");
 
         mapOverlayBtn.classList.add("open-street-map-overlay-btn");
+        mapOverlayBtn.classList.add("map-save-btn");
         mapOverlayBtn.innerText = "Save";
 
         mapOverlayBtn.addEventListener("click", () => {

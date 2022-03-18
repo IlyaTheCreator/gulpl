@@ -456,20 +456,23 @@
   color: $color-black;
 }
 
-.open-street-map-overlay-btn {
-  position: absolute;
-  cursor: pointer;
-  right: 30px;
-  font-size: 1.02em;
-  bottom: 80px;
-  background: $color-primary;
-  padding: 5px;
+.map-save-btn {
+  background: green;
+  color: $color-primary;
   border: 0;
   border-radius: 5px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+  padding: 10px 0;
+  font-size: 1.05em;
+  cursor: pointer;
 
-  &:hover {
-    background: darken($color-primary, 5%);
-  }
+}
+
+.open-street-map-overlay-btn {
+  position: absolute;
+  width: 80%;
+  right: 40px;
+  bottom: 80px;
 }
 
 .mapbox-popup {
@@ -481,7 +484,7 @@
 }
 
 .yandex-select-button {
-  background: $color-blue;
-  color: $color-primary;
-  border-radius: 5px;
+  width: 340px;
+  display: grid;
+  place-content: center;
 }
