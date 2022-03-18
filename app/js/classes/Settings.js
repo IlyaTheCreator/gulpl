@@ -11,14 +11,12 @@ export default class Settings {
    * @property {Function} createContentWrapper creating settings dom wrapper
    * @returns {Object}
    */
-  createContentWrapper(onClick) {
+  createContentWrapper() {
     const contentWrapper = document.createElement("div");
 
     contentWrapper.id = "settings-overlay";
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--settings");
-
-    contentWrapper.addEventListener("click", onClick);
 
     return contentWrapper;
   }

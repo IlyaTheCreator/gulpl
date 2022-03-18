@@ -284,14 +284,12 @@ export default class DashBoard {
    * @property {Function} createAddCityContentWrapper creating add-city overlay
    * @returns {Object}
    */
-   createAddCityContentWrapper(onClick) {
+   createAddCityContentWrapper() {
     const contentWrapper = document.createElement("div");
 
     contentWrapper.id = "add-city-overlay";
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--add-city");
-
-    contentWrapper.addEventListener("click", onClick);
 
     return contentWrapper;
   }
@@ -411,7 +409,7 @@ export default class DashBoard {
         modalTypes.ADD_CITY,
         () => [
           this.createCloseAddCityBtn(),
-          this.createAddCityContentWrapper(this.closeCityAddModal),
+          this.createAddCityContentWrapper(),
           this.createAddCityContent()
         ],
         ["add-city-modal"]

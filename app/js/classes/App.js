@@ -455,8 +455,6 @@ export default class App {
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--select-api-source");
 
-    contentWrapper.addEventListener("click", this.closeMapModal);
-
     return contentWrapper;
   }
 
@@ -604,7 +602,7 @@ export default class App {
       modalTypes.SETTINGS,
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
-        this.settings.createContentWrapper(this.closeSettings),
+        this.settings.createContentWrapper(),
         this.settings.createSettings(
           this.getSettingsState(), 
           this.setOnSettingClick, 
