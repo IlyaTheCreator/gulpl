@@ -469,6 +469,7 @@ export default class App {
    */
   closeMapModal() {
     document.getElementById(modalTypes.MAP)?.remove();
+    window.addCityBtnClicked = false;
   }
 
   /**
@@ -676,12 +677,10 @@ export default class App {
           this.setCities([...this.getCities(), fetchedCity])
           this.create();
         })
-        .catch(() => {
-          alert("Could not fetch city");
+        .catch((e) => {
+          alert("Could not fetch city", e.error);
           this.setCities([]);
           this.showCityList();
-
-          return;
         })
     })
   }
@@ -724,7 +723,7 @@ export default class App {
 
     const newCity = await this.fetchCity(cityName, coordinates);
 
-    if (!newCity) {
+    if (newCity.error) {
       alert("Could not fetch city");
       this.setCities([]);
       this.showCityList();
@@ -763,9 +762,11 @@ export default class App {
    * @property {Function} addCityClickHandle handling adding a city
    */
   addCityClickHandle = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
 
     const selectedCity = document.getElementById("add-city-input").value;
+
+    window.addCityBtnClicked = true;
 
     this.mapService.setMapType(this.getMapType().mapType);
     this.createMap(this.mapService.selectedMapType, selectedCity);
@@ -787,6 +788,7 @@ export default class App {
    * @property {Function} create central app's point
    */
   create = () => {
+    this.setupLocalStorage();
     this.clearRootElement();
 
     if (this.showCityInfo) {

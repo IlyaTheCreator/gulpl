@@ -101,8 +101,8 @@ export default class WeatherAPIService {
                 ),
             };
         } catch (e) {
-            console.log(e)
-            return console.warn("could not fetch weather data");
+            console.warn("could not fetch weather data");
+            return { error: true };
         }
     }
 
@@ -143,7 +143,8 @@ export default class WeatherAPIService {
                 ),
             };
         } catch {
-            return console.warn("could not fetch weather data");
+            console.warn("could not fetch weather data");
+            return { error: true };
         }
     }
 

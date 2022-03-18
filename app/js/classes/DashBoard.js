@@ -357,7 +357,11 @@ export default class DashBoard {
 
     btn.innerText = "Add";
 
-    iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
+    // iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
+    iconWrapper.addEventListener("click", () => {
+      this.addCityClickHandle();
+      window.addCityBtnClicked = false;
+    });
 
     inputWrapper.appendChild(iconWrapper);
     form.appendChild(inputWrapper);

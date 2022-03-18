@@ -75,6 +75,10 @@ export default class MapService {
         const key = MapService.#mapsKeys()["yandex-map"];
 
         const exitMap = (title, coordinates) => {
+            console.log("exiting")
+            console.log(title)
+            console.log(coordinates)
+
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
                     coordinates,
@@ -122,6 +126,38 @@ export default class MapService {
                 });
 
                 let mapClicked = false;
+
+                searchControl.events.add("submit", (e) => {
+                    if (!window.addCityBtnClicked) {
+                        return;
+                    }
+
+                    // const selectedIndex = e.originalEvent.index;
+                    // const resultData = e.originalEvent.target.state._data.results[selectedIndex];
+
+                    console.log(e)
+                    const resultData = e.originalEvent.target.state._data;
+
+                    const intervalId = setInterval(() => {
+                        if (resultData.isLoaded) {
+                            const coordinates = resultData.results[0].geometry._coordinates;
+                            const title = resultData.results[0].properties._data.name;
+
+                            console.log(coordinates)
+                            console.log(title)
+
+                            exitMap(title, coordinates);
+
+                            if (isFullScreen) {
+                                document.querySelector("ymaps").remove();
+                            } 
+
+                            clearInterval(intervalId);
+                        }
+                    }, 100)
+
+                    // exitMap(resultData.geometry._coordinates, resultData.properties._data.name);
+                });
 
                 const saveBtn = new maps.control.Button({
                     data: { title: "Save" },
@@ -258,6 +294,8 @@ export default class MapService {
 
             const city = JSON.parse(geocoder.lastSelected);
 
+            console.log(city);
+
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
                     coordinates: [map.getCenter().lng, map.getCenter().lat],
@@ -315,6 +353,26 @@ export default class MapService {
             }
         });
 
+        geocoder.on("result", () => {
+            const city = JSON.parse(geocoder.lastSelected);
+
+            if (!window.addCityBtnClicked) {
+                return;
+            }
+
+            const mapSearchEvent = new CustomEvent("map-search", {
+                detail: {
+                    coordinates: [map.getCenter().lng, map.getCenter().lat],
+                    title: city.text
+                },
+                bubbles: true,
+                cancelable: true,
+                composed: false
+            });
+
+            window.dispatchEvent(mapSearchEvent);
+        });
+
         map.addControl(geocoder);
         map.addControl(new mapboxgl.NavigationControl());
         map.addControl(new mapboxgl.GeolocateControl());
@@ -322,6 +380,10 @@ export default class MapService {
 
         if (cityName) {
             geocoder.setInput(cityName);
+
+            if (window.addCityBtnClicked) {
+                geocoder.query(cityName);
+            }
         }
     }
 
