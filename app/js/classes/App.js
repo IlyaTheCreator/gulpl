@@ -783,40 +783,42 @@ export default class App {
   create = () => {
     this.clearRootElement();
 
-    if (this.showCityInfo) {
-      this.createNavigation();
-    }
+    this.createMap("yandex-map");
 
-    // central "router"
-    switch (this.displayMode) {
-      case "dashboard":
-        this.dashBoard.create(
-          this.getCities(),
-          this.getCurrentCity(),
-          this.onCityWidgetClick,
-          this.getSettingsState,
-          this.widgetsData,
-          this.showCityInfo,
-          this.mountModal,
-          this.closeCityAddModal,
-          this.smoothTransition,
-          this.onSelectApiSourceClick,
-          this.addCityClickHandle,
-          this.getWeatherAPIType(),
-          this.onCloseSelectApiSource,
-          this.createMap,
-          this.getMapType()
-        ).forEach((element) => this.rootElement.appendChild(element));
+    // if (this.showCityInfo) {
+    //   this.createNavigation();
+    // }
 
-        this.setEventListeners();
+    // // central "router"
+    // switch (this.displayMode) {
+    //   case "dashboard":
+    //     this.dashBoard.create(
+    //       this.getCities(),
+    //       this.getCurrentCity(),
+    //       this.onCityWidgetClick,
+    //       this.getSettingsState,
+    //       this.widgetsData,
+    //       this.showCityInfo,
+    //       this.mountModal,
+    //       this.closeCityAddModal,
+    //       this.smoothTransition,
+    //       this.onSelectApiSourceClick,
+    //       this.addCityClickHandle,
+    //       this.getWeatherAPIType(),
+    //       this.onCloseSelectApiSource,
+    //       this.createMap,
+    //       this.getMapType()
+    //     ).forEach((element) => this.rootElement.appendChild(element));
 
-        break;
-      default:
-        break;
-    }
+    //     this.setEventListeners();
 
-    if (this.showCityInfo) {
-      document.getElementById("city-list")?.remove();
-    }
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    // if (this.showCityInfo) {
+    //   document.getElementById("city-list")?.remove();
+    // }
   }
 }

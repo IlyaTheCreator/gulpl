@@ -488,3 +488,26 @@
   display: grid;
   place-content: center;
 }
+
+ymaps[class*='search_layout'] {
+  min-width: 343px;
+
+  @media screen and (max-width: 410px) {
+    width: auto;
+    min-width: auto;
+  }
+}
+
+ymaps[class*='searchbox-input'] {
+  padding: 6px 0;
+
+  input {
+    font-size: 1.05em;
+  }
+} 
+
+ymaps[class*='searchbox-button'] {
+  height: 40px;
+  display: grid;
+  place-content: center;
+}

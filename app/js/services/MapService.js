@@ -95,7 +95,16 @@ export default class MapService {
                 const myMap = new maps.Map(id, {
                   center: [55.76, 37.64],
                   zoom: 7,
-                  controls: ["zoomControl", "fullscreenControl"]
+                  controls: ["zoomControl"]
+                });
+
+                const fullscreenControl = new maps.control.FullscreenControl({
+                    options: {
+                        position: {
+                            top: 70,
+                            right: 10
+                        }
+                    }
                 });
 
                 const searchControl = new maps.control.SearchControl({
@@ -150,6 +159,7 @@ export default class MapService {
                 });
 
                 myMap.controls.add(searchControl);
+                myMap.controls.add(fullscreenControl);
                 myMap.controls.add(btn, {
                     float: "right",
                     position: {
