@@ -142,7 +142,7 @@ export default class App {
     const weatherApiType = this.getWeatherAPIType();
     const mapType = this.getMapType();
 
-    const defaultMapType = this.mapService.getMapTypes()["yandex-map"];
+    const defaultMapType = this.mapService.getMapTypes()["open-street-map"];
 
     const initialLsState = {
       cities: [],
@@ -373,6 +373,12 @@ export default class App {
   setEventListeners() {
     // Global events 
     window.addEventListener("map-search", (e) => {
+      if (!e.detail.title) {
+        this.closeMapModal();
+
+        return;
+      }
+
       this.fetchCities(e.detail.title, e.detail.coordinates).then((cities) => {
         let shouldExit = false;
 
@@ -462,7 +468,7 @@ export default class App {
    * @property {Function} closeMapModal 
    */
   closeMapModal() {
-    document.getElementById(modalTypes.MAP).remove();
+    document.getElementById(modalTypes.MAP)?.remove();
   }
 
   /**
@@ -783,42 +789,40 @@ export default class App {
   create = () => {
     this.clearRootElement();
 
-    this.createMap("yandex-map");
+    if (this.showCityInfo) {
+      this.createNavigation();
+    }
 
-    // if (this.showCityInfo) {
-    //   this.createNavigation();
-    // }
+    // central "router"
+    switch (this.displayMode) {
+      case "dashboard":
+        this.dashBoard.create(
+          this.getCities(),
+          this.getCurrentCity(),
+          this.onCityWidgetClick,
+          this.getSettingsState,
+          this.widgetsData,
+          this.showCityInfo,
+          this.mountModal,
+          this.closeCityAddModal,
+          this.smoothTransition,
+          this.onSelectApiSourceClick,
+          this.addCityClickHandle,
+          this.getWeatherAPIType(),
+          this.onCloseSelectApiSource,
+          this.createMap,
+          this.getMapType()
+        ).forEach((element) => this.rootElement.appendChild(element));
 
-    // // central "router"
-    // switch (this.displayMode) {
-    //   case "dashboard":
-    //     this.dashBoard.create(
-    //       this.getCities(),
-    //       this.getCurrentCity(),
-    //       this.onCityWidgetClick,
-    //       this.getSettingsState,
-    //       this.widgetsData,
-    //       this.showCityInfo,
-    //       this.mountModal,
-    //       this.closeCityAddModal,
-    //       this.smoothTransition,
-    //       this.onSelectApiSourceClick,
-    //       this.addCityClickHandle,
-    //       this.getWeatherAPIType(),
-    //       this.onCloseSelectApiSource,
-    //       this.createMap,
-    //       this.getMapType()
-    //     ).forEach((element) => this.rootElement.appendChild(element));
+        this.setEventListeners();
 
-    //     this.setEventListeners();
+        break;
+      default:
+        break;
+    }
 
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // if (this.showCityInfo) {
-    //   document.getElementById("city-list")?.remove();
-    // }
+    if (this.showCityInfo) {
+      document.getElementById("city-list")?.remove();
+    }
   }
 }

@@ -86,16 +86,21 @@ export default class MapService {
             });
 
             window.dispatchEvent(mapSearchEvent);
-            mapClicked = false;
         }
 
         ymaps
             .load(`${yandexMapData.path}/?apikey=${key}&lang=en_US`)
             .then(maps => {
+                let isFullScreen;
+
+                if (window.innerWidth <= 768) {
+                    isFullScreen = true;
+                }
+
                 const myMap = new maps.Map(id, {
                   center: [55.76, 37.64],
                   zoom: 7,
-                  controls: ["zoomControl"]
+                  controls: ["zoomControl"],
                 });
 
                 const fullscreenControl = new maps.control.FullscreenControl({
@@ -111,22 +116,32 @@ export default class MapService {
                     options: {
                         provider: "yandex#search",
                         size: "large",
-                        float: "left"
+                        float: "left",
+                        maxWidth: "large"
                     }
                 });
 
                 let mapClicked = false;
 
-                const btn = new maps.control.Button({
+                const saveBtn = new maps.control.Button({
                     data: { title: "Save" },
                     options: {
                         layout: maps.templateLayoutFactory.createClass(`
-                            <div class="yandex-select-button map-save-btn">{{ data.title }}</div>
+                            <div class="yandex-save-button map-save-btn">{{ data.title }}</div>
                         `)
                     }
                 });
 
-                btn.events.add("click", () => {
+                const closeBtn = new maps.control.Button({
+                    data: { title: "Close" },
+                    options: {
+                        layout: maps.templateLayoutFactory.createClass(`
+                            <div class="yandex-close-button map-close-btn">{{ data.title }}</div>
+                        `)
+                    }
+                })
+
+                saveBtn.events.add("click", () => {
                     const result = searchControl.getResult(0);
 
                     result.then((res) => {
@@ -140,7 +155,19 @@ export default class MapService {
                         } else {
                             exitMap(res.properties._data.name, res.geometry._coordinates);
                         }
+
+                        if (isFullScreen) {
+                            document.querySelector("ymaps").remove();
+                        } 
                     });
+                });
+
+                closeBtn.events.add("click", () => {
+                    if (isFullScreen) {
+                        document.querySelector("ymaps").remove();
+                    } 
+
+                    exitMap();
                 });
 
                 myMap.events.add("click", (e) => {
@@ -158,15 +185,30 @@ export default class MapService {
                     }
                 });
 
+                myMap.container.events.add("fullscreenenter", () => isFullScreen = true);
+
                 myMap.controls.add(searchControl);
-                myMap.controls.add(fullscreenControl);
-                myMap.controls.add(btn, {
+                myMap.controls.add(saveBtn, {
+                    float: "right",
+                    position: {
+                        right: 80,
+                        bottom: 50
+                    }
+                });
+                myMap.controls.add(closeBtn, {
                     float: "right",
                     position: {
                         right: 10,
                         bottom: 50
                     }
                 });
+
+                // go fullscreen on mobile 
+                if (window.innerWidth <= 768) {
+                    myMap.container.enterFullscreen();
+                } else {
+                    myMap.controls.add(fullscreenControl);
+                }
 
                 if (cityName) {
                     searchControl.search(cityName);
@@ -197,21 +239,24 @@ export default class MapService {
         });
 
         const mapContainer = document.getElementById(id);
-        const mapOverlayBtn = document.createElement("button");
+        const mapOverlayButtonsContainer = document.createElement("div");
+        const mapSaveBtn = document.createElement("button");
+        const mapCloseBtn = document.createElement("button");
 
-        mapOverlayBtn.classList.add("open-street-map-overlay-btn");
-        mapOverlayBtn.classList.add("map-save-btn");
-        mapOverlayBtn.innerText = "Save";
+        mapOverlayButtonsContainer.classList.add("open-street-map-buttons-wrapper");
+        mapSaveBtn.classList.add("open-street-map-save-btn");
+        mapSaveBtn.classList.add("map-save-btn");
+        mapCloseBtn.classList.add("map-close-btn");
+        mapCloseBtn.classList.add("open-street-map-close-btn");
+        mapSaveBtn.innerText = "Save";
+        mapCloseBtn.innerText = "Close";
 
-        mapOverlayBtn.addEventListener("click", () => {
+        mapSaveBtn.addEventListener("click", () => {
             if (!geocoder.lastSelected) {
                 return;
             }
 
             const city = JSON.parse(geocoder.lastSelected);
-
-            console.log(city)
-            console.log(map.getCenter())
 
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
@@ -223,10 +268,25 @@ export default class MapService {
                 composed: false
             });
 
-            window.dispatchEvent(mapSearchEvent)
+            window.dispatchEvent(mapSearchEvent);
         })
+
+        mapCloseBtn.addEventListener("click", () => {
+            const mapSearchEvent = new CustomEvent("map-search", {
+                detail: {},
+                bubbles: true,
+                cancelable: true,
+                composed: false
+            });
+
+            window.dispatchEvent(mapSearchEvent);
+        });
+
+        mapOverlayButtonsContainer.appendChild(mapSaveBtn);
+        mapOverlayButtonsContainer.appendChild(mapCloseBtn);
         
-        mapContainer.insertAdjacentElement("afterend", mapOverlayBtn);
+        // mapContainer.insertAdjacentElement("afterend", mapOverlayButtonsContainer);
+        mapContainer.appendChild(mapOverlayButtonsContainer);
 
         map.on("click", (e) => {
             const coordinates = [e.lngLat.lng, e.lngLat.lat];
@@ -244,10 +304,21 @@ export default class MapService {
             map.setCenter(coordinates);
         });
 
+        map.on("load", (e) => {
+            // go fullscreen on mobile 
+            if (window.innerWidth <= 768) {
+                const mapContainer = map.getContainer();
+
+                mapContainer.classList.add("fullscreen-map");
+            } else {
+                map.addControl(new mapboxgl.FullscreenControl());
+            }
+        });
+
         map.addControl(geocoder);
         map.addControl(new mapboxgl.NavigationControl());
         map.addControl(new mapboxgl.GeolocateControl());
-        map.addControl(new mapboxgl.FullscreenControl());
+
 
         if (cityName) {
             geocoder.setInput(cityName);

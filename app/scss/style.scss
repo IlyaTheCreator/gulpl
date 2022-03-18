@@ -452,8 +452,12 @@
 
 .close-map-modal-btn {
   top: 6px;
-  z-index: 10000;
   color: $color-black;
+  z-index: 10000;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 }
 
 .map-save-btn {
@@ -465,14 +469,47 @@
   padding: 10px 0;
   font-size: 1.05em;
   cursor: pointer;
-
 }
 
-.open-street-map-overlay-btn {
+.map-close-btn {
+  background: coral;
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+  padding: 10px 0;
+  font-size: 1.05em;
+  cursor: pointer;
+  color: $color-primary;
+  width: 60px;
+  display: grid;
+  place-content: center;
+}
+
+.open-street-map-buttons-wrapper {
   position: absolute;
   width: 80%;
-  right: 40px;
-  bottom: 80px;
+  right: 10px;
+  bottom: 60px;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 768px) {
+    position: fixed;
+  }
+}
+
+.open-street-map-save-btn {
+  width: 340px;
+  margin-right: 10px;
+
+  @media screen and (max-width: 430px) {
+    width: 200px;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 240px;
+  }
 }
 
 .mapbox-popup {
@@ -483,10 +520,18 @@
   }
 }
 
-.yandex-select-button {
+.yandex-save-button {
   width: 340px;
   display: grid;
   place-content: center;
+
+  @media screen and (max-width: 430px) {
+    width: 200px;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 240px;
+  }
 }
 
 ymaps[class*='search_layout'] {
@@ -495,6 +540,7 @@ ymaps[class*='search_layout'] {
   @media screen and (max-width: 410px) {
     width: auto;
     min-width: auto;
+    margin-right: 10px;
   }
 }
 
@@ -510,4 +556,17 @@ ymaps[class*='searchbox-button'] {
   height: 40px;
   display: grid;
   place-content: center;
+}
+
+.fullscreen-map {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
