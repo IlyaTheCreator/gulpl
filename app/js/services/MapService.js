@@ -108,7 +108,14 @@ export default class MapService {
 
                 let mapClicked = false;
 
-                const btn = new maps.control.Button("Save");
+                const btn = new maps.control.Button({
+                    data: { title: "Save" },
+                    options: {
+                        layout: maps.templateLayoutFactory.createClass(`
+                            <div class="yandex-select-button">{{ data.title }}</div>
+                        `)
+                    }
+                });
 
                 btn.events.add("click", () => {
                     const result = searchControl.getResult(0);

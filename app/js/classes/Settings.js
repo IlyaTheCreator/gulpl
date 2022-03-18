@@ -76,17 +76,18 @@ export default class Settings {
    * @property {Function} createSelectAPIContent creating content for api selection card
    * @returns {Object}
    */
-  createSelectAPIContent(selectHandle) {
+  createSelectAPIContent(selectHandle, currentWeatherAPIType) {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");
 
     inputSelect.id = "api-source-select";
     inputSelect.addEventListener("change", selectHandle);
     inputSelect.innerHTML =  `
-      <option value="select city">Select API type:</div>
       <option value="open-weather-map">OpenWeather API</div>
       <option value="free-weather-api">Free Weather API</div>
     `;
+
+    inputSelect.value = currentWeatherAPIType.apiType;
 
     content.innerHTML = `
       <h3>Weather data source:</h3>
@@ -101,17 +102,18 @@ export default class Settings {
    * @property {Function} createSelectAPIContent creating content for map selection card
    * @returns {Object}
    */
-  createSelectMapContent(selectHandle) {
+  createSelectMapContent(selectHandle, currentMapType) {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");
 
     inputSelect.id = "map-type-select";
     inputSelect.addEventListener("change", selectHandle);
     inputSelect.innerHTML =  `
-      <option value="select city">Select map type:</div>
       <option value="yandex-map">Yandex</div>
       <option value="open-street-map">Open Street Map</div>
     `;
+
+    inputSelect.value = currentMapType.mapType;
 
     content.innerHTML = `
       <h3>Map type:</h3>
@@ -125,9 +127,21 @@ export default class Settings {
   /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
+   * @param {Function} setOnSettingClick
+   * @param {Function} selectAPIHandle 
+   * @param {Function} selectMapHandle
+   * @param {Object} currentWeatherAPIType
+   * @param {Object} currentMapType
    * @returns {Object}
    */
-  createSettings(lcData, setOnSettingClick, selectAPIHandle, selectMapHandle) {
+  createSettings(
+    lcData, 
+    setOnSettingClick, 
+    selectAPIHandle, 
+    selectMapHandle,
+    currentWeatherAPIType,
+    currentMapType
+  ) {
     const settingsModalWrapper = document.createElement("div");
     const settingsTogglesCard = document.createElement("div");
     const settingsSelectAPICard = document.createElement("div");
@@ -149,8 +163,8 @@ export default class Settings {
       settingsTogglesCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
     });
 
-    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectAPIHandle));
-    settingsSelectMapCard.appendChild(this.createSelectMapContent(selectMapHandle));
+    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectAPIHandle, currentWeatherAPIType));
+    settingsSelectMapCard.appendChild(this.createSelectMapContent(selectMapHandle, currentMapType));
 
     settingsModalWrapper.appendChild(settingsTogglesCard);
     settingsModalWrapper.appendChild(settingsSelectAPICard);

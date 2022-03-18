@@ -605,7 +605,14 @@ export default class App {
       () => [
         this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(this.closeSettings),
-        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick, this.selectAPIHandle, this.selectMapHandle)
+        this.settings.createSettings(
+          this.getSettingsState(), 
+          this.setOnSettingClick, 
+          this.selectAPIHandle, 
+          this.selectMapHandle,
+          this.getWeatherAPIType(),
+          this.getMapType()
+        )
       ]
     );
     
@@ -623,7 +630,7 @@ export default class App {
     const oldType = this.getWeatherAPIType();
     const newType = apiTypes[selectField.value];
 
-    if (oldType.apiKey === newType.apiKey) {
+    if (oldType.apiType === newType.apiType) {
       return;
     }
 
