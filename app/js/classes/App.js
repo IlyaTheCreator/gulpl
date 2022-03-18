@@ -412,6 +412,7 @@ export default class App {
     const cityInfo = document.getElementById("city-info");
 
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
+    document.getElementById("navigationAddCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
     document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
 
     cityInfo.addEventListener('touchstart', e => {
@@ -558,6 +559,11 @@ export default class App {
       </div>
       <div class="navigation__pages" id="nav-circles"></div>
       <div class="navigation__cities">
+          <a id="navigationAddCityBtn" class="link add-city-link">
+            <div class="navigation__cities-link-wrapper">
+                <i class="icon icon-figma-plus navigation__smaller-icon"></i>
+            </div>
+          </a>
           <a class="link" id="showCitiesListBtn">
               <div class="navigation__cities-link-wrapper">
                   <i class="icon icon-figma-tiles navigation__smaller-icon"></i>

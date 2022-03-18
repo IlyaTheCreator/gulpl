@@ -225,6 +225,15 @@
 
   &__pages {
     display: flex;
+    overflow-x: hidden;
+  }
+
+  &__cities {
+    display: flex;
+
+    .add-city-link {
+      border-right: 1px solid $color-primary;
+    }
   }
 
   &__circle {
