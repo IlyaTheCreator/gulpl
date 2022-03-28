@@ -24,7 +24,9 @@ export default class DashBoard {
       <h1 class="screen__header">${city.title}</h1>
       <p class="screen__date">${new Date(city.date).toDateString()}</p>
       <div class="screen__weather">
-          <img src="${city.cityImage}" alt="weather image" class="screen__image">
+          <img src="${
+            city.cityImage
+          }" alt="weather image" class="screen__image">
           <p class="screen__temperature">${city.currentTemp}°</p>
           <p class="screen__weather-type">${city.weatherCondition}</p>
       </div>
@@ -102,7 +104,7 @@ export default class DashBoard {
 
     form.appendChild(closeBtn);
 
-    form.addEventListener("submit", e => this.onSelectApiSourceClick(e))
+    form.addEventListener("submit", (e) => this.onSelectApiSourceClick(e));
 
     card.appendChild(form);
 
@@ -118,7 +120,7 @@ export default class DashBoard {
       () => [
         this.createSelectApiSourceContentWrapper(),
         this.createCloseSelectApiSourceBtn(),
-        this.createSelectApiSourceCard()
+        this.createSelectApiSourceCard(),
       ],
       ["select-api-source-modal"]
     );
@@ -178,18 +180,18 @@ export default class DashBoard {
     }
 
     return `
-      <p class="city-info-grid__widget-description">${cityData.widgetRelatedInfo[key].name}</p>
+      <p class="city-info-grid__widget-description">${
+        cityData.widgetRelatedInfo[key].name
+      }</p>
       <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-        <p class="city-info-grid__widget-number">${cityData.widgetRelatedInfo[key].value}</p>
-        ${
-          uvText
-          ? `<p class="city-info-grid__widget-data">${uvText}</p>`
-          : ""
-        }
+        <p class="city-info-grid__widget-number">${
+          cityData.widgetRelatedInfo[key].value
+        }</p>
+        ${uvText ? `<p class="city-info-grid__widget-data">${uvText}</p>` : ""}
         ${
           cityData.widgetRelatedInfo[key].additional
-          ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
-          : ""
+            ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
+            : ""
         }
       </div>
     `;
@@ -210,14 +212,16 @@ export default class DashBoard {
 
       Object.keys(citiesData).forEach((key) => {
         const content = this.createCityWidgetContent(currentCity, key);
-        const widget = Widget.create(content, widgetTypes.CITY, ["city-info-grid__grid-item"]);
-      
+        const widget = Widget.create(content, widgetTypes.CITY, [
+          "city-info-grid__grid-item",
+        ]);
+
         cityInfoGrid.appendChild(widget);
       });
 
       contentWrapper.classList.add("city-info");
       contentWrapper.appendChild(cityInfoGrid);
-      
+
       citiesSlider.appendChild(contentWrapper);
     });
 
@@ -235,12 +239,16 @@ export default class DashBoard {
         <h3 class="screen__title">
           <div className="screen__city-title-group">
             <span class="screen__city-name">${city.title}</span>
-            <p class="screen__city-time">${new Date(city.date).toDateString()}</p>
+            <p class="screen__city-time">${new Date(
+              city.date
+            ).toDateString()}</p>
           </div>
           <span class="screen__city-temperature">${city.currentTemp}°</span>
         </h3>
         <div class="screen__city-info">
-          <span class="screen__city-weather-condition">${city.weatherCondition}</span>
+          <span class="screen__city-weather-condition">${
+            city.weatherCondition
+          }</span>
           <span class="screen__city-temperature-range">
             Max. ${city.widgetRelatedInfo.maxTemp.value} 
             Min. ${city.widgetRelatedInfo.minTemp.value}
@@ -251,7 +259,7 @@ export default class DashBoard {
   }
 
   /**
-   * @property {Function} createDeleteCityBtn 
+   * @property {Function} createDeleteCityBtn
    */
   createDeleteCityBtn = (e, id) => {
     if (e.target.classList.contains("city-with-delete-btn")) {
@@ -264,22 +272,22 @@ export default class DashBoard {
     deleteBtn.classList.add("delete-city-btn");
     deleteBtn.textContent = "delete";
 
-    deleteBtn.addEventListener("click" , (e) => {
+    deleteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.deleteCity(id);
     });
 
     e.target.appendChild(deleteBtn);
     e.target.classList.add("city-with-delete-btn");
-  }
+  };
 
   /**
-   * @property {Function} removeDeleteCityBtn 
+   * @property {Function} removeDeleteCityBtn
    */
   removeDeleteCityBtn = (e) => {
     e.target.classList.remove("city-with-delete-btn");
     e.target.childNodes[e.target.childNodes.length - 1].remove();
-  }
+  };
 
   /**
    * @property {Function} createCityList creating city list page
@@ -301,11 +309,17 @@ export default class DashBoard {
       );
 
       if (window.innerWidth > 768) {
-        cityWidget.addEventListener("mouseenter", (e) => this.createDeleteCityBtn(e, city.id));
-        cityWidget.addEventListener("mouseleave", (e) => this.removeDeleteCityBtn(e));
+        cityWidget.addEventListener("mouseenter", (e) =>
+          this.createDeleteCityBtn(e, city.id)
+        );
+        cityWidget.addEventListener("mouseleave", (e) =>
+          this.removeDeleteCityBtn(e)
+        );
       } else {
         cityWidget.dataset.longPressDelay = 500;
-        cityWidget.addEventListener("long-press", (e) => this.createDeleteCityBtn(e, city.id));
+        cityWidget.addEventListener("long-press", (e) =>
+          this.createDeleteCityBtn(e, city.id)
+        );
       }
 
       return cityWidget;
@@ -341,7 +355,7 @@ export default class DashBoard {
    * @property {Function} createAddCityContentWrapper creating add-city overlay
    * @returns {Object}
    */
-   createAddCityContentWrapper() {
+  createAddCityContentWrapper() {
     const contentWrapper = document.createElement("div");
 
     contentWrapper.id = "add-city-overlay";
@@ -355,7 +369,7 @@ export default class DashBoard {
    * @property {Function} createCloseAddCityBtn creating btn for closing add-city modal
    * @returns {Object}
    */
-   createCloseAddCityBtn() {
+  createCloseAddCityBtn() {
     const btn = document.createElement("button");
 
     btn.classList.add("close-add-city-btn");
@@ -434,7 +448,7 @@ export default class DashBoard {
    */
   createAddCityContent() {
     const addCityCard = document.createElement("div");
-    
+
     addCityCard.classList.add("card");
     addCityCard.classList.add("add-city");
 
@@ -469,14 +483,11 @@ export default class DashBoard {
     if (!document.getElementById("add-city")) {
       this.mountModal(
         modalTypes.ADD_CITY,
-        () => [
-          this.createAddCityContentWrapper(),
-          this.createAddCityContent()
-        ],
+        () => [this.createAddCityContentWrapper(), this.createAddCityContent()],
         ["add-city-modal"]
       );
     }
-  }
+  };
 
   /**
    * @property {Function} generateCityList preparing city list to be attached to the dom
@@ -492,12 +503,8 @@ export default class DashBoard {
     }
 
     const list = this.createCityList(this.cities, this.onCityWidgetClick);
-    
-    this.mountModal(
-      modalTypes.CITY_LIST,
-      () => list,
-      ["city-list"]
-    );
+
+    this.mountModal(modalTypes.CITY_LIST, () => list, ["city-list"]);
   }
 
   /**
@@ -511,7 +518,10 @@ export default class DashBoard {
 
     Object.keys(currentSettingsState)
       .filter((key) => currentSettingsState[key].isActive)
-      .forEach((key) => filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key]);
+      .forEach(
+        (key) =>
+          (filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key])
+      );
 
     return this.createCity(filteredCityWidgets, this.currentCity);
   }
@@ -527,10 +537,7 @@ export default class DashBoard {
       output.push(this.generateCityInfo());
     } else {
       if (Array.isArray(this.generateCityList())) {
-        output = [
-          ...output, 
-          ...this.generateCityList(), 
-        ];
+        output = [...output, ...this.generateCityList()];
       }
 
       if (this.cities.length > 0) {
@@ -545,22 +552,22 @@ export default class DashBoard {
 
   /**
    * @property {Function} create getting the required methods from the app and connecting to it
-   * @param {Object} cities 
-   * @param {Object} currentCity 
-   * @param {Function} onCityWidgetClick 
-   * @param {Function} getSettingsState 
-   * @param {Function} widgetsData 
-   * @param {Function} showCityInfo 
-   * @param {Function} mountModal 
-   * @param {Function} closeCityAddModal 
-   * @param {Function} smoothTransition 
-   * @param {Function} onSelectApiSourceClick 
-   * @param {Function} addCityClickHandle 
-   * @param {Object} weatherAPIType 
-   * @param {Function} onCloseSelectApiSource 
-   * @param {Function} createMap 
-   * @param {Object} mapData 
-   * @param {Function} deleteCity 
+   * @param {Object} cities
+   * @param {Object} currentCity
+   * @param {Function} onCityWidgetClick
+   * @param {Function} getSettingsState
+   * @param {Function} widgetsData
+   * @param {Function} showCityInfo
+   * @param {Function} mountModal
+   * @param {Function} closeCityAddModal
+   * @param {Function} smoothTransition
+   * @param {Function} onSelectApiSourceClick
+   * @param {Function} addCityClickHandle
+   * @param {Object} weatherAPIType
+   * @param {Function} onCloseSelectApiSource
+   * @param {Function} createMap
+   * @param {Object} mapData
+   * @param {Function} deleteCity
    * @returns {Array<Object>}
    */
   create(
@@ -584,9 +591,9 @@ export default class DashBoard {
     /**
      * @property {Array} cities latest city data
      */
-     this.cities = cities;
+    this.cities = cities;
     /**
-     * @property {Function} currentCity 
+     * @property {Function} currentCity
      */
     this.currentCity = currentCity;
     /**

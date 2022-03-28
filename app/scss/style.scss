@@ -1,6 +1,6 @@
-@import './variables';
-@import './fonts';
-@import './general-styles';
+@import "./variables";
+@import "./fonts";
+@import "./general-styles";
 
 .screen-wrapper {
   flex: 1;
@@ -52,30 +52,30 @@
 
   &__city {
     margin: 20px 0;
-  
+
     &-name {
       font-size: 30px;
       position: relative;
       left: -1px;
     }
-  
+
     &-temperature {
       font-size: 40px;
       padding-right: 10px;
     }
-  
+
     &-time {
-      font-size: .9em;
+      font-size: 0.9em;
       color: $color-gray;
     }
-  
+
     &-info {
       display: flex;
       justify-content: space-between;
       color: $color-secondary;
       margin-top: 30px;
     }
-  
+
     &-temperature-range {
       color: $color-gray;
       font-size: 20px;
@@ -185,13 +185,15 @@
       margin-bottom: 12px;
     }
   }
-  
+
   &__widget-additional {
     font-size: 15px;
   }
 }
 
-.city-info-grid .city-info-grid__grid-item-wrapper .city-info-grid__grid-item-item {
+.city-info-grid
+  .city-info-grid__grid-item-wrapper
+  .city-info-grid__grid-item-item {
   margin-right: 0px;
 }
 
@@ -212,7 +214,7 @@
   right: 0;
   width: 100%;
   border-top: 1px solid $color-gray;
-  background: rgba(0, 0, 0, .08);
+  background: rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -295,15 +297,15 @@
       line-height: 24px;
     }
   }
-  
+
   &__toggle-icon {
     cursor: pointer;
     font-size: 2em;
-    
+
     &--on {
       color: $color-blue;
     }
-  
+
     &--off {
       color: $color-dark-gray;
     }
@@ -342,7 +344,7 @@
   background: $color-blue;
   border-radius: 10px;
   box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
-  
+
   p {
     border: 0;
     width: 100%;
@@ -354,7 +356,8 @@
   }
 }
 
-.close-add-city-btn, .close-select-api-source-btn {
+.close-add-city-btn,
+.close-select-api-source-btn {
   color: $color-primary;
   margin-top: 10px !important;
   background: coral !important;
@@ -367,7 +370,8 @@
   }
 }
 
-.add-city, .select-api-source {
+.add-city,
+.select-api-source {
   margin-top: calc(50vh - 60%);
   z-index: 10000;
   padding: 1.7em;
@@ -403,7 +407,8 @@
   padding: 1px 5px;
 }
 
-.add-city-form, .select-api-source-form {
+.add-city-form,
+.select-api-source-form {
   display: flex;
   flex-direction: column;
   z-index: 9999;
@@ -414,12 +419,16 @@
     input[type="text"] {
       display: block;
       width: 100%;
-      background: linear-gradient(180deg, #DBDBDB 0%, rgba(228, 228, 228, 0.96) 100%);
+      background: linear-gradient(
+        180deg,
+        #dbdbdb 0%,
+        rgba(228, 228, 228, 0.96) 100%
+      );
       border-radius: 10px;
       border: 0;
       padding: 0.8em 2em 0.8em 2.6em;
       font-size: 0.95rem;
-  
+
       &:focus {
         outline: none;
       }
@@ -489,13 +498,13 @@
   top: 30px;
   left: 30px;
   background: coral;
-  padding:10px 30px;
+  padding: 10px 30px;
   font-size: 1.3rem;
   box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
-  border-radius:10px;
+  border-radius: 10px;
 }
 
-// map related stuff 
+// map related stuff
 .mapboxgl-ctrl-top-right {
   width: 100%;
   padding-left: 30px;
@@ -597,7 +606,7 @@
   }
 }
 
-ymaps[class*='search_layout'] {
+ymaps[class*="search_layout"] {
   min-width: 343px;
 
   @media screen and (max-width: 410px) {
@@ -607,15 +616,15 @@ ymaps[class*='search_layout'] {
   }
 }
 
-ymaps[class*='searchbox-input'] {
+ymaps[class*="searchbox-input"] {
   padding: 6px 0;
 
   input {
     font-size: 1.05em;
   }
-} 
+}
 
-ymaps[class*='searchbox-button'] {
+ymaps[class*="searchbox-button"] {
   height: 40px;
   display: grid;
   place-content: center;

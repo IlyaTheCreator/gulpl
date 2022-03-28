@@ -23,8 +23,8 @@ export default class Settings {
 
   /**
    * @property {Function} createSettingItem creating a single setting toggler
-   * @param {Object} setting current setting object (see App's settingsData prop) 
-   * @param {string} key current setting key (see App's settingsData prop) 
+   * @param {Object} setting current setting object (see App's settingsData prop)
+   * @param {string} key current setting key (see App's settingsData prop)
    * @returns {Object}
    */
   createSettingItem(setting, key, setOnSettingClick) {
@@ -54,7 +54,7 @@ export default class Settings {
    * @property {Function} createCloseSettingsBtn creating btn for closing setting modal
    * @returns {Object}
    */
-   createCloseSettingsBtn(onClick) {
+  createCloseSettingsBtn(onClick) {
     const btn = document.createElement("button");
 
     btn.classList.add("close-modal-btn");
@@ -80,7 +80,7 @@ export default class Settings {
 
     inputSelect.id = "api-source-select";
     inputSelect.addEventListener("change", selectHandle);
-    inputSelect.innerHTML =  `
+    inputSelect.innerHTML = `
       <option value="open-weather-map">OpenWeather API</div>
       <option value="free-weather-api">Free Weather API</div>
     `;
@@ -106,7 +106,7 @@ export default class Settings {
 
     inputSelect.id = "map-type-select";
     inputSelect.addEventListener("change", selectHandle);
-    inputSelect.innerHTML =  `
+    inputSelect.innerHTML = `
       <option value="yandex-map">Yandex</div>
       <option value="open-street-map">Open Street Map</div>
     `;
@@ -126,7 +126,7 @@ export default class Settings {
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
    * @param {Function} setOnSettingClick
-   * @param {Function} selectAPIHandle 
+   * @param {Function} selectAPIHandle
    * @param {Function} selectMapHandle
    * @param {Object} currentWeatherAPIType
    * @param {Object} currentMapType
@@ -134,9 +134,9 @@ export default class Settings {
    * @returns {Object}
    */
   createSettings(
-    lcData, 
-    setOnSettingClick, 
-    selectAPIHandle, 
+    lcData,
+    setOnSettingClick,
+    selectAPIHandle,
     selectMapHandle,
     currentWeatherAPIType,
     currentMapType,
@@ -146,7 +146,7 @@ export default class Settings {
     const settingsTogglesCard = document.createElement("div");
     const settingsSelectAPICard = document.createElement("div");
     const settingsSelectMapCard = document.createElement("div");
-    
+
     settingsModalWrapper.classList.add("settings-modal-wrapper");
     settingsTogglesCard.classList.add("card");
     settingsTogglesCard.classList.add("settings");
@@ -160,16 +160,24 @@ export default class Settings {
     Object.keys(lcData).forEach((key) => {
       const setting = lcData[key];
 
-      settingsTogglesCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
+      settingsTogglesCard.appendChild(
+        this.createSettingItem(setting, key, setOnSettingClick)
+      );
     });
 
-    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectAPIHandle, currentWeatherAPIType));
-    settingsSelectMapCard.appendChild(this.createSelectMapContent(selectMapHandle, currentMapType));
+    settingsSelectAPICard.appendChild(
+      this.createSelectAPIContent(selectAPIHandle, currentWeatherAPIType)
+    );
+    settingsSelectMapCard.appendChild(
+      this.createSelectMapContent(selectMapHandle, currentMapType)
+    );
 
     settingsModalWrapper.appendChild(settingsTogglesCard);
     settingsModalWrapper.appendChild(settingsSelectAPICard);
     settingsModalWrapper.appendChild(settingsSelectMapCard);
-    settingsModalWrapper.appendChild(this.createCloseSettingsBtn(closeSettings));
+    settingsModalWrapper.appendChild(
+      this.createCloseSettingsBtn(closeSettings)
+    );
 
     return settingsModalWrapper;
   }

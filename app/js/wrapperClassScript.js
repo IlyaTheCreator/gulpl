@@ -66,9 +66,9 @@ const devices = [
           name: "device",
           types: [],
         },
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 ];
 
 // Array which allows us to loop through different device sizes
@@ -104,42 +104,42 @@ const deviceDimensions = [
   what device a user is in.
 */
 const detectDevice = () => {
-    const ua = navigator.userAgent.toLocaleLowerCase();
-    let typeClassName;
-  
-    devices.forEach(systemGroup => {
-      systemGroup.forEach(system => {
-        system.devices.forEach(device => {
-            let searchResult;
-            
-            // If there are no types for this particular device, do the search with systemName (windows, linux, android, etc)
-            if (device.types.length === 0) {
-              searchResult = ua.search(system.systemName);
-            } 
-          
-            // Otherwise, search for each individual type is executed
-            device.types.forEach(type => {
-              searchResult = ua.search(type);
-            })
-          
-            // If there's a match in the search, assign this value to the class variable
-            if (searchResult !== -1) {
-              typeClassName = `screen-wrapper--${system.systemName}--${device.name}`;
-            }
-          
-            /* 
+  const ua = navigator.userAgent.toLocaleLowerCase();
+  let typeClassName;
+
+  devices.forEach((systemGroup) => {
+    systemGroup.forEach((system) => {
+      system.devices.forEach((device) => {
+        let searchResult;
+
+        // If there are no types for this particular device, do the search with systemName (windows, linux, android, etc)
+        if (device.types.length === 0) {
+          searchResult = ua.search(system.systemName);
+        }
+
+        // Otherwise, search for each individual type is executed
+        device.types.forEach((type) => {
+          searchResult = ua.search(type);
+        });
+
+        // If there's a match in the search, assign this value to the class variable
+        if (searchResult !== -1) {
+          typeClassName = `screen-wrapper--${system.systemName}--${device.name}`;
+        }
+
+        /* 
               Expections.
               If you are on android, your userAgent will have both linux and android strings matches.
               Here typeClassName is explicitly set to the value of android
             */
-            if (ua.search("linux") !== -1 && ua.search("android") ) {
-              typeClassName = "screen-wrapper--android--device";
-            }
-        })
+        if (ua.search("linux") !== -1 && ua.search("android")) {
+          typeClassName = "screen-wrapper--android--device";
+        }
       });
     });
-  
-    document.querySelector(".screen-wrapper").classList.add(typeClassName);
+  });
+
+  document.querySelector(".screen-wrapper").classList.add(typeClassName);
 };
 
 const detectDeviceWidth = () => {
@@ -148,9 +148,9 @@ const detectDeviceWidth = () => {
     if (screen.width <= dimension.maxWidth) {
       document.querySelector(".screen-wrapper").classList.add(dimension.name);
       break;
-    } 
+    }
   }
-}
+};
 
 const addWrapperClass = () => {
   detectDevice();

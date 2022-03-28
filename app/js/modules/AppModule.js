@@ -11,7 +11,7 @@ import App from "../classes/App";
  * App module
  * @memberof entities
  */
-const AppModule = (function() {
+const AppModule = (function () {
   return {
     init() {
       new App(
