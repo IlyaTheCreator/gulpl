@@ -60,7 +60,7 @@ export default class DashBoard {
     btn.id = "citySelectApiSourceCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     btn.addEventListener("click", this.onCloseSelectApiSource);
@@ -125,7 +125,7 @@ export default class DashBoard {
     btn.id = "cityListCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     return btn;
@@ -306,7 +306,7 @@ export default class DashBoard {
     btn.id = "closeCityBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     btn.addEventListener("click", this.closeCityAddModal);
@@ -338,7 +338,8 @@ export default class DashBoard {
    */
   createAddCityForm() {
     const form = document.createElement("form");
-    const btn = this.createAddCitySubmitButton();
+    const addBtn = this.createAddCitySubmitButton();
+    const closeBtn = this.createCloseAddCityBtn();
     const inputWrapper = document.createElement("div");
     const iconWrapper = document.createElement("div");
 
@@ -355,7 +356,8 @@ export default class DashBoard {
 
     form.classList.add("add-city-form");
 
-    btn.innerText = "Add";
+    addBtn.innerText = "Add";
+    closeBtn.innerText = "Cancel";
 
     // iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
     iconWrapper.addEventListener("click", () => {
@@ -365,7 +367,8 @@ export default class DashBoard {
 
     inputWrapper.appendChild(iconWrapper);
     form.appendChild(inputWrapper);
-    form.appendChild(btn);
+    form.appendChild(addBtn);
+    form.appendChild(closeBtn);
 
     return form;
   }

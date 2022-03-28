@@ -311,6 +311,7 @@
 }
 
 .city-list {
+  padding-top: 40px;
   align-self: flex-start !important;
   display: flex;
   flex-direction: column;
@@ -344,10 +345,10 @@
 }
 
 .close-add-city-btn, .close-select-api-source-btn {
-  top: 235px;
-  right: 14px;
+  bottom: 275px;
   z-index: 10000;
-  color: #000;
+  color: $color-black;
+  border: 1px solid $color-black;
 }
 
 .add-city, .select-api-source {
@@ -357,8 +358,14 @@
 }
 
 .close-city-list-btn {
-  top: 2px;
+  top: 5px;
   z-index: 9999;
+}
+
+.cancel-btn {
+  font-size: 0.9em;
+  border: 1px solid $color-primary;
+  padding: 1px 5px;
 }
 
 .add-city-form, .select-api-source-form {
