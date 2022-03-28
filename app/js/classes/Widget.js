@@ -32,7 +32,7 @@ export default class Widget {
     classes.forEach((className) => widget.classList.add(className));
     widget.innerHTML = content;
     widget.addEventListener("click", (e) => {
-      onClick(e);
+      if (onClick) onClick(e);
       e.stopPropagation();
     });
 
