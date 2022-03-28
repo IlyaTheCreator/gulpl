@@ -22,14 +22,21 @@ export default class DashBoard {
       <h1 class="screen__header">${city.title}</h1>
       <p class="screen__date">${new Date(city.date).toDateString()}</p>
       <div class="screen__weather">
-          <img src="${city.cityImage
-      }" alt="weather image" class="screen__image">
+          <img src="${city.cityImage}" alt="weather image" class="screen__image">
           <p class="screen__temperature">${city.currentTemp}°</p>
           <p class="screen__weather-type">${city.weatherCondition}</p>
       </div>
     `;
 
     return contentWrapper;
+  }
+
+  createCitiesSlider() {
+    const slider = document.createElement("div");
+
+    slider.classList.add("cities-slider");
+
+    return slider;
   }
 
   /**
@@ -55,12 +62,11 @@ export default class DashBoard {
   createCloseSelectApiSourceBtn() {
     const btn = document.createElement("button");
 
-    btn.classList.add("close-modal-btn");
     btn.classList.add("close-select-api-source-btn");
     btn.id = "citySelectApiSourceCloseBtn";
 
     btn.innerHTML = `
-      <p class="cancel-btn">close</p>
+      <p class="cancel-btn">Cancel</p>
     `;
 
     btn.addEventListener("click", this.onCloseSelectApiSource);
@@ -75,6 +81,7 @@ export default class DashBoard {
   createSelectApiSourceCard() {
     const card = document.createElement("div");
     const form = document.createElement("form");
+    const closeBtn = this.createCloseSelectApiSourceBtn();
 
     form.classList.add("select-api-source-form");
     card.classList.add("select-api-source");
@@ -90,6 +97,8 @@ export default class DashBoard {
       </div>
       <button class="btn">Select</button>
     `;
+
+    form.appendChild(closeBtn);
 
     form.addEventListener("submit", e => this.onSelectApiSourceClick(e))
 
@@ -191,21 +200,26 @@ export default class DashBoard {
    * @returns {Object}
    */
   createCity(citiesData, currentCity) {
-    const contentWrapper = this.createContentWrapper(currentCity);
-    const cityInfoGrid = this.createCityInfoGrid();
-    
-    Object.keys(citiesData).forEach((key) => {
-      const content = this.createCityWidgetContent(currentCity, key);
-      const widget = Widget.create(content, widgetTypes.CITY, ["city-info-grid__grid-item"]);
-    
-      cityInfoGrid.appendChild(widget);
+    const citiesSlider = this.createCitiesSlider();
+
+    this.cities.forEach((city) => {
+      const contentWrapper = this.createContentWrapper(city);
+      const cityInfoGrid = this.createCityInfoGrid();
+
+      Object.keys(citiesData).forEach((key) => {
+        const content = this.createCityWidgetContent(currentCity, key);
+        const widget = Widget.create(content, widgetTypes.CITY, ["city-info-grid__grid-item"]);
+      
+        cityInfoGrid.appendChild(widget);
+      });
+
+      contentWrapper.classList.add("city-info");
+      contentWrapper.appendChild(cityInfoGrid);
+      
+      citiesSlider.appendChild(contentWrapper);
     });
 
-    contentWrapper.id = "city-info";
-    contentWrapper.classList.add("city-info");
-    contentWrapper.appendChild(cityInfoGrid);
-
-    return contentWrapper;
+    return citiesSlider;
   }
 
   /**
@@ -277,6 +291,8 @@ export default class DashBoard {
       <i class="icon-figma-plus"></i>
     `;
 
+    btn.addEventListener("click", this.generateAddCityModal);
+
     return btn;
   }
 
@@ -301,9 +317,8 @@ export default class DashBoard {
    createCloseAddCityBtn() {
     const btn = document.createElement("button");
 
-    btn.classList.add("close-modal-btn");
     btn.classList.add("close-add-city-btn");
-    btn.id = "closeCityBtn";
+    btn.id = "closeAddCityBtn";
 
     btn.innerHTML = `
       <p class="cancel-btn">close</p>
@@ -359,7 +374,6 @@ export default class DashBoard {
     addBtn.innerText = "Add";
     closeBtn.innerText = "Cancel";
 
-    // iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
     iconWrapper.addEventListener("click", () => {
       this.addCityClickHandle();
       window.addCityBtnClicked = false;
@@ -410,12 +424,11 @@ export default class DashBoard {
   /**
    * @property {Function} generateAddCityModal creating add city modal
    */
-  generateAddCityModal() {
+  generateAddCityModal = () => {
     if (!document.getElementById("add-city")) {
       this.mountModal(
         modalTypes.ADD_CITY,
         () => [
-          this.createCloseAddCityBtn(),
           this.createAddCityContentWrapper(),
           this.createAddCityContent()
         ],
@@ -469,10 +482,10 @@ export default class DashBoard {
   generateDashBoard() {
     let output = [];
 
-    if (this.showCityInfo) {
+    if (this.showCityInfo && this.cities.length > 0) {
       output.push(this.generateCityInfo());
     } else {
-      if (this.cities.length > 0 && this.currentCity.title) {
+      if (this.currentCity.title) {
         output.push(this.createCloseCityListBtn());
       }
       

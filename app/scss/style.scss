@@ -100,7 +100,7 @@
   }
 
   &__add-btn {
-    margin-top: 20px;
+    margin: 20px 0 60px 0;
     align-self: flex-end;
     font-size: 30px;
     width: 75px;
@@ -334,10 +334,20 @@
 }
 
 .close-settings-modal-btn {
-  top: 35px;
-  right: 8px;
-  color: $color-black;
-  z-index: 9999;
+  position: static;
+  width: 100%;
+  margin-top: 20px;
+  padding: 5px 0;
+  color: $color-primary;
+  background: $color-blue;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+  
+  p {
+    border: 0;
+    width: 100%;
+    text-align: center;
+  }
 
   @media screen and (min-width: 410px) {
     right: 14px;
@@ -345,21 +355,45 @@
 }
 
 .close-add-city-btn, .close-select-api-source-btn {
-  bottom: 275px;
-  z-index: 10000;
-  color: $color-black;
-  border: 1px solid $color-black;
+  color: $color-primary;
+  margin-top: 10px !important;
+  background: coral !important;
+  border: 0;
+
+  p {
+    border: 0;
+    font-size: 1.6rem;
+  }
 }
 
 .add-city, .select-api-source {
-  margin-top: calc(50vh - 50%);
+  margin-top: calc(50vh - 60%);
   z-index: 10000;
   padding: 1.7em;
 }
 
+.cities-slider {
+  cursor: pointer;
+}
+
 .close-city-list-btn {
-  top: 5px;
+  top: auto;
+  bottom: 15px;
+  left: 15px;
   z-index: 9999;
+  width: calc(100% - 30px);
+  margin-top: 20px;
+  padding: 5px 0;
+  color: $color-primary;
+  background: $color-blue;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+
+  p {
+    border: 0;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .cancel-btn {
@@ -426,6 +460,7 @@
 
 .city-info {
   padding: 24px 24px 40px 24px;
+  min-height: 800px;
 }
 
 @keyframes change-city {

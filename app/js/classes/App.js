@@ -76,7 +76,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = false;
+    this.showCityInfo = true;
     /**
      * @property {string} settingsLsKey localstorage key for keeping settings data
      */
@@ -409,48 +409,9 @@ export default class App {
       return;
     }
 
-    const cityInfo = document.getElementById("city-info");
-
     document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
     document.getElementById("navigationAddCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
     document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
-
-    cityInfo.addEventListener('touchstart', e => {
-      this.touchStartX = e.changedTouches[0].screenX
-    });
-
-    cityInfo.addEventListener('touchend', e => {
-      this.touchEndX = e.changedTouches[0].screenX;
-      this.handleGesture();
-    });
-  }
-
-  /**
-   * @property {Function} handleGesture swipe realization
-   */
-  handleGesture() {
-    const currentCity = this.getCurrentCity();
-    const citiesData = this.getCities();
-
-    const currentCityIndex = citiesData.findIndex((city) => city.id === currentCity.id);
-
-    // swiped left | 24 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX + 24 < this.touchStartX) {
-      if (currentCityIndex < citiesData.length - 1 && currentCityIndex >= 0) {
-        this.setCurrentCity(citiesData[currentCityIndex + 1]);
-
-        this.create();
-      }
-    }
-
-    // swiped right | 24 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX - 24 > this.touchStartX) {
-      if (currentCityIndex > 0) {
-        this.setCurrentCity(citiesData[currentCityIndex - 1]);
-
-        this.create();
-      }
-    }
   }
 
   /**
@@ -581,6 +542,7 @@ export default class App {
    */
   createNavCircles() {
     const circlesWrapper = document.getElementById("nav-circles");
+    circlesWrapper.innerHTML = "";
 
     this.getCities().forEach((city) => {
       const circle = document.createElement("i");
@@ -597,7 +559,7 @@ export default class App {
         // check to avoid unnecessary re-rendering
         if (city.id !== this.getCurrentCity().id) {
           this.setCurrentCity(city);
-          this.create();
+          this.citiesSlider.goTo(this.getCities().findIndex((city) => this.getCurrentCity().id === city.id))
         }
       });
 
@@ -614,7 +576,6 @@ export default class App {
     this.mountModal(
       modalTypes.SETTINGS,
       () => [
-        this.settings.createCloseSettingsBtn(this.closeSettings),
         this.settings.createContentWrapper(),
         this.settings.createSettings(
           this.getSettingsState(), 
@@ -622,8 +583,9 @@ export default class App {
           this.selectAPIHandle, 
           this.selectMapHandle,
           this.getWeatherAPIType(),
-          this.getMapType()
-        )
+          this.getMapType(),
+          this.closeSettings
+        ),
       ]
     );
     
@@ -791,6 +753,36 @@ export default class App {
   }
 
   /**
+   *  @property {Function} setupCitiesSlider
+   */
+  setupCitiesSlider() {
+    if (this.getCities().length === 0) {
+      return;
+    }
+
+    /**
+     * tns is provided by tiny-slider package
+     * @property {Object} citiesSlider
+     */
+    this.citiesSlider = tns({
+      container: ".cities-slider",
+      items: 1,
+      slideBy: "page",
+      autoplay: false,
+      controls: false,
+      nav: false,
+      mouseDrag: true,
+      loop: false,
+      startIndex: this.getCities().findIndex((city) => this.getCurrentCity().id === city.id),
+    });
+
+    this.citiesSlider.events.on("indexChanged", (e) => {
+      this.setCurrentCity(this.getCities().find((city, index) => index === e.displayIndex - 1));
+      this.createNavCircles();
+    });
+  }
+
+  /**
    * @property {Function} create central app's point
    */
   create = () => {
@@ -831,6 +823,8 @@ export default class App {
 
     if (this.showCityInfo) {
       document.getElementById("city-list")?.remove();
+
+      this.setupCitiesSlider();
     }
   }
 }

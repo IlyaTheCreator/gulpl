@@ -62,7 +62,7 @@ export default class Settings {
     btn.id = "settingsCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     btn.addEventListener("click", onClick);
@@ -130,6 +130,7 @@ export default class Settings {
    * @param {Function} selectMapHandle
    * @param {Object} currentWeatherAPIType
    * @param {Object} currentMapType
+   * @param {Function} closeSettings
    * @returns {Object}
    */
   createSettings(
@@ -138,7 +139,8 @@ export default class Settings {
     selectAPIHandle, 
     selectMapHandle,
     currentWeatherAPIType,
-    currentMapType
+    currentMapType,
+    closeSettings
   ) {
     const settingsModalWrapper = document.createElement("div");
     const settingsTogglesCard = document.createElement("div");
@@ -167,6 +169,7 @@ export default class Settings {
     settingsModalWrapper.appendChild(settingsTogglesCard);
     settingsModalWrapper.appendChild(settingsSelectAPICard);
     settingsModalWrapper.appendChild(settingsSelectMapCard);
+    settingsModalWrapper.appendChild(this.createCloseSettingsBtn(closeSettings));
 
     return settingsModalWrapper;
   }
