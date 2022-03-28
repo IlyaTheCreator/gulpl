@@ -75,10 +75,6 @@ export default class MapService {
         const key = MapService.#mapsKeys()["yandex-map"];
 
         const exitMap = (title, coordinates) => {
-            console.log("exiting")
-            console.log(title)
-            console.log(coordinates)
-
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
                     coordinates,
@@ -132,10 +128,6 @@ export default class MapService {
                         return;
                     }
 
-                    // const selectedIndex = e.originalEvent.index;
-                    // const resultData = e.originalEvent.target.state._data.results[selectedIndex];
-
-                    console.log(e)
                     const resultData = e.originalEvent.target.state._data;
 
                     const intervalId = setInterval(() => {
@@ -148,9 +140,6 @@ export default class MapService {
                             const coordinates = resultData.results[0].geometry._coordinates;
                             const title = resultData.results[0].properties._data.name;
 
-                            console.log(coordinates)
-                            console.log(title)
-
                             exitMap(title, coordinates);
 
                             if (isFullScreen) {
@@ -159,9 +148,7 @@ export default class MapService {
 
                             clearInterval(intervalId);
                         }
-                    }, 100)
-
-                    // exitMap(resultData.geometry._coordinates, resultData.properties._data.name);
+                    }, 100);
                 });
 
                 const saveBtn = new maps.control.Button({
@@ -299,8 +286,6 @@ export default class MapService {
 
             const city = JSON.parse(geocoder.lastSelected);
 
-            console.log(city);
-
             const mapSearchEvent = new CustomEvent("map-search", {
                 detail: {
                     coordinates: [map.getCenter().lng, map.getCenter().lat],
@@ -328,7 +313,6 @@ export default class MapService {
         mapOverlayButtonsContainer.appendChild(mapSaveBtn);
         mapOverlayButtonsContainer.appendChild(mapCloseBtn);
         
-        // mapContainer.insertAdjacentElement("afterend", mapOverlayButtonsContainer);
         mapContainer.appendChild(mapOverlayButtonsContainer);
 
         map.on("click", (e) => {
