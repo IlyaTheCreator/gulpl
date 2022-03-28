@@ -523,15 +523,18 @@ export default class DashBoard {
   generateDashBoard() {
     let output = [];
 
-    if (this.showCityInfo && this.cities.length > 0) {
+    if (this.showCityInfo) {
       output.push(this.generateCityInfo());
     } else {
-      if (this.currentCity.title) {
-        output.push(this.createCloseCityListBtn());
-      }
-      
       if (Array.isArray(this.generateCityList())) {
-        output = [...output, ...this.generateCityList()];
+        output = [
+          ...output, 
+          ...this.generateCityList(), 
+        ];
+      }
+
+      if (this.cities.length > 0) {
+        output.push(this.createCloseCityListBtn());
       }
     }
 
