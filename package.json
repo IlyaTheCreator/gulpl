@@ -31,6 +31,7 @@
     "axios": "^0.26.0",
     "gh-pages": "^3.2.3",
     "gulp-htmlmin": "^5.0.1",
+    "long-press-event": "^2.4.4",
     "mapbox-gl": "^2.7.0",
     "uuid": "^8.3.2",
     "ymaps": "^0.2.1"

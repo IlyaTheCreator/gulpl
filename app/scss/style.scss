@@ -359,6 +359,7 @@
   margin-top: 10px !important;
   background: coral !important;
   border: 0;
+  cursor: pointer;
 
   p {
     border: 0;
@@ -481,6 +482,17 @@
 
 .select-api-source-modal {
   z-index: 10000;
+}
+
+.delete-city-btn {
+  position: absolute;
+  top: 30px;
+  right: 80px;
+  background: coral;
+  padding:10px 30px;
+  font-size: 1.3rem;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+  border-radius:10px;
 }
 
 // map related stuff 

@@ -4432,6 +4432,11 @@
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   "version" "4.17.21"
 
+"long-press-event@^2.4.4":
+  "integrity" "sha512-6ZtRiZJCLgxr6UdbyEtrBZgOdwqbFdhm6mDo4TtwC8lFuODe9tvUNNIhzpht1m9jHrDyzMfpVyKIzJAFnEUXtQ=="
+  "resolved" "https://registry.npmjs.org/long-press-event/-/long-press-event-2.4.4.tgz"
+  "version" "2.4.4"
+
 "lower-case@^1.1.1":
   "integrity" "sha1-miyr0bno4K6ZOkv31YdcOcQujqw="
   "resolved" "https://registry.npmjs.org/lower-case/-/lower-case-1.1.4.tgz"

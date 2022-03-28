@@ -1,6 +1,8 @@
 import { modalTypes, widgetTypes, uvTypes } from "../constants";
 import Widget from "./Widget";
 
+import "long-press-event";
+
 /**
  * @namespace entities
  */
@@ -249,6 +251,37 @@ export default class DashBoard {
   }
 
   /**
+   * @property {Function} createDeleteCityBtn 
+   */
+  createDeleteCityBtn = (e, id) => {
+    if (e.target.classList.contains("city-with-delete-btn")) {
+      return;
+    }
+
+    const deleteBtn = document.createElement("button");
+
+    deleteBtn.classList.add("btn");
+    deleteBtn.classList.add("delete-city-btn");
+    deleteBtn.textContent = "delete";
+
+    deleteBtn.addEventListener("click" , (e) => {
+      e.stopPropagation();
+      this.deleteCity(id);
+    });
+
+    e.target.appendChild(deleteBtn);
+    e.target.classList.add("city-with-delete-btn");
+  }
+
+  /**
+   * @property {Function} removeDeleteCityBtn 
+   */
+  removeDeleteCityBtn = (e) => {
+    e.target.classList.remove("city-with-delete-btn");
+    e.target.childNodes[e.target.childNodes.length - 1].remove();
+  }
+
+  /**
    * @property {Function} createCityList creating city list page
    * @param {Object} cities current cities data
    * @param {Function} onCityWidgetClick Individual city widget's onClick handler
@@ -266,6 +299,14 @@ export default class DashBoard {
         ["screen__city"],
         onClick
       );
+
+      if (window.innerWidth > 768) {
+        cityWidget.addEventListener("mouseenter", (e) => this.createDeleteCityBtn(e, city.id));
+        cityWidget.addEventListener("mouseleave", (e) => this.removeDeleteCityBtn(e));
+      } else {
+        cityWidget.dataset.longPressDelay = 500;
+        cityWidget.addEventListener("long-press", (e) => this.createDeleteCityBtn(e, city.id));
+      }
 
       return cityWidget;
     });
@@ -516,6 +557,7 @@ export default class DashBoard {
    * @param {Function} onCloseSelectApiSource 
    * @param {Function} createMap 
    * @param {Object} mapData 
+   * @param {Function} deleteCity 
    * @returns {Array<Object>}
    */
   create(
@@ -533,7 +575,8 @@ export default class DashBoard {
     weatherAPIType,
     onCloseSelectApiSource,
     createMap,
-    mapData
+    mapData,
+    deleteCity
   ) {
     /**
      * @property {Array} cities latest city data
@@ -595,7 +638,10 @@ export default class DashBoard {
      * @property {Object} mapType
      */
     this.mapType = mapData?.mapType;
-
+    /**
+     * @property {Function} deleteCity
+     */
+    this.deleteCity = deleteCity;
 
     return this.generateDashBoard();
   }

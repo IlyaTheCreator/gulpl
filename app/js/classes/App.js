@@ -76,7 +76,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = true;
+    this.showCityInfo = false;
     /**
      * @property {string} settingsLsKey localstorage key for keeping settings data
      */
@@ -783,16 +783,14 @@ export default class App {
   }
 
   /**
-   * @property {Function} create central app's point
+   * @property {Function} deleteCity
    */
-  create = () => {
-    this.setupLocalStorage();
-    this.clearRootElement();
+  deleteCity = (id) => {
+    this.setCities(this.getCities().filter((city) => city.id !== id));
+    this.create();
+  }
 
-    if (this.showCityInfo) {
-      this.createNavigation();
-    }
-
+  createDashBoard() {
     // central "router"
     switch (this.displayMode) {
       case "dashboard":
@@ -811,7 +809,8 @@ export default class App {
           this.getWeatherAPIType(),
           this.onCloseSelectApiSource,
           this.createMap,
-          this.getMapType()
+          this.getMapType(),
+          this.deleteCity
         ).forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
@@ -820,10 +819,23 @@ export default class App {
       default:
         break;
     }
+  }
+
+  /**
+   * @property {Function} create central app's point
+   */
+  create = () => {
+    this.setupLocalStorage();
+    this.clearRootElement();
+
+    if (this.showCityInfo) {
+      this.createNavigation();
+    } 
+
+    this.createDashBoard();
 
     if (this.showCityInfo) {
       document.getElementById("city-list")?.remove();
-
       this.setupCitiesSlider();
     }
   }
