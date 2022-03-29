@@ -207,7 +207,7 @@ export default class DashBoard {
     const citiesSlider = this.createCitiesSlider();
     const currentSettingsState = this.getSettingsState();
 
-    this.cities.forEach((city, index) => {
+    this.cities.forEach((city) => {
       const contentWrapper = this.createContentWrapper(city);
       const cityInfoGrid = this.createCityInfoGrid();
 
@@ -216,7 +216,7 @@ export default class DashBoard {
       Object.keys(currentSettingsState)
         .filter((key) => currentSettingsState[key].isActive)
         .forEach(
-          (key) => (citiesData[key] = this.cities[index].widgetRelatedInfo[key])
+          (key) => (citiesData[key] = city.widgetRelatedInfo[key])
         );
 
       Object.keys(citiesData).forEach((key) => {
