@@ -203,15 +203,24 @@ export default class DashBoard {
    * @param {Object} currentCity current city data
    * @returns {Object}
    */
-  createCity(citiesData, currentCity) {
+  createCity() {
     const citiesSlider = this.createCitiesSlider();
+    const currentSettingsState = this.getSettingsState();
 
-    this.cities.forEach((city) => {
+    this.cities.forEach((city, index) => {
       const contentWrapper = this.createContentWrapper(city);
       const cityInfoGrid = this.createCityInfoGrid();
 
+      const citiesData = {};
+
+      Object.keys(currentSettingsState)
+        .filter((key) => currentSettingsState[key].isActive)
+        .forEach(
+          (key) => (citiesData[key] = this.cities[index].widgetRelatedInfo[key])
+        );
+
       Object.keys(citiesData).forEach((key) => {
-        const content = this.createCityWidgetContent(currentCity, key);
+        const content = this.createCityWidgetContent(city, key);
         const widget = Widget.create(content, widgetTypes.CITY, [
           "city-info-grid__grid-item",
         ]);
@@ -512,18 +521,7 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityInfo() {
-    const currentSettingsState = this.getSettingsState();
-
-    const filteredCityWidgets = {};
-
-    Object.keys(currentSettingsState)
-      .filter((key) => currentSettingsState[key].isActive)
-      .forEach(
-        (key) =>
-          (filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key])
-      );
-
-    return this.createCity(filteredCityWidgets, this.currentCity);
+    return this.createCity();
   }
 
   /**

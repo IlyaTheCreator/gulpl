@@ -339,7 +339,7 @@ export default class MapService {
       map.setCenter(coordinates);
     });
 
-    map.on("load", (e) => {
+    map.on("render", () => {
       // go fullscreen on mobile
       if (window.innerWidth <= 768) {
         const mapContainer = map.getContainer();

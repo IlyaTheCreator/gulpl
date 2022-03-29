@@ -76,7 +76,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = false;
+    this.showCityInfo = true;
     /**
      * @property {string} settingsLsKey localstorage key for keeping settings data
      */
@@ -803,6 +803,7 @@ export default class App {
       startIndex: this.getCities().findIndex(
         (city) => this.getCurrentCity().id === city.id
       ),
+      preventScrollOnTouch: 'auto',
     });
 
     this.citiesSlider.events.on("indexChanged", (e) => {
