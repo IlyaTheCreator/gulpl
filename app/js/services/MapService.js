@@ -345,7 +345,12 @@ export default class MapService {
         const mapContainer = map.getContainer();
 
         mapContainer.classList.add("fullscreen-map");
-      } else {
+      }
+    });
+
+    map.on("load", () => {
+      // go fullscreen on mobile
+      if (window.innerWidth >= 768) {
         map.addControl(new mapboxgl.FullscreenControl());
       }
     });

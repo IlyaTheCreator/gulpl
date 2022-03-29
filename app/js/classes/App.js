@@ -463,25 +463,6 @@ export default class App {
   }
 
   /**
-   * @property {Function} createCloseMapModalBtn
-   */
-  createCloseMapModalBtn() {
-    const btn = document.createElement("button");
-
-    btn.classList.add("close-modal-btn");
-    btn.classList.add("close-map-modal-btn");
-    btn.id = "mapCloseBtn";
-
-    btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
-    `;
-
-    btn.addEventListener("click", this.closeMapModal);
-
-    return btn;
-  }
-
-  /**
    * @property {Function} createMapModalContainer
    */
   createMapModalContainer(id) {
@@ -502,7 +483,6 @@ export default class App {
   createMap = (id, cityName) => {
     this.mountModal(modalTypes.MAP, () => [
       this.createMapModalContentWrapper(),
-      this.createCloseMapModalBtn(),
       this.createMapModalContainer(id),
     ]);
 
