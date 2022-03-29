@@ -205,15 +205,26 @@ export default class MapService {
           myMap.center = coords;
           mapClicked = true;
 
-          if (!myMap.balloon.isOpen()) {
-            myMap.balloon.open(coords, {
-              contentHeader: "Place selected",
-              contentBody:
-                "<p>Click save button to get weather <br> from this location</p>",
+          maps.geocode(coords).then((res) => {
+            const firstGeoObject = res.geoObjects.get(0);
+            const locationComponents =
+              firstGeoObject.properties._data.metaDataProperty.GeocoderMetaData
+                .Address.Components;
+            let search;
+
+            locationComponents.forEach((component) => {
+              if (
+                component.kind === "province" ||
+                component.kind === "locality"
+              ) {
+                search = component.name;
+              }
             });
-          } else {
-            myMap.balloon.close();
-          }
+
+            if (search) {
+              searchControl.search(search);
+            }
+          });
         });
 
         myMap.container.events.add(
@@ -260,6 +271,34 @@ export default class MapService {
     const key = MapService.#mapsKeys()["open-street-map"];
 
     mapboxgl.accessToken = key;
+
+    const mapClickFn = (coordinates) => {
+      const url =
+        "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+        coordinates.lng +
+        "," +
+        coordinates.lat +
+        ".json?access_token=" +
+        key +
+        "&types=address";
+
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          const location = data.features[0];
+          let search;
+
+          location.context.forEach((el) => {
+            if (el.id.split(".")[0] === "place") {
+              search = el.text;
+            }
+          });
+
+          if (search) {
+            geocoder.setInput(search);
+          }
+        });
+    };
 
     const map = new mapboxgl.Map({
       container: id,
@@ -324,18 +363,7 @@ export default class MapService {
     map.on("click", (e) => {
       const coordinates = [e.lngLat.lng, e.lngLat.lat];
 
-      new mapboxgl.Popup({ closeOnClick: true })
-        .setLngLat(coordinates)
-        .setHTML(
-          `
-                    <div class="mapbox-popup">
-                        <h1>Place selected</h1>
-                        <p>Click save button to get weather <br> from this location</p>
-                    </div>
-                `
-        )
-        .addTo(map);
-
+      mapClickFn(e.lngLat);
       map.setCenter(coordinates);
     });
 

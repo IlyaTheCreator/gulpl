@@ -120,7 +120,7 @@ export default class App {
     /**
      * @property {string} appVerson version number for managing localstorage data differences
      */
-    this.appVersion = "1.0.0";
+    this.appVersion = "1.0.1";
 
     this.setupLocalStorage();
   }
