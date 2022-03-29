@@ -142,7 +142,7 @@ export default class App {
     const weatherApiType = this.getWeatherAPIType();
     const mapType = this.getMapType();
 
-    const defaultMapType = this.mapService.getMapTypes()["open-street-map"];
+    const defaultMapType = this.mapService.getMapTypes()["yandex-map"];
 
     const initialLsState = {
       cities: [],
@@ -197,10 +197,6 @@ export default class App {
       this.mapService.setMapType(
         this.mapService.getMapTypes()["open-street-map"]
       );
-    }
-
-    if (this.getCities().length > 0) {
-      this.showCityInfo = true;
     }
   };
 
@@ -788,7 +784,7 @@ export default class App {
       startIndex: this.getCities().findIndex(
         (city) => this.getCurrentCity().id === city.id
       ),
-      preventScrollOnTouch: 'auto',
+      preventScrollOnTouch: "auto",
     });
 
     this.citiesSlider.events.on("indexChanged", (e) => {
