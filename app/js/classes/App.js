@@ -76,7 +76,7 @@ export default class App {
     /**
      * @property {boolean} showCityInfo defines whether to display single city "page" or not
      */
-    this.showCityInfo = true;
+    this.showCityInfo = false;
     /**
      * @property {string} settingsLsKey localstorage key for keeping settings data
      */
@@ -197,6 +197,10 @@ export default class App {
       this.mapService.setMapType(
         this.mapService.getMapTypes()["open-street-map"]
       );
+    }
+
+    if (this.getCities().length > 0) {
+      this.showCityInfo = true;
     }
   };
 
@@ -632,6 +636,7 @@ export default class App {
     }
 
     this.updateCities(apiTypes[selectField.value]);
+    this.showCityInfo = true;
   };
 
   /**
