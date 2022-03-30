@@ -1,6 +1,6 @@
-@import './variables';
-@import './fonts';
-@import './general-styles';
+@import "./variables";
+@import "./fonts";
+@import "./general-styles";
 
 .screen-wrapper {
   flex: 1;
@@ -52,30 +52,30 @@
 
   &__city {
     margin: 20px 0;
-  
+
     &-name {
       font-size: 30px;
       position: relative;
       left: -1px;
     }
-  
+
     &-temperature {
       font-size: 40px;
       padding-right: 10px;
     }
-  
+
     &-time {
-      font-size: .9em;
+      font-size: 0.9em;
       color: $color-gray;
     }
-  
+
     &-info {
       display: flex;
       justify-content: space-between;
       color: $color-secondary;
       margin-top: 30px;
     }
-  
+
     &-temperature-range {
       color: $color-gray;
       font-size: 20px;
@@ -100,7 +100,7 @@
   }
 
   &__add-btn {
-    margin-top: 20px;
+    margin: 20px 0 60px 0;
     align-self: flex-end;
     font-size: 30px;
     width: 75px;
@@ -185,13 +185,15 @@
       margin-bottom: 12px;
     }
   }
-  
+
   &__widget-additional {
     font-size: 15px;
   }
 }
 
-.city-info-grid .city-info-grid__grid-item-wrapper .city-info-grid__grid-item-item {
+.city-info-grid
+  .city-info-grid__grid-item-wrapper
+  .city-info-grid__grid-item-item {
   margin-right: 0px;
 }
 
@@ -212,7 +214,7 @@
   right: 0;
   width: 100%;
   border-top: 1px solid $color-gray;
-  background: rgba(0, 0, 0, .08);
+  background: rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -225,6 +227,15 @@
 
   &__pages {
     display: flex;
+    overflow-x: hidden;
+  }
+
+  &__cities {
+    display: flex;
+
+    .add-city-link {
+      border-right: 1px solid $color-primary;
+    }
   }
 
   &__circle {
@@ -286,15 +297,15 @@
       line-height: 24px;
     }
   }
-  
+
   &__toggle-icon {
     cursor: pointer;
     font-size: 2em;
-    
+
     &--on {
       color: $color-blue;
     }
-  
+
     &--off {
       color: $color-dark-gray;
     }
@@ -302,6 +313,7 @@
 }
 
 .city-list {
+  padding-top: 40px;
   align-self: flex-start !important;
   display: flex;
   flex-direction: column;
@@ -324,35 +336,79 @@
 }
 
 .close-settings-modal-btn {
-  top: 130px;
-  right: 8px;
-  color: $color-black;
-  z-index: 9999;
+  position: static;
+  width: 100%;
+  margin-top: 20px;
+  padding: 5px 0;
+  color: $color-primary;
+  background: $color-blue;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+
+  p {
+    border: 0;
+    width: 100%;
+    text-align: center;
+  }
 
   @media screen and (min-width: 410px) {
     right: 14px;
   }
 }
 
-.close-add-city-btn, .close-select-api-source-btn {
-  top: 235px;
-  right: 14px;
-  z-index: 10000;
-  color: #000;
+.close-add-city-btn,
+.close-select-api-source-btn {
+  color: $color-primary;
+  margin-top: 10px !important;
+  background: coral !important;
+  border: 0;
+  cursor: pointer;
+
+  p {
+    border: 0;
+    font-size: 1.6rem;
+  }
 }
 
-.add-city, .select-api-source {
-  margin-top: calc(50vh - 50%);
+.add-city,
+.select-api-source {
+  margin-top: calc(50vh - 60%);
   z-index: 10000;
   padding: 1.7em;
 }
 
-.close-city-list-btn {
-  top: 2px;
-  z-index: 9999;
+.cities-slider {
+  cursor: pointer;
 }
 
-.add-city-form, .select-api-source-form {
+.close-city-list-btn {
+  top: auto;
+  bottom: 15px;
+  left: 15px;
+  z-index: 9999;
+  width: calc(100% - 30px);
+  margin-top: 20px;
+  padding: 5px 0;
+  color: $color-primary;
+  background: $color-blue;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+
+  p {
+    border: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.cancel-btn {
+  font-size: 0.9em;
+  border: 1px solid $color-primary;
+  padding: 1px 5px;
+}
+
+.add-city-form,
+.select-api-source-form {
   display: flex;
   flex-direction: column;
   z-index: 9999;
@@ -363,12 +419,16 @@
     input[type="text"] {
       display: block;
       width: 100%;
-      background: linear-gradient(180deg, #DBDBDB 0%, rgba(228, 228, 228, 0.96) 100%);
+      background: linear-gradient(
+        180deg,
+        #dbdbdb 0%,
+        rgba(228, 228, 228, 0.96) 100%
+      );
       border-radius: 10px;
       border: 0;
       padding: 0.8em 2em 0.8em 2.6em;
       font-size: 0.95rem;
-  
+
       &:focus {
         outline: none;
       }
@@ -410,6 +470,7 @@
 
 .city-info {
   padding: 24px 24px 40px 24px;
+  min-height: 800px;
 }
 
 @keyframes change-city {
@@ -432,7 +493,18 @@
   z-index: 10000;
 }
 
-// map related stuff 
+.delete-city-btn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: coral;
+  padding: 10px 30px;
+  font-size: 1.3rem;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 25%);
+  border-radius: 10px;
+}
+
+// map related stuff
 .mapboxgl-ctrl-top-right {
   width: 100%;
   padding-left: 30px;
@@ -452,6 +524,121 @@
 
 .close-map-modal-btn {
   top: 6px;
-  z-index: 10000;
   color: $color-black;
+  z-index: 10000;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.map-save-btn {
+  background: green;
+  color: $color-primary;
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+  padding: 10px 0;
+  font-size: 1.05em;
+  cursor: pointer;
+}
+
+.map-close-btn {
+  background: coral;
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+  padding: 10px 0;
+  font-size: 1.05em;
+  cursor: pointer;
+  color: $color-primary;
+  width: 60px;
+  display: grid;
+  place-content: center;
+}
+
+.open-street-map-buttons-wrapper {
+  position: absolute;
+  width: 80%;
+  right: 10px;
+  bottom: 60px;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 768px) {
+    position: fixed;
+  }
+}
+
+.open-street-map-save-btn {
+  width: 340px;
+  margin-right: 10px;
+
+  @media screen and (max-width: 430px) {
+    width: 200px;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 240px;
+  }
+}
+
+.mapbox-popup {
+  color: $color-black;
+
+  h1 {
+    margin-bottom: 10px;
+  }
+}
+
+.yandex-save-button {
+  width: 340px;
+  display: grid;
+  place-content: center;
+
+  @media screen and (max-width: 430px) {
+    width: 200px;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 240px;
+  }
+}
+
+ymaps[class*="search_layout"] {
+  min-width: 343px;
+
+  @media screen and (max-width: 410px) {
+    width: auto;
+    min-width: auto;
+    margin-right: 10px;
+  }
+}
+
+ymaps[class*="searchbox-input"] {
+  padding: 6px 0;
+
+  input {
+    font-size: 1.05em;
+  }
+}
+
+ymaps[class*="searchbox-button"] {
+  height: 40px;
+  display: grid;
+  place-content: center;
+}
+
+.fullscreen-map {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }

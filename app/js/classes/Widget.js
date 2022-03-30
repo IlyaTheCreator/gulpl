@@ -11,10 +11,10 @@ import { widgetTypes } from "../constants";
 export default class Widget {
   /**
    * @property {Function} create creating a widget
-   * @param {Object} content 
-   * @param {string} type 
-   * @param {Function} onClick 
-   * @param {Array} classes 
+   * @param {Object} content
+   * @param {string} type
+   * @param {Function} onClick
+   * @param {Array} classes
    * @returns {HTMLBodyElement}
    */
   static create(content, type, classes = [], onClick) {
@@ -31,9 +31,11 @@ export default class Widget {
 
     classes.forEach((className) => widget.classList.add(className));
     widget.innerHTML = content;
-    widget.addEventListener("click", onClick);
+    widget.addEventListener("click", (e) => {
+      if (onClick) onClick(e);
+      e.stopPropagation();
+    });
 
     return widget;
   }
 }
-

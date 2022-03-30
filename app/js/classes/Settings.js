@@ -11,22 +11,20 @@ export default class Settings {
    * @property {Function} createContentWrapper creating settings dom wrapper
    * @returns {Object}
    */
-  createContentWrapper(onClick) {
+  createContentWrapper() {
     const contentWrapper = document.createElement("div");
 
     contentWrapper.id = "settings-overlay";
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--settings");
 
-    contentWrapper.addEventListener("click", onClick);
-
     return contentWrapper;
   }
 
   /**
    * @property {Function} createSettingItem creating a single setting toggler
-   * @param {Object} setting current setting object (see App's settingsData prop) 
-   * @param {string} key current setting key (see App's settingsData prop) 
+   * @param {Object} setting current setting object (see App's settingsData prop)
+   * @param {string} key current setting key (see App's settingsData prop)
    * @returns {Object}
    */
   createSettingItem(setting, key, setOnSettingClick) {
@@ -56,7 +54,7 @@ export default class Settings {
    * @property {Function} createCloseSettingsBtn creating btn for closing setting modal
    * @returns {Object}
    */
-   createCloseSettingsBtn(onClick) {
+  createCloseSettingsBtn(onClick) {
     const btn = document.createElement("button");
 
     btn.classList.add("close-modal-btn");
@@ -64,7 +62,7 @@ export default class Settings {
     btn.id = "settingsCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     btn.addEventListener("click", onClick);
@@ -76,17 +74,18 @@ export default class Settings {
    * @property {Function} createSelectAPIContent creating content for api selection card
    * @returns {Object}
    */
-  createSelectAPIContent(selectHandle) {
+  createSelectAPIContent(selectHandle, currentWeatherAPIType) {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");
 
     inputSelect.id = "api-source-select";
     inputSelect.addEventListener("change", selectHandle);
-    inputSelect.innerHTML =  `
-      <option value="select city">Select API type:</div>
+    inputSelect.innerHTML = `
       <option value="open-weather-map">OpenWeather API</div>
       <option value="free-weather-api">Free Weather API</div>
     `;
+
+    inputSelect.value = currentWeatherAPIType.apiType;
 
     content.innerHTML = `
       <h3>Weather data source:</h3>
@@ -101,17 +100,18 @@ export default class Settings {
    * @property {Function} createSelectAPIContent creating content for map selection card
    * @returns {Object}
    */
-  createSelectMapContent(selectHandle) {
+  createSelectMapContent(selectHandle, currentMapType) {
     const content = document.createElement("div");
     const inputSelect = document.createElement("select");
 
     inputSelect.id = "map-type-select";
     inputSelect.addEventListener("change", selectHandle);
-    inputSelect.innerHTML =  `
-      <option value="select city">Select map type:</div>
+    inputSelect.innerHTML = `
       <option value="yandex-map">Yandex</div>
       <option value="open-street-map">Open Street Map</div>
     `;
+
+    inputSelect.value = currentMapType.mapType;
 
     content.innerHTML = `
       <h3>Map type:</h3>
@@ -125,14 +125,28 @@ export default class Settings {
   /**
    * @property {Function} createSettings creating settings
    * @param {Object} lcData settings data from localstorage
+   * @param {Function} setOnSettingClick
+   * @param {Function} selectAPIHandle
+   * @param {Function} selectMapHandle
+   * @param {Object} currentWeatherAPIType
+   * @param {Object} currentMapType
+   * @param {Function} closeSettings
    * @returns {Object}
    */
-  createSettings(lcData, setOnSettingClick, selectAPIHandle, selectMapHandle) {
+  createSettings(
+    lcData,
+    setOnSettingClick,
+    selectAPIHandle,
+    selectMapHandle,
+    currentWeatherAPIType,
+    currentMapType,
+    closeSettings
+  ) {
     const settingsModalWrapper = document.createElement("div");
     const settingsTogglesCard = document.createElement("div");
     const settingsSelectAPICard = document.createElement("div");
     const settingsSelectMapCard = document.createElement("div");
-    
+
     settingsModalWrapper.classList.add("settings-modal-wrapper");
     settingsTogglesCard.classList.add("card");
     settingsTogglesCard.classList.add("settings");
@@ -146,15 +160,24 @@ export default class Settings {
     Object.keys(lcData).forEach((key) => {
       const setting = lcData[key];
 
-      settingsTogglesCard.appendChild(this.createSettingItem(setting, key, setOnSettingClick));
+      settingsTogglesCard.appendChild(
+        this.createSettingItem(setting, key, setOnSettingClick)
+      );
     });
 
-    settingsSelectAPICard.appendChild(this.createSelectAPIContent(selectAPIHandle));
-    settingsSelectMapCard.appendChild(this.createSelectMapContent(selectMapHandle));
+    settingsSelectAPICard.appendChild(
+      this.createSelectAPIContent(selectAPIHandle, currentWeatherAPIType)
+    );
+    settingsSelectMapCard.appendChild(
+      this.createSelectMapContent(selectMapHandle, currentMapType)
+    );
 
     settingsModalWrapper.appendChild(settingsTogglesCard);
     settingsModalWrapper.appendChild(settingsSelectAPICard);
     settingsModalWrapper.appendChild(settingsSelectMapCard);
+    settingsModalWrapper.appendChild(
+      this.createCloseSettingsBtn(closeSettings)
+    );
 
     return settingsModalWrapper;
   }

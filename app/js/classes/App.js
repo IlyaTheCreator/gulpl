@@ -44,28 +44,28 @@ export default class App {
      */
     this.settingsData = {
       minTemp: {
-          text: "Min. Temp.",
-          isActive: true,
+        text: "Min. Temp.",
+        isActive: true,
       },
       maxTemp: {
-          text: "Max. Temp.",
-          isActive: true,
+        text: "Max. Temp.",
+        isActive: true,
       },
       uvIndicator: {
-          text: "Uv Indicator",
-          isActive: true,
+        text: "Uv Indicator",
+        isActive: true,
       },
       feltTemp: {
-          text: "Felt Temp",
-          isActive: false,
+        text: "Felt Temp",
+        isActive: false,
       },
       pressure: {
-          text: "Pressure",
-          isActive: false,
+        text: "Pressure",
+        isActive: false,
       },
       windSpeed: {
-          text: "Wind Speed",
-          isActive: false,
+        text: "Wind Speed",
+        isActive: false,
       },
     };
     /**
@@ -120,7 +120,7 @@ export default class App {
     /**
      * @property {string} appVerson version number for managing localstorage data differences
      */
-    this.appVersion = "0.3";
+    this.appVersion = "1.0.1";
 
     this.setupLocalStorage();
   }
@@ -142,14 +142,14 @@ export default class App {
     const weatherApiType = this.getWeatherAPIType();
     const mapType = this.getMapType();
 
-    const defaultMapType = this.mapService.getMapTypes()["open-street-map"];
+    const defaultMapType = this.mapService.getMapTypes()["yandex-map"];
 
     const initialLsState = {
       cities: [],
       settings: this.settingsData,
       city: {},
       "weather-api-type": {},
-      "map-type": defaultMapType
+      "map-type": defaultMapType,
     };
 
     // Inital launching checks
@@ -163,48 +163,62 @@ export default class App {
     if (!lsSettings) {
       LsService.set(this.lsDataKey, {
         ...this.getLsData(),
-        [this.settingsLsKey]: this.settingsData
+        [this.settingsLsKey]: this.settingsData,
       });
     }
 
     if (!lsCitiesList) {
       LsService.set(this.lsDataKey, {
         ...this.getLsData(),
-        [this.citiesListLsKey]: []
+        [this.citiesListLsKey]: [],
       });
     }
 
     if (!lsCity) {
       LsService.set(this.lsDataKey, {
         ...this.getLsData(),
-        [this.cityLsKey]: {}
+        [this.cityLsKey]: {},
       });
     }
 
     if (!weatherApiType) {
       LsService.set(this.lsDataKey, {
         ...this.getLsData(),
-        [this.weatherAPITypeLsKey]: {}
+        [this.weatherAPITypeLsKey]: {},
       });
     }
 
     if (!mapType) {
       LsService.set(this.lsDataKey, {
         ...this.getLsData(),
-        [this.mapTypeLsKey]: defaultMapType
+        [this.mapTypeLsKey]: defaultMapType,
       });
 
-      this.mapService.setMapType(this.mapService.getMapTypes()["open-street-map"]);
+      this.mapService.setMapType(
+        this.mapService.getMapTypes()["open-street-map"]
+      );
     }
-  }
+  };
 
   /**
-   * @property {Function} mountModal function for creating and mounting a modal 
+   * @property {Function} mountModal function for creating and mounting a modal
    * For props description see Modal's constructor
    */
-  mountModal = (modalType, modalContentCreateMethod, classes = [], id = modalType) => {
-    this.rootElement.appendChild(this.modalService.createModal(modalType, modalContentCreateMethod, classes, id))
-  }
+  mountModal = (
+    modalType,
+    modalContentCreateMethod,
+    classes = [],
+    id = modalType
+  ) => {
+    this.rootElement.appendChild(
+      this.modalService.createModal(
+        modalType,
+        modalContentCreateMethod,
+        classes,
+        id
+      )
+    );
+  };
 
   /**
    * @property {Function} onCityWidgetClick Individual city widget's onClick handler
@@ -214,13 +228,13 @@ export default class App {
     this.setCurrentCity(city);
     this.showCityInfo = true;
     this.create();
-  }
+  };
 
   /**
    * @property {Function} onCityWidgetClick Individual setting trigger onClick handler
    * @param {Object} e event object
    */
-  toggleWidgetDisplay = ({ target: { id, classList }}) => {
+  toggleWidgetDisplay = ({ target: { id, classList } }) => {
     // check if there's an id
     if (!id.trim()) {
       this.create();
@@ -254,14 +268,14 @@ export default class App {
 
     this.setSettings(newSettings);
     this.createSettings();
-  }
+  };
 
   /**
    * @property {Function} getLsData getting entire current state from localstorage
    * @returns {Object}
    */
   getLsData() {
-    return LsService.get(this.lsDataKey)
+    return LsService.get(this.lsDataKey);
   }
 
   /**
@@ -270,7 +284,7 @@ export default class App {
    */
   getSettingsState = () => {
     return LsService.get(this.lsDataKey)?.[this.settingsLsKey];
-  }
+  };
 
   /**
    * @property {Function} getCities getting current cities list state from localstorage
@@ -279,197 +293,175 @@ export default class App {
   getCities = () => {
     return LsService.get(this.lsDataKey)?.[this.citiesListLsKey];
     // return []
-  }
+  };
 
   /**
    * @property {Function} getCurrentCity Current city localstorage getter
    */
   getCurrentCity = () => {
     return LsService.get(this.lsDataKey)?.[this.cityLsKey];
-  }
+  };
 
   /**
    * @property {Function} getWeatherAPIType Current weather api type localstorage getter
    */
   getWeatherAPIType = () => {
     return LsService.get(this.lsDataKey)?.[this.weatherAPITypeLsKey];
-  }
+  };
 
   /**
    * @property {Function} getMapType Current map type localstorage getter
    */
   getMapType = () => {
     return LsService.get(this.lsDataKey)?.[this.mapTypeLsKey];
-  }
+  };
 
   /**
    * @property {Function} setWeatherAPIType Current weather api type localstorage setter
    */
   setWeatherAPIType = (weatherApiType) => {
-    LsService.set(
-      this.lsDataKey, 
-      {
-        ...LsService.get(this.lsDataKey), 
-        [this.weatherAPITypeLsKey]: weatherApiType
-      }
-    );
-  }
+    LsService.set(this.lsDataKey, {
+      ...LsService.get(this.lsDataKey),
+      [this.weatherAPITypeLsKey]: weatherApiType,
+    });
+  };
 
   /**
    * @property {Function} setMapType Current map type localstorage setter
    */
   setMapType = (mapType) => {
-    LsService.set(
-      this.lsDataKey, 
-      {
-        ...LsService.get(this.lsDataKey), 
-        [this.mapTypeLsKey]: mapType
-      }
-    );
-  }
+    LsService.set(this.lsDataKey, {
+      ...LsService.get(this.lsDataKey),
+      [this.mapTypeLsKey]: mapType,
+    });
+  };
 
   /**
    * @property {Function} setCities Current cities list localstorage setter
    */
   setCities = (citiesList) => {
-    LsService.set(
-      this.lsDataKey, 
-      {
-        ...LsService.get(this.lsDataKey), 
-        [this.citiesListLsKey]: citiesList
-      }
-    );
-  }
+    LsService.set(this.lsDataKey, {
+      ...LsService.get(this.lsDataKey),
+      [this.citiesListLsKey]: citiesList,
+    });
+  };
 
   /**
    * @property {Function} setSettings Current settings localstorage setter
    */
   setSettings = (settings) => {
-    LsService.set(
-      this.lsDataKey, 
-      {
-        ...LsService.get(this.lsDataKey), 
-        [this.settingsLsKey]: settings
-      }
-    );
-  }
+    LsService.set(this.lsDataKey, {
+      ...LsService.get(this.lsDataKey),
+      [this.settingsLsKey]: settings,
+    });
+  };
 
   /**
    * @property {Function} setCurrentCity Current city localstorage setter
    */
   setCurrentCity = (city) => {
-    LsService.set(
-      this.lsDataKey, 
-      {
-        ...LsService.get(this.lsDataKey), 
-        [this.cityLsKey]: city
-      }
-    );
-  }
+    LsService.set(this.lsDataKey, {
+      ...LsService.get(this.lsDataKey),
+      [this.cityLsKey]: city,
+    });
+  };
 
   /**
    * @property {Function} setEventListeners setting event listeners when single city "page" is loaded
    */
   setEventListeners() {
+    // Global events
+    window.addEventListener(
+      "map-search",
+      (e) => {
+        if (!e.detail.title) {
+          this.closeMapModal();
+
+          return;
+        }
+
+        this.fetchCities(e.detail.title, e.detail.coordinates).then(
+          (cities) => {
+            let shouldExit = false;
+
+            // preventing unnecessary re-rendering & cities duplication
+            this.getCities().forEach((city) =>
+              city.title === e.detail.title ? (shouldExit = true) : false
+            );
+
+            if (shouldExit) {
+              return;
+            }
+
+            this.setCities(cities);
+            this.setCurrentCity(cities[cities.length - 1]);
+            this.showCityInfo = true;
+
+            this.create();
+          }
+        );
+      },
+      false,
+      true
+    );
+
     // for smooth transitioning between "pages"
-    this.rootElement.addEventListener("webkitAnimationEnd", () => {
-      this.rootElement.classList.remove("change-animate");
-    }, false)
+    this.rootElement.addEventListener(
+      "webkitAnimationEnd",
+      () => {
+        this.rootElement.classList.remove("change-animate");
+      },
+      false
+    );
 
     if (!this.showCityInfo) {
-      document.getElementById("cityListCloseBtn")?.addEventListener("click", this.closeCityList);
-      document.getElementById("addCityBtn")?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
+      document
+        .getElementById("cityListCloseBtn")
+        ?.addEventListener("click", this.closeCityList);
+      document
+        .getElementById("addCityBtn")
+        ?.addEventListener("click", () =>
+          this.dashBoard.generateAddCityModal()
+        );
 
       return;
     }
 
-    const cityInfo = document.getElementById("city-info");
-
-    document.getElementById("showCitiesListBtn")?.addEventListener("click", this.showCityList);
-    document.getElementById("settingsOpenBtn")?.addEventListener("click", this.createSettings);
-
-    cityInfo.addEventListener('touchstart', e => {
-      this.touchStartX = e.changedTouches[0].screenX
-    });
-
-    cityInfo.addEventListener('touchend', e => {
-      this.touchEndX = e.changedTouches[0].screenX;
-      this.handleGesture();
-    });
+    document
+      .getElementById("showCitiesListBtn")
+      ?.addEventListener("click", this.showCityList);
+    document
+      .getElementById("navigationAddCityBtn")
+      ?.addEventListener("click", () => this.dashBoard.generateAddCityModal());
+    document
+      .getElementById("settingsOpenBtn")
+      ?.addEventListener("click", this.createSettings);
   }
 
   /**
-   * @property {Function} handleGesture swipe realization
-   */
-  handleGesture() {
-    const currentCity = this.getCurrentCity();
-    const citiesData = this.getCities();
-
-    const currentCityIndex = citiesData.findIndex((city) => city.id === currentCity.id);
-
-    // swiped left | 24 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX + 24 < this.touchStartX) {
-      if (currentCityIndex < citiesData.length - 1 && currentCityIndex >= 0) {
-        this.setCurrentCity(citiesData[currentCityIndex + 1]);
-
-        this.create();
-      }
-    }
-
-    // swiped right | 24 is for correct behavior (don't swipe on 1px change, for example)
-    if (this.touchEndX - 24 > this.touchStartX) {
-      if (currentCityIndex > 0) {
-        this.setCurrentCity(citiesData[currentCityIndex - 1]);
-
-        this.create();
-      }
-    }
-  }
-
-  /**
-   * @property {Function} createMapModalContentWrapper 
+   * @property {Function} createMapModalContentWrapper
    */
   createMapModalContentWrapper() {
     const contentWrapper = document.createElement("div");
-    
+
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--select-api-source");
-
-    contentWrapper.addEventListener("click", this.closeMapModal);
 
     return contentWrapper;
   }
 
   /**
-   * @property {Function} closeMapModal 
+   * @property {Function} closeMapModal
    */
   closeMapModal() {
-    document.getElementById(modalTypes.MAP).remove();
+    document.getElementById(modalTypes.MAP)?.remove();
+    window.addCityBtnClicked = false;
   }
 
   /**
-   * @property {Function} createCloseMapModalBtn 
+   * @property {Function} createMapModalContainer
    */
-  createCloseMapModalBtn() {
-    const btn = document.createElement("button");
-
-    btn.classList.add("close-modal-btn");
-    btn.classList.add("close-map-modal-btn");
-    btn.id = "mapCloseBtn";
-
-    btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
-    `;
-
-    btn.addEventListener("click", this.closeMapModal);
-
-    return btn;
-  }
-
-  /**
-   * @property {Function} createMapModalContainer 
-   */
-  createMapModalContainer(id) { 
+  createMapModalContainer(id) {
     const container = document.createElement("div");
 
     container.classList.add("map-wrapper");
@@ -482,28 +474,24 @@ export default class App {
   }
 
   /**
-   * @property {Function} createMap 
+   * @property {Function} createMap
    */
-  createMap = (id) => {
-    this.mountModal(
-      modalTypes.MAP,
-      () => [
-        this.createMapModalContentWrapper(),
-        this.createCloseMapModalBtn(),
-        this.createMapModalContainer(id)
-      ]
-    );
-    
+  createMap = (id, cityName) => {
+    this.mountModal(modalTypes.MAP, () => [
+      this.createMapModalContentWrapper(),
+      this.createMapModalContainer(id),
+    ]);
+
     this.mapService.setMapType(this.getMapType());
-    this.mapService.createMap(id);
-  }
+    this.mapService.createMap(id, cityName);
+  };
 
   /**
    * @property {Function} clearRootElement emptying roolElement's content
    */
   clearRootElement = () => {
     this.rootElement.innerHTML = "";
-  }
+  };
 
   /**
    * @property {Function} showCityList displaying cities list "page"
@@ -511,14 +499,14 @@ export default class App {
   showCityList = () => {
     this.showCityInfo = false;
     this.create();
-  }
+  };
 
   /**
    * @property {Function} smoothTransition
    */
   smoothTransition = () => {
     this.rootElement.classList.add("change-animate");
-  }
+  };
 
   /**
    * @property {Function} createNavigation creating navigation element
@@ -533,6 +521,11 @@ export default class App {
       </div>
       <div class="navigation__pages" id="nav-circles"></div>
       <div class="navigation__cities">
+          <a id="navigationAddCityBtn" class="link add-city-link">
+            <div class="navigation__cities-link-wrapper">
+                <i class="icon icon-figma-plus navigation__smaller-icon"></i>
+            </div>
+          </a>
           <a class="link" id="showCitiesListBtn">
               <div class="navigation__cities-link-wrapper">
                   <i class="icon icon-figma-tiles navigation__smaller-icon"></i>
@@ -550,6 +543,7 @@ export default class App {
    */
   createNavCircles() {
     const circlesWrapper = document.getElementById("nav-circles");
+    circlesWrapper.innerHTML = "";
 
     this.getCities().forEach((city) => {
       const circle = document.createElement("i");
@@ -559,20 +553,24 @@ export default class App {
       circle.classList.add("navigation__circle");
 
       if (city.id === this.getCurrentCity().id) {
-        circle.classList.add("navigation__circle--active")
+        circle.classList.add("navigation__circle--active");
       }
 
       circle.addEventListener("click", () => {
         // check to avoid unnecessary re-rendering
         if (city.id !== this.getCurrentCity().id) {
           this.setCurrentCity(city);
-          this.create();
+          this.citiesSlider.goTo(
+            this.getCities().findIndex(
+              (city) => this.getCurrentCity().id === city.id
+            )
+          );
         }
       });
 
       circlesWrapper.appendChild(circle);
-    })
-    
+    });
+
     return circlesWrapper;
   }
 
@@ -580,19 +578,25 @@ export default class App {
    * @property {Function} createSettings creating settings element
    */
   createSettings = () => {
-    this.mountModal(
-      modalTypes.SETTINGS,
-      () => [
-        this.settings.createCloseSettingsBtn(this.closeSettings),
-        this.settings.createContentWrapper(this.closeSettings),
-        this.settings.createSettings(this.getSettingsState(), this.setOnSettingClick, this.selectAPIHandle, this.selectMapHandle)
-      ]
-    );
-    
-    document.getElementById("settingsCloseBtn")?.addEventListener("click", () => {
-      this.closeSettings();
-    });
-  }
+    this.mountModal(modalTypes.SETTINGS, () => [
+      this.settings.createContentWrapper(),
+      this.settings.createSettings(
+        this.getSettingsState(),
+        this.setOnSettingClick,
+        this.selectAPIHandle,
+        this.selectMapHandle,
+        this.getWeatherAPIType(),
+        this.getMapType(),
+        this.closeSettings
+      ),
+    ]);
+
+    document
+      .getElementById("settingsCloseBtn")
+      ?.addEventListener("click", () => {
+        this.closeSettings();
+      });
+  };
 
   /**
    * @property {Function} selectHandle function triggered on weather api type select in settings modal
@@ -603,12 +607,13 @@ export default class App {
     const oldType = this.getWeatherAPIType();
     const newType = apiTypes[selectField.value];
 
-    if (oldType.apiKey === newType.apiKey) {
+    if (oldType.apiType === newType.apiType) {
       return;
     }
 
     this.updateCities(apiTypes[selectField.value]);
-  }
+    this.showCityInfo = true;
+  };
 
   /**
    * @property {Function} selectMapHandle function triggered on map type select in settings modal
@@ -619,16 +624,16 @@ export default class App {
     const oldType = this.getMapType();
     const newType = mapTypes[selectField.value];
 
-    if (oldType.secretKey === newType.secretKey) {
+    if (oldType.mapType === newType.mapType) {
       return;
     }
 
     this.setMapType(newType);
-  }
+  };
 
   /**
-   * method for fetching existent cities but with new selected api type 
-   * @property {Function} updateCities 
+   * method for fetching existent cities but with new selected api type
+   * @property {Function} updateCities
    */
   updateCities = async (newAPIType) => {
     const oldCities = this.getCities();
@@ -639,28 +644,26 @@ export default class App {
     this.setCurrentCity({});
     this.showCityInfo = false;
 
-    oldCities.forEach(city => {
-      this.fetchCity(city.title, undefined, [ city.lat, city.lon ])
-        .then(fetchedCity => {
-          this.setCities([...this.getCities(), fetchedCity])
+    oldCities.forEach((city) => {
+      this.fetchCity(city.title, [city.lat, city.lon])
+        .then((fetchedCity) => {
+          this.setCities([...this.getCities(), fetchedCity]);
           this.create();
         })
-        .catch(() => {
-          alert("Could not fetch city");
+        .catch((e) => {
+          alert("Could not fetch city", e.error);
           this.setCities([]);
           this.showCityList();
-
-          return;
-        })
-    })
-  }
+        });
+    });
+  };
 
   /**
    * @property {Function} closeSettings Closing settings modal
    */
   closeSettings = () => {
     this.create();
-  }
+  };
 
   /**
    * @property {Function} closeCityAddModal Closing add city modal
@@ -668,14 +671,17 @@ export default class App {
   closeCityAddModal = () => {
     this.create();
     this.showCityInfo = false;
-  }
+  };
 
   /**
    * @property {Function} setOnSettingClick Setting onClick event later on a single setting item
    */
   setOnSettingClick = (settingNode) => {
-    settingNode.childNodes[3].childNodes[1].addEventListener("click",this.toggleWidgetDisplay);
-  }
+    settingNode.childNodes[3].childNodes[1].addEventListener(
+      "click",
+      this.toggleWidgetDisplay
+    );
+  };
 
   /**
    * @property {Function} closeCityList
@@ -683,17 +689,17 @@ export default class App {
   closeCityList = () => {
     this.showCityInfo = true;
     this.create();
-  }
+  };
 
   /**
    * @property {Function} fetchCities get a new city + all the old ones
    */
-  fetchCities = async (city, country) => {
+  fetchCities = async (cityName, coordinates) => {
     this.weatherAPIService.setApiType(this.getWeatherAPIType());
 
-    const newCity = await this.fetchCity(city, country);
+    const newCity = await this.fetchCity(cityName, coordinates);
 
-    if (!newCity) {
+    if (newCity.error) {
       alert("Could not fetch city");
       this.setCities([]);
       this.showCityList();
@@ -706,45 +712,41 @@ export default class App {
     }
 
     return [...this.getCities(), newCity];
-  }
+  };
 
   /**
    * @property {Function} fetchCity getting a new city from an api
    */
-  fetchCity = async (city, country, coordinates) => {
-    return await this.weatherAPIService.getForecast(city, country, coordinates);
-  }
+  fetchCity = async (cityName, coordinates) => {
+    return await this.weatherAPIService.getForecast(cityName, coordinates);
+  };
 
   /**
    * @property {Function} onSelectApiSourceClick function triggered when api type is being selected for the first time
    */
   onSelectApiSourceClick = (e) => {
     e.preventDefault();
-    
+
     const selectField = e.target.elements["api-source-select"];
     const apiTypes = this.weatherAPIService.getApiTypes();
 
-    this.setWeatherAPIType(apiTypes[selectField.value]);    
+    this.setWeatherAPIType(apiTypes[selectField.value]);
     this.create();
-  }
+  };
 
   /**
    * @property {Function} addCityClickHandle handling adding a city
    */
   addCityClickHandle = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
 
     const selectedCity = document.getElementById("add-city-input").value;
-    const selectedCountry = document.getElementById("add-city-input-country").value;
 
-    this.fetchCities(selectedCity, selectedCountry).then((cities) => {
-      this.setCities(cities);
-      this.setCurrentCity(cities[cities.length -1]);
-      this.showCityInfo = true;
+    window.addCityBtnClicked = true;
 
-      this.create();
-    })
-  }
+    this.mapService.setMapType(this.getMapType().mapType);
+    this.createMap(this.mapService.selectedMapType, selectedCity);
+  };
 
   /**
    * @property {Function} onCloseSelectApiSource closing select api source modal
@@ -753,41 +755,78 @@ export default class App {
     if (!this.getWeatherAPIType()) {
       const apiTypes = this.weatherAPIService.getApiTypes();
 
-      this.setWeatherAPIType(apiTypes["open-weather-map"]);    
+      this.setWeatherAPIType(apiTypes["open-weather-map"]);
       this.create();
     }
+  };
+
+  /**
+   *  @property {Function} setupCitiesSlider
+   */
+  setupCitiesSlider() {
+    if (this.getCities().length === 0) {
+      return;
+    }
+
+    /**
+     * tns is provided by tiny-slider package
+     * @property {Object} citiesSlider
+     */
+    this.citiesSlider = tns({
+      container: ".cities-slider",
+      items: 1,
+      slideBy: "page",
+      autoplay: false,
+      controls: false,
+      nav: false,
+      mouseDrag: true,
+      loop: false,
+      startIndex: this.getCities().findIndex(
+        (city) => this.getCurrentCity().id === city.id
+      ),
+      preventScrollOnTouch: "auto",
+    });
+
+    this.citiesSlider.events.on("indexChanged", (e) => {
+      this.setCurrentCity(
+        this.getCities().find((city, index) => index === e.displayIndex - 1)
+      );
+      this.createNavCircles();
+    });
   }
 
   /**
-   * @property {Function} create central app's point
+   * @property {Function} deleteCity
    */
-  create = () => {
-    this.clearRootElement();
+  deleteCity = (id) => {
+    this.setCities(this.getCities().filter((city) => city.id !== id));
+    this.create();
+  };
 
-    if (this.showCityInfo) {
-      this.createNavigation();
-    }
-
+  createDashBoard() {
     // central "router"
     switch (this.displayMode) {
       case "dashboard":
-        this.dashBoard.create(
-          this.getCities(),
-          this.getCurrentCity(),
-          this.onCityWidgetClick,
-          this.getSettingsState,
-          this.widgetsData,
-          this.showCityInfo,
-          this.mountModal,
-          this.closeCityAddModal,
-          this.smoothTransition,
-          this.onSelectApiSourceClick,
-          this.addCityClickHandle,
-          this.getWeatherAPIType(),
-          this.onCloseSelectApiSource,
-          this.createMap,
-          this.getMapType()
-        ).forEach((element) => this.rootElement.appendChild(element));
+        this.dashBoard
+          .create(
+            this.getCities(),
+            this.getCurrentCity(),
+            this.onCityWidgetClick,
+            this.getSettingsState,
+            this.widgetsData,
+            this.showCityInfo,
+            this.mountModal,
+            this.closeCityAddModal,
+            this.smoothTransition,
+            this.onSelectApiSourceClick,
+            this.addCityClickHandle,
+            this.getWeatherAPIType(),
+            this.onCloseSelectApiSource,
+            this.createMap,
+            this.getMapType(),
+            this.deleteCity
+          )
+          .forEach((element) => this.rootElement.appendChild(element));
 
         this.setEventListeners();
 
@@ -795,9 +834,24 @@ export default class App {
       default:
         break;
     }
+  }
+
+  /**
+   * @property {Function} create central app's point
+   */
+  create = () => {
+    this.setupLocalStorage();
+    this.clearRootElement();
+
+    if (this.showCityInfo) {
+      this.createNavigation();
+    }
+
+    this.createDashBoard();
 
     if (this.showCityInfo) {
       document.getElementById("city-list")?.remove();
+      this.setupCitiesSlider();
     }
-  }
+  };
 }

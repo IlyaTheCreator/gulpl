@@ -1,7 +1,7 @@
 import { modalTypes, widgetTypes, uvTypes } from "../constants";
-import { autocomplete } from "../helpers/inputAutocomplete";
 import Widget from "./Widget";
-import cities from "cities.json";
+
+import "long-press-event";
 
 /**
  * @namespace entities
@@ -24,14 +24,23 @@ export default class DashBoard {
       <h1 class="screen__header">${city.title}</h1>
       <p class="screen__date">${new Date(city.date).toDateString()}</p>
       <div class="screen__weather">
-          <img src="${city.cityImage
-      }" alt="weather image" class="screen__image">
+          <img src="${
+            city.cityImage
+          }" alt="weather image" class="screen__image">
           <p class="screen__temperature">${city.currentTemp}°</p>
           <p class="screen__weather-type">${city.weatherCondition}</p>
       </div>
     `;
 
     return contentWrapper;
+  }
+
+  createCitiesSlider() {
+    const slider = document.createElement("div");
+
+    slider.classList.add("cities-slider");
+
+    return slider;
   }
 
   /**
@@ -57,12 +66,11 @@ export default class DashBoard {
   createCloseSelectApiSourceBtn() {
     const btn = document.createElement("button");
 
-    btn.classList.add("close-modal-btn");
     btn.classList.add("close-select-api-source-btn");
     btn.id = "citySelectApiSourceCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">Cancel</p>
     `;
 
     btn.addEventListener("click", this.onCloseSelectApiSource);
@@ -77,6 +85,7 @@ export default class DashBoard {
   createSelectApiSourceCard() {
     const card = document.createElement("div");
     const form = document.createElement("form");
+    const closeBtn = this.createCloseSelectApiSourceBtn();
 
     form.classList.add("select-api-source-form");
     card.classList.add("select-api-source");
@@ -93,7 +102,9 @@ export default class DashBoard {
       <button class="btn">Select</button>
     `;
 
-    form.addEventListener("submit", e => this.onSelectApiSourceClick(e))
+    form.appendChild(closeBtn);
+
+    form.addEventListener("submit", (e) => this.onSelectApiSourceClick(e));
 
     card.appendChild(form);
 
@@ -109,7 +120,7 @@ export default class DashBoard {
       () => [
         this.createSelectApiSourceContentWrapper(),
         this.createCloseSelectApiSourceBtn(),
-        this.createSelectApiSourceCard()
+        this.createSelectApiSourceCard(),
       ],
       ["select-api-source-modal"]
     );
@@ -127,7 +138,7 @@ export default class DashBoard {
     btn.id = "cityListCloseBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     return btn;
@@ -169,18 +180,18 @@ export default class DashBoard {
     }
 
     return `
-      <p class="city-info-grid__widget-description">${cityData.widgetRelatedInfo[key].name}</p>
+      <p class="city-info-grid__widget-description">${
+        cityData.widgetRelatedInfo[key].name
+      }</p>
       <div class="city-info-grid__content-wrapper city-info-grid__content-wrapper--margin-bottom">
-        <p class="city-info-grid__widget-number">${cityData.widgetRelatedInfo[key].value}</p>
-        ${
-          uvText
-          ? `<p class="city-info-grid__widget-data">${uvText}</p>`
-          : ""
-        }
+        <p class="city-info-grid__widget-number">${
+          cityData.widgetRelatedInfo[key].value
+        }</p>
+        ${uvText ? `<p class="city-info-grid__widget-data">${uvText}</p>` : ""}
         ${
           cityData.widgetRelatedInfo[key].additional
-          ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
-          : ""
+            ? `<p class="city-info-grid__widget-additional">${cityData.widgetRelatedInfo[key].additional}</p>`
+            : ""
         }
       </div>
     `;
@@ -192,22 +203,38 @@ export default class DashBoard {
    * @param {Object} currentCity current city data
    * @returns {Object}
    */
-  createCity(citiesData, currentCity) {
-    const contentWrapper = this.createContentWrapper(currentCity);
-    const cityInfoGrid = this.createCityInfoGrid();
-    
-    Object.keys(citiesData).forEach((key) => {
-      const content = this.createCityWidgetContent(currentCity, key);
-      const widget = Widget.create(content, widgetTypes.CITY, ["city-info-grid__grid-item"]);
-    
-      cityInfoGrid.appendChild(widget);
+  createCity() {
+    const citiesSlider = this.createCitiesSlider();
+    const currentSettingsState = this.getSettingsState();
+
+    this.cities.forEach((city) => {
+      const contentWrapper = this.createContentWrapper(city);
+      const cityInfoGrid = this.createCityInfoGrid();
+
+      const citiesData = {};
+
+      Object.keys(currentSettingsState)
+        .filter((key) => currentSettingsState[key].isActive)
+        .forEach(
+          (key) => (citiesData[key] = city.widgetRelatedInfo[key])
+        );
+
+      Object.keys(citiesData).forEach((key) => {
+        const content = this.createCityWidgetContent(city, key);
+        const widget = Widget.create(content, widgetTypes.CITY, [
+          "city-info-grid__grid-item",
+        ]);
+
+        cityInfoGrid.appendChild(widget);
+      });
+
+      contentWrapper.classList.add("city-info");
+      contentWrapper.appendChild(cityInfoGrid);
+
+      citiesSlider.appendChild(contentWrapper);
     });
 
-    contentWrapper.id = "city-info";
-    contentWrapper.classList.add("city-info");
-    contentWrapper.appendChild(cityInfoGrid);
-
-    return contentWrapper;
+    return citiesSlider;
   }
 
   /**
@@ -221,12 +248,16 @@ export default class DashBoard {
         <h3 class="screen__title">
           <div className="screen__city-title-group">
             <span class="screen__city-name">${city.title}</span>
-            <p class="screen__city-time">${new Date(city.date).toDateString()}</p>
+            <p class="screen__city-time">${new Date(
+              city.date
+            ).toDateString()}</p>
           </div>
           <span class="screen__city-temperature">${city.currentTemp}°</span>
         </h3>
         <div class="screen__city-info">
-          <span class="screen__city-weather-condition">${city.weatherCondition}</span>
+          <span class="screen__city-weather-condition">${
+            city.weatherCondition
+          }</span>
           <span class="screen__city-temperature-range">
             Max. ${city.widgetRelatedInfo.maxTemp.value} 
             Min. ${city.widgetRelatedInfo.minTemp.value}
@@ -235,6 +266,37 @@ export default class DashBoard {
       </a>
     `;
   }
+
+  /**
+   * @property {Function} createDeleteCityBtn
+   */
+  createDeleteCityBtn = (e, id) => {
+    if (e.target.classList.contains("city-with-delete-btn")) {
+      return;
+    }
+
+    const deleteBtn = document.createElement("button");
+
+    deleteBtn.classList.add("btn");
+    deleteBtn.classList.add("delete-city-btn");
+    deleteBtn.textContent = "delete";
+
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.deleteCity(id);
+    });
+
+    e.target.appendChild(deleteBtn);
+    e.target.classList.add("city-with-delete-btn");
+  };
+
+  /**
+   * @property {Function} removeDeleteCityBtn
+   */
+  removeDeleteCityBtn = (e) => {
+    e.target.classList.remove("city-with-delete-btn");
+    e.target.childNodes[e.target.childNodes.length - 1].remove();
+  };
 
   /**
    * @property {Function} createCityList creating city list page
@@ -254,6 +316,20 @@ export default class DashBoard {
         ["screen__city"],
         onClick
       );
+
+      if (window.innerWidth > 768) {
+        cityWidget.addEventListener("mouseenter", (e) =>
+          this.createDeleteCityBtn(e, city.id)
+        );
+        cityWidget.addEventListener("mouseleave", (e) =>
+          this.removeDeleteCityBtn(e)
+        );
+      } else {
+        cityWidget.dataset.longPressDelay = 500;
+        cityWidget.addEventListener("long-press", (e) =>
+          this.createDeleteCityBtn(e, city.id)
+        );
+      }
 
       return cityWidget;
     });
@@ -279,6 +355,8 @@ export default class DashBoard {
       <i class="icon-figma-plus"></i>
     `;
 
+    btn.addEventListener("click", this.generateAddCityModal);
+
     return btn;
   }
 
@@ -286,14 +364,12 @@ export default class DashBoard {
    * @property {Function} createAddCityContentWrapper creating add-city overlay
    * @returns {Object}
    */
-   createAddCityContentWrapper(onClick) {
+  createAddCityContentWrapper() {
     const contentWrapper = document.createElement("div");
 
     contentWrapper.id = "add-city-overlay";
     contentWrapper.classList.add("modal-overlay");
     contentWrapper.classList.add("modal-overlay--add-city");
-
-    contentWrapper.addEventListener("click", onClick);
 
     return contentWrapper;
   }
@@ -302,15 +378,14 @@ export default class DashBoard {
    * @property {Function} createCloseAddCityBtn creating btn for closing add-city modal
    * @returns {Object}
    */
-   createCloseAddCityBtn() {
+  createCloseAddCityBtn() {
     const btn = document.createElement("button");
 
-    btn.classList.add("close-modal-btn");
     btn.classList.add("close-add-city-btn");
-    btn.id = "closeCityBtn";
+    btn.id = "closeAddCityBtn";
 
     btn.innerHTML = `
-      <i class="icon-cancel-squared"></i>
+      <p class="cancel-btn">close</p>
     `;
 
     btn.addEventListener("click", this.closeCityAddModal);
@@ -342,7 +417,8 @@ export default class DashBoard {
    */
   createAddCityForm() {
     const form = document.createElement("form");
-    const btn = this.createAddCitySubmitButton();
+    const addBtn = this.createAddCitySubmitButton();
+    const closeBtn = this.createCloseAddCityBtn();
     const inputWrapper = document.createElement("div");
     const iconWrapper = document.createElement("div");
 
@@ -351,7 +427,6 @@ export default class DashBoard {
 
     inputWrapper.innerHTML = `
       <input autocomplete="off" id="add-city-input" type="text" placeholder="Enter City Name..." />
-      <input type="hidden" id="add-city-input-country" />
     `;
 
     iconWrapper.innerHTML = `
@@ -360,13 +435,18 @@ export default class DashBoard {
 
     form.classList.add("add-city-form");
 
-    btn.innerText = "Add";
+    addBtn.innerText = "Add";
+    closeBtn.innerText = "Cancel";
 
-    iconWrapper.addEventListener("click", () => this.createMap(this.mapType));
+    iconWrapper.addEventListener("click", () => {
+      this.addCityClickHandle();
+      window.addCityBtnClicked = false;
+    });
 
     inputWrapper.appendChild(iconWrapper);
     form.appendChild(inputWrapper);
-    form.appendChild(btn);
+    form.appendChild(addBtn);
+    form.appendChild(closeBtn);
 
     return form;
   }
@@ -377,7 +457,7 @@ export default class DashBoard {
    */
   createAddCityContent() {
     const addCityCard = document.createElement("div");
-    
+
     addCityCard.classList.add("card");
     addCityCard.classList.add("add-city");
 
@@ -408,22 +488,15 @@ export default class DashBoard {
   /**
    * @property {Function} generateAddCityModal creating add city modal
    */
-  generateAddCityModal() {
+  generateAddCityModal = () => {
     if (!document.getElementById("add-city")) {
       this.mountModal(
         modalTypes.ADD_CITY,
-        () => [
-          this.createCloseAddCityBtn(),
-          this.createAddCityContentWrapper(this.closeCityAddModal),
-          this.createAddCityContent()
-        ],
+        () => [this.createAddCityContentWrapper(), this.createAddCityContent()],
         ["add-city-modal"]
       );
-      
-      // SEE helpers/inputAutocomplete.js
-      autocomplete(document.getElementById("add-city-input"), cities)
     }
-  }
+  };
 
   /**
    * @property {Function} generateCityList preparing city list to be attached to the dom
@@ -439,12 +512,8 @@ export default class DashBoard {
     }
 
     const list = this.createCityList(this.cities, this.onCityWidgetClick);
-    
-    this.mountModal(
-      modalTypes.CITY_LIST,
-      () => list,
-      ["city-list"]
-    );
+
+    this.mountModal(modalTypes.CITY_LIST, () => list, ["city-list"]);
   }
 
   /**
@@ -452,15 +521,7 @@ export default class DashBoard {
    * @returns {Object}
    */
   generateCityInfo() {
-    const currentSettingsState = this.getSettingsState();
-
-    const filteredCityWidgets = {};
-
-    Object.keys(currentSettingsState)
-      .filter((key) => currentSettingsState[key].isActive)
-      .forEach((key) => filteredCityWidgets[key] = this.cities[0].widgetRelatedInfo[key]);
-
-    return this.createCity(filteredCityWidgets, this.currentCity);
+    return this.createCity();
   }
 
   /**
@@ -473,39 +534,38 @@ export default class DashBoard {
     if (this.showCityInfo) {
       output.push(this.generateCityInfo());
     } else {
-      if (this.cities.length > 0 && this.currentCity.title) {
-        output.push(this.createCloseCityListBtn());
-      }
-      
       if (Array.isArray(this.generateCityList())) {
         output = [...output, ...this.generateCityList()];
+      }
+
+      if (this.cities.length > 0) {
+        output.push(this.createCloseCityListBtn());
       }
     }
 
     this.smoothTransition();
-
-    // this.createMapModal();
 
     return output;
   }
 
   /**
    * @property {Function} create getting the required methods from the app and connecting to it
-   * @param {Object} cities 
-   * @param {Object} currentCity 
-   * @param {Function} onCityWidgetClick 
-   * @param {Function} getSettingsState 
-   * @param {Function} widgetsData 
-   * @param {Function} showCityInfo 
-   * @param {Function} mountModal 
-   * @param {Function} closeCityAddModal 
-   * @param {Function} smoothTransition 
-   * @param {Function} onSelectApiSourceClick 
-   * @param {Function} addCityClickHandle 
-   * @param {Object} weatherAPIType 
-   * @param {Function} onCloseSelectApiSource 
-   * @param {Function} createMap 
-   * @param {Object} mapData 
+   * @param {Object} cities
+   * @param {Object} currentCity
+   * @param {Function} onCityWidgetClick
+   * @param {Function} getSettingsState
+   * @param {Function} widgetsData
+   * @param {Function} showCityInfo
+   * @param {Function} mountModal
+   * @param {Function} closeCityAddModal
+   * @param {Function} smoothTransition
+   * @param {Function} onSelectApiSourceClick
+   * @param {Function} addCityClickHandle
+   * @param {Object} weatherAPIType
+   * @param {Function} onCloseSelectApiSource
+   * @param {Function} createMap
+   * @param {Object} mapData
+   * @param {Function} deleteCity
    * @returns {Array<Object>}
    */
   create(
@@ -523,14 +583,15 @@ export default class DashBoard {
     weatherAPIType,
     onCloseSelectApiSource,
     createMap,
-    mapData
+    mapData,
+    deleteCity
   ) {
     /**
      * @property {Array} cities latest city data
      */
-     this.cities = cities;
+    this.cities = cities;
     /**
-     * @property {Function} currentCity 
+     * @property {Function} currentCity
      */
     this.currentCity = currentCity;
     /**
@@ -585,7 +646,10 @@ export default class DashBoard {
      * @property {Object} mapType
      */
     this.mapType = mapData?.mapType;
-
+    /**
+     * @property {Function} deleteCity
+     */
+    this.deleteCity = deleteCity;
 
     return this.generateDashBoard();
   }

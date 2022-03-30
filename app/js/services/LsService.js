@@ -79,4 +79,3 @@ export default class LsService {
     localStorage.clear();
   }
 }
-
