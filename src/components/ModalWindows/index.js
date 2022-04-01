@@ -2,15 +2,15 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const ModalWindows = () => {
-  const modals = useSelector((state) => state.ui.modals);
+  const modalsStateData = useSelector((state) => state.ui.modals);
 
-  const returnValue = Object.keys(modals).map((key) => {
-    if (!modals[key].isOpen) {
+  const modals = Object.keys(modalsStateData).map((key) => {
+    if (!modalsStateData[key].isOpen) {
       return;
     }
 
     const modalComponent = () => require(`./${key}`).default;
-    const displayOption = modals[key].isUpfront ? "block" : "none";
+    const displayOption = modalsStateData[key].isUpfront ? "block" : "none";
 
     return (
       <div
@@ -23,7 +23,7 @@ const ModalWindows = () => {
     );
   });
 
-  return returnValue;
+  return modals;
 };
 
 export default ModalWindows;
