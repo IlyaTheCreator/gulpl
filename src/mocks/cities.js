@@ -5,7 +5,7 @@ const cities = [
     date: "2022-03-31T08:10:02.472Z",
     lat: 40.94232093800002,
     lon: 57.7967409940679,
-    cityImage: "assets/images/cloudy.png",
+    cityImage: "cloudy.png",
     currentTemp: 18.3,
     weatherCondition: "Overcast",
     widgetRelatedInfo: {
@@ -23,7 +23,7 @@ const cities = [
     date: "2022-03-31T08:10:02.483Z",
     lat: 37.385168369999974,
     lon: 55.583683544217536,
-    cityImage: "assets/images/cloudy.png",
+    cityImage: "cloudy.png",
     currentTemp: 19.6,
     weatherCondition: "Sunny",
     widgetRelatedInfo: {
@@ -41,7 +41,7 @@ const cities = [
     date: "2022-03-31T08:10:02.517Z",
     lat: 40.97771921249998,
     lon: 57.0064890490643,
-    cityImage: "assets/images/cloudy.png",
+    cityImage: "cloudy.png",
     currentTemp: 18.3,
     weatherCondition: "Overcast",
     widgetRelatedInfo: {

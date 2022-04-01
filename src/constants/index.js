@@ -26,3 +26,32 @@ export const mapTypes = {
   YANDEX: "yandex-map",
   OPEN_STREET_MAP: "open-street-map",
 };
+
+export const settingsSelectInputsData = [
+  {
+    title: "Weather Data Source:",
+    options: [
+      {
+        text: "Free Weather API",
+        value: "free-weather-api",
+      },
+      {
+        text: "Open Weather API",
+        value: "open-weather-map",
+      },
+    ]
+  },
+  {
+    title: "Map Type:",
+    options: [
+      {
+        text: "Yandex",
+        value: "yandex-map",
+      },
+      {
+        text: "Open Street Map",
+        value: "open-street-map",
+      },
+    ]
+  },
+];

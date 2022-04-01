@@ -2,6 +2,8 @@ import { useSelector } from "react-redux";
 
 import Layout from "./components/Layout";
 import ModalWindows from "./components/ModalWindows";
+import Navigation from "./components/Navigation";
+import SelectedCity from "./components/SelectedCity";
 
 const App = () => {
   const shouldDisplayCityInfo = useSelector(
@@ -13,10 +15,10 @@ const App = () => {
       <ModalWindows />
       <Layout>
         {shouldDisplayCityInfo && (
-          <div className="temporary-content">
-            <h1>hello</h1>
-            <p>let's rock</p>
-          </div>
+          <>
+            <Navigation />
+            <SelectedCity />
+          </>
         )}
       </Layout>
     </>

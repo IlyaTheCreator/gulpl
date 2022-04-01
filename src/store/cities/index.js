@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import cities from "../../mocks/cities";
 
 const initialState = {
-  selectedCity: {},
-  citiesList: [],
+  selectedCity: cities[0],
+  citiesList: cities,
 };
 
 const citiesSlice = createSlice({

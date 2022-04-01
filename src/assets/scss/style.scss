@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  position: relative;
 
   height: 823px;
   width: 411px;
@@ -278,6 +279,10 @@
   &__smaller-icon {
     font-size: 25px;
   }
+}
+
+.add-city-modal {
+  justify-content: center;
 }
 
 .settings-modal-wrapper {

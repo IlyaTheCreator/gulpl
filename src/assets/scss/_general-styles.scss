@@ -90,6 +90,7 @@ i {
 .link {
   color: $color-primary;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .icon {
@@ -103,7 +104,7 @@ i {
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   z-index: 9999;
-  max-height: 823px;
+  height: 823px;
   width: 411px;
   overflow-y: auto;
   display: flex;

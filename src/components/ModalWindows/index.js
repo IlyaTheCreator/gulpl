@@ -6,7 +6,7 @@ const ModalWindows = () => {
 
   const modals = Object.keys(modalsStateData).map((key) => {
     if (!modalsStateData[key].isOpen) {
-      return;
+      return null;
     }
 
     const modalComponent = () => require(`./${key}`).default;
