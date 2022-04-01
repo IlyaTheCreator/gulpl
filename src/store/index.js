@@ -1,11 +1,11 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 
-import modalsReducer from "./modals";
+import uiReducer from "./ui";
 import citiesReducer from "./cities";
 import apisReducer from "./apis";
 
 const rootReducer = combineReducers({
-  modals: modalsReducer,
+  ui: uiReducer,
   cities: citiesReducer,
   apis: apisReducer,
 });

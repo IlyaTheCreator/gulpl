@@ -1,50 +1,29 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
-const AddCityModal = React.lazy(() => import("./AddCityModal"));
-const CityListModal = React.lazy(() => import("./CityListModal"));
-const MapModal = React.lazy(() => import("./MapModal"));
-const SelectAPISourceModal = React.lazy(() => import("./SelectAPISourceModal"));
-const SettingsModal = React.lazy(() => import("./SettingsModal"));
-
 const ModalWindows = () => {
-  const {
-    isSettingsOpen,
-    isCityListOpen,
-    isAddCityOpen,
-    isSelectAPISourceOpen,
-    isMapOpen,
-  } = useSelector((state) => state.modals);
+  const modals = useSelector((state) => state.ui.modals);
 
-  return (
-    <>
-      {isAddCityOpen && (
-          <Suspense fallback="<div>loading...</div>">
-              <AddCityModal />
-          </Suspense>
-      )}
-      {isCityListOpen && (
-          <Suspense fallback="<div>loading...</div>">
-              <CityListModal />
-          </Suspense>
-      )}
-      {isMapOpen && (
-          <Suspense fallback="<div>loading...</div>">
-              <MapModal />
-          </Suspense>
-      )}
-      {isSelectAPISourceOpen && (
-          <Suspense fallback="<div>loading...</div>">
-              <SelectAPISourceModal />
-          </Suspense>
-      )}
-      {isSettingsOpen && (
-          <Suspense fallback="<div>loading...</div>">
-              <SettingsModal />
-          </Suspense>
-      )}
-    </>
-  );
+  const returnValue = Object.keys(modals).map((key) => {
+    if (!modals[key].isOpen) {
+      return;
+    }
+
+    const modalComponent = () => require(`./${key}`).default;
+    const displayOption = modals[key].isUpfront ? "block" : "none";
+
+    return (
+      <div
+        className="modal-wrapper"
+        key={key}
+        style={{ display: displayOption }}
+      >
+        {React.createElement(modalComponent())}
+      </div>
+    );
+  });
+
+  return returnValue;
 };
 
 export default ModalWindows;

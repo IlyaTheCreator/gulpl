@@ -1,9 +1,11 @@
 const CityListModal = () => {
-    return (
-        <div>
-            <h1>city list modal</h1>
-        </div>
-    );
+  return (
+    <>
+      <div className="modal city-list">
+        <h1>city list</h1>
+      </div>
+    </>
+  );
 };
 
 export default CityListModal;

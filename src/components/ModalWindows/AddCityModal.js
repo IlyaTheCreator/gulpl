@@ -1,13 +1,12 @@
-import Overlay from "./Overlay";
+import Overlay from "../Layout/Overlay";
+import AddCityForm from "../AddCityForm";
 
 const AddCityModal = () => {
   return (
     <>
-      <Overlay />
+      <Overlay className="modal-overlay--add-city"/>
       <div className="modal add-city-modal">
-        <div className="card add-city">
-            <h1>add city modal</h1>
-        </div>
+        <AddCityForm />
       </div>
     </>
   );
