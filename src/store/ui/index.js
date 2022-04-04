@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   modals: {
-    SettingsModal: { isOpen: true, isUpfront: true },
+    SettingsModal: { isOpen: false, isUpfront: false },
     CityListModal: { isOpen: false, isUpfront: false },
     AddCityModal: { isOpen: false, isUpfront: false },
     SelectAPISourceModal: { isOpen: false, isUpfront: false },
-    MapModal: { isOpen: false, isUpfront: false },
+    MapModal: { isOpen: true, isUpfront: true },
   },
   shouldDisplayCityInfo: true,
 };
@@ -17,22 +17,26 @@ const uiSlice = createSlice({
   reducers: {
     setUpfrontModalsToFalse: (state) => {
       Object.keys(state.modals).forEach((key) => {
-        state.modals[key] = {...state.modals[key], isUpfront: false}
-      })
+        state.modals[key] = { ...state.modals[key], isUpfront: false };
+      });
     },
     toggleSettings: (state) => {
       state.modals.SettingsModal.isOpen = !state.modals.SettingsModal.isOpen;
-      state.modals.SettingsModal.isUpfront = !state.modals.SettingsModal.isUpfront;
+      state.modals.SettingsModal.isUpfront =
+        !state.modals.SettingsModal.isUpfront;
     },
     toggleCityList: (state) => {
       state.modals.CityListModal.isOpen = !state.modals.CityListModal.isOpen;
-      state.modals.CityListModal.isUpfront = !state.modals.CityListModal.isUpfront;
+      state.modals.CityListModal.isUpfront =
+        !state.modals.CityListModal.isUpfront;
       uiSlice.caseReducers.showCityInfo(state);
     },
     toggleAddCity: (state) => {
       state.modals.AddCityModal.isOpen = !state.modals.AddCityModal.isOpen;
-      state.modals.AddCityModal.isUpfront = !state.modals.AddCityModal.isUpfront;
-      state.modals.CityListModal.isUpfront = !state.modals.CityListModal.isUpfront;
+      state.modals.AddCityModal.isUpfront =
+        !state.modals.AddCityModal.isUpfront;
+      state.modals.CityListModal.isUpfront =
+        !state.modals.CityListModal.isUpfront;
       uiSlice.shouldDisplayCityInfo = false;
     },
     toggleSelectAPISource: (state) => {
@@ -41,12 +45,12 @@ const uiSlice = createSlice({
       state.modals.SelectAPISourceModal.isOpen =
         !state.modals.SelectAPISourceModal.isOpen;
       state.modals.SelectAPISourceModal.isUpfront =
-      !state.modals.SelectAPISourceModal.isUpfront;
+        !state.modals.SelectAPISourceModal.isUpfront;
     },
     toggleMap: (state) => {
       Object.keys(state.modals).forEach((key) => {
-        state.modals[key] = {...state.modals[key], isUpfront: false}
-      })
+        state.modals[key] = { ...state.modals[key], isUpfront: false };
+      });
       state.modals.MapModal.isOpen = !state.modals.MapModal.isOpen;
       state.modals.MapModal.isUpfront = !state.modals.MapModal.isUpfront;
     },

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { hideCityInfo, toggleCityList } from "../../store/ui";
+import Modal from "./Modal";
 import CityList from "../CityList";
 import CloseModalButton from "../CloseModalButton";
 
@@ -16,14 +17,14 @@ const CityListModal = () => {
   };
 
   return (
-    <div className="modal city-list">
+    <Modal hasOverlay={false} modalClassName="city-list">
       <CityList />
       <CloseModalButton
         className="close-city-list-btn"
         text="close"
         onClick={clickHandler}
       />
-    </div>
+    </Modal>
   );
 };
 

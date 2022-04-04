@@ -1,14 +1,15 @@
-import Overlay from "../Layout/Overlay";
+import Modal from "./Modal";
 import AddCityForm from "../AddCityForm";
 
 const AddCityModal = () => {
   return (
-    <>
-      <Overlay className="modal-overlay--add-city"/>
-      <div className="modal add-city-modal">
-        <AddCityForm />
-      </div>
-    </>
+    <Modal
+      hasOverlay={true}
+      overlayClassName="modal-overlay--add-city"
+      modalClassName="add-city-modal"
+    >
+      <AddCityForm />
+    </Modal>
   );
 };
 

@@ -1,10 +1,12 @@
-const SelectCard = ({ title, options }) => {
+const SelectCard = ({ title, options, type, onChange }) => {
   return (
     <div className="card settings card-select">
       <h3>{title}</h3>
-      <select>
+      <select onChange={(e) => onChange(e, type)}>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>{option.text}</option>
+          <option key={option.value} value={option.value}>
+            {option.text}
+          </option>
         ))}
       </select>
     </div>

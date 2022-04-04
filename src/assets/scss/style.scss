@@ -514,6 +514,8 @@
 
 .select-api-source-modal {
   z-index: 10000;
+  display: grid;
+  place-content: center;
 }
 
 .delete-city-btn {

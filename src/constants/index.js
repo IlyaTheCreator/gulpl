@@ -29,6 +29,7 @@ export const mapTypes = {
 
 export const settingsSelectInputsData = [
   {
+    type: "weather",
     title: "Weather Data Source:",
     options: [
       {
@@ -42,6 +43,7 @@ export const settingsSelectInputsData = [
     ]
   },
   {
+    type: "map",
     title: "Map Type:",
     options: [
       {
