@@ -22,6 +22,8 @@ const preloadedState = LsService.get(appVersion)
 const store = configureStore({
   reducer: rootReducer,
   preloadedState,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 store.subscribe(() => {

@@ -1,9 +1,19 @@
+import { useSelector } from "react-redux";
+
 import CityWidget from "./CityWidget";
 
 const CityWidgets = ({ widgetRelatedInfo }) => {
-  const output = Object.keys(widgetRelatedInfo).map((key) => (
-    <CityWidget key={key} widgetData={widgetRelatedInfo[key]} />
-  ));
+  const settingsData = useSelector((state) => state.settings);
+
+  const output = Object.keys(widgetRelatedInfo).map((key) => {
+    if (!settingsData[key].isActive) {
+      return null;
+    }
+
+    return (
+      <CityWidget key={key} widgetData={widgetRelatedInfo[key]} />
+    )
+  });
 
   return <div className="city-info-grid">{output}</div>;
 };

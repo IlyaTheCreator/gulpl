@@ -20,39 +20,53 @@ const uiSlice = createSlice({
         state.modals[key] = { ...state.modals[key], isUpfront: false };
       });
     },
-    toggleSettings: (state) => {
-      state.modals.SettingsModal.isOpen = !state.modals.SettingsModal.isOpen;
-      state.modals.SettingsModal.isUpfront =
-        !state.modals.SettingsModal.isUpfront;
+    openSettings: (state) => {
+      state.modals.SettingsModal.isOpen = true;
+      state.modals.SettingsModal.isUpfront = true;
     },
-    toggleCityList: (state) => {
-      state.modals.CityListModal.isOpen = !state.modals.CityListModal.isOpen;
-      state.modals.CityListModal.isUpfront =
-        !state.modals.CityListModal.isUpfront;
+    hideSettings: (state) => {
+      state.modals.SettingsModal.isOpen = false;
+      state.modals.SettingsModal.isUpfront = false;
+    },
+    openCityList: (state) => {
+      state.modals.CityListModal.isOpen = true;
+      state.modals.CityListModal.isUpfront = true;
+    },
+    hideCityList: (state) => {
+      state.modals.CityListModal.isOpen = false;
+      state.modals.CityListModal.isUpfront = false;
       uiSlice.caseReducers.showCityInfo(state);
     },
-    toggleAddCity: (state) => {
-      state.modals.AddCityModal.isOpen = !state.modals.AddCityModal.isOpen;
-      state.modals.AddCityModal.isUpfront =
-        !state.modals.AddCityModal.isUpfront;
-      state.modals.CityListModal.isUpfront =
-        !state.modals.CityListModal.isUpfront;
-      uiSlice.shouldDisplayCityInfo = false;
+    openAddCity: (state) => {
+      state.modals.AddCityModal.isOpen = true;
+      state.modals.AddCityModal.isUpfront = true;
+      state.modals.CityListModal.isUpfront = false;
     },
-    toggleSelectAPISource: (state) => {
-      uiSlice.caseReducers.setUpfrontModalsToFalse(state);
-
-      state.modals.SelectAPISourceModal.isOpen =
-        !state.modals.SelectAPISourceModal.isOpen;
-      state.modals.SelectAPISourceModal.isUpfront =
-        !state.modals.SelectAPISourceModal.isUpfront;
+    hideAddCity: (state) => {
+      state.modals.AddCityModal.isOpen = false;
+      state.modals.AddCityModal.isUpfront = false;
+      
+      if (!state.modals.CityListModal.isUpfront) {
+        state.modals.CityListModal.isUpfront = true;
+      }
     },
-    toggleMap: (state) => {
-      Object.keys(state.modals).forEach((key) => {
-        state.modals[key] = { ...state.modals[key], isUpfront: false };
-      });
-      state.modals.MapModal.isOpen = !state.modals.MapModal.isOpen;
-      state.modals.MapModal.isUpfront = !state.modals.MapModal.isUpfront;
+    openSelectAPISource: (state) => {
+      state.modals.SelectAPISourceModal.isOpen = true;
+      state.modals.SelectAPISourceModal.isUpfront = true;
+    },
+    hideSelectAPISource: (state) => {
+      state.modals.SelectAPISourceModal.isOpen = false;
+      state.modals.SelectAPISourceModal.isUpfront = false;
+    },
+    openMap: (state) => {
+      state.modals.MapModal.isOpen = true;
+      state.modals.MapModal.isUpfront = true;
+      state.modals.AddCityModal.isUpfront = false;
+    },
+    hideMap: (state) => {
+      state.modals.MapModal.isOpen = false;
+      state.modals.MapModal.isUpfront = false;
+      state.modals.AddCityModal.isUpfront = true;
     },
     showCityInfo: (state) => {
       state.shouldDisplayCityInfo = true;
@@ -64,12 +78,18 @@ const uiSlice = createSlice({
 });
 
 export const {
-  toggleSettings,
-  toggleCityList,
-  toggleAddCity,
-  toggleSelectAPISource,
-  toggleMap,
+  openSettings,
+  hideSettings,
+  openCityList,
+  hideCityList,
+  openAddCity,
+  hideAddCity,
+  openSelectAPISource,
+  hideSelectAPISource,
+  openMap,
+  hideMap,
   showCityInfo,
   hideCityInfo,
+  setUpfrontModalsToFalse
 } = uiSlice.actions;
 export default uiSlice.reducer;

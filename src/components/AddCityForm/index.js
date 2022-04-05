@@ -1,32 +1,50 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleAddCity, toggleMap } from "../../store/ui";
+import { hideAddCity, openMap } from "../../store/ui";
+import { setCityQuery } from "../../store/cities";
 
 const AddCityForm = () => {
   const dispatch = useDispatch();
+  const [city, setCity] = useState("");
 
-  const btnClickHandler = () => {
-    dispatch(toggleAddCity());
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(setCityQuery(city));
+    dispatch(openMap());
+    window.addCityBtnClicked = true;
+  };
+
+  const closeFormHandler = () => {
+    dispatch(hideAddCity());
   };
 
   const iconClickHandler = () => {
-    dispatch(toggleMap());
+    dispatch(setCityQuery(city));
+    dispatch(openMap());
+  };
+
+  const changeHandler = (e) => {
+    setCity(e.target.value);
   };
 
   return (
     <div className="card add-city">
-      <form className="add-city-form">
+      <form onSubmit={submitHandler} className="add-city-form">
         <div className="input-wrapper">
-          <input type="text" placeholder="Enter City Name..." />
+          <input
+            value={city}
+            onChange={changeHandler}
+            type="text"
+            placeholder="Enter City Name..."
+          />
           <div className="icon-wrapper">
             <i className="icon-map" onClick={iconClickHandler} />
           </div>
         </div>
-        <button className="btn">Add</button>
-        <button
-          type="button"
-          onClick={btnClickHandler}
-          className="close-add-city-btn"
-        >
+        <button type="submit" className="btn">
+          Add
+        </button>
+        <button onClick={closeFormHandler} className="close-add-city-btn">
           Cancel
         </button>
       </form>

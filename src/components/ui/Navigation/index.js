@@ -1,21 +1,21 @@
 import { useDispatch } from "react-redux";
 
 import NavCircles from "./NavCircles";
-import { toggleAddCity, toggleCityList, toggleSettings } from "../../store/ui";
+import { openAddCity, openCityList, openSettings } from "../../../store/ui";
 
 const Navigation = () => {
   const dispatch = useDispatch();
 
   const cityListClickHandle = () => {
-    dispatch(toggleCityList());
+    dispatch(openCityList());
   }
 
   const settingsClickHandle = () => {
-    dispatch(toggleSettings());
+    dispatch(openSettings());
   }
 
   const addCityClickHandle = () => {
-    dispatch(toggleAddCity());
+    dispatch(openAddCity());
   }
 
   return (

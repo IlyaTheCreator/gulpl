@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectCity } from "../../store/cities";
+import { selectCity } from "../../../store/cities";
 
 const NavCircles = () => {
   const dispatch = useDispatch();

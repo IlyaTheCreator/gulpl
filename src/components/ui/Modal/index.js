@@ -1,4 +1,4 @@
-import Overlay from "../Layout/Overlay";
+import Overlay from "../Overlay";
 
 const Modal = ({ children, overlayClassName, modalClassName, hasOverlay }) => {
   return (

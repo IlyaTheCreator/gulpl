@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { mapTypes } from "../../constants";
 
 const initialState = {
-  map: { path: "", type: "" },
+  map: { path: "https://api-maps.yandex.ru/2.1", type: mapTypes.YANDEX },
   weather: { path: "", type: "" },
 };
 

@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleSelectAPISource } from "../../store/ui";
+import { hideSelectAPISource } from "../../store/ui";
 import { setWeather } from "../../store/apis";
+
+import weatherAPIService from "../../services/weatherAPIService";
 
 const SelectAPISourceForm = () => {
   const [selectedAPI, setSelectedAPI] = useState("open-weather-map");
   const dispatch = useDispatch();
 
   const clickHandler = () => {
-    dispatch(toggleSelectAPISource());
+    dispatch(hideSelectAPISource());
   };
 
   const changeHandler = (e) => {
@@ -18,7 +20,16 @@ const SelectAPISourceForm = () => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    dispatch(setWeather({ type: selectedAPI, path: "unknown yet" }));
+    const weatherAPITypes = weatherAPIService.getApiTypes();
+    weatherAPIService.setApiType(weatherAPITypes[selectedAPI]);
+
+    dispatch(
+      setWeather({
+        type: weatherAPITypes[selectedAPI].apiType,
+        path: weatherAPITypes[selectedAPI].apiPath,
+      })
+    );
+
     clickHandler();
   };
 

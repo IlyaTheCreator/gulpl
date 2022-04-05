@@ -62,7 +62,7 @@ class WeatherAPIService {
         date: new Date(),
         lat: lat,
         lon: lon,
-        cityImage: "assets/images/cloudy.png",
+        cityImage: "cloudy.png",
         currentTemp: simpleRound(forecastData.daily[0].temp.day),
         weatherCondition: forecastData.daily[0].weather[0].description,
         widgetRelatedInfo: this.generateWidgetRelatedInfo(
@@ -101,7 +101,7 @@ class WeatherAPIService {
         date: new Date(),
         lat: lat,
         lon: lon,
-        cityImage: "assets/images/cloudy.png",
+        cityImage: "cloudy.png",
         currentTemp: simpleRound(forecastData.current.temp_c),
         weatherCondition:
           forecastData.forecast.forecastday[0].day.condition.text,

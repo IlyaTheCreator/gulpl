@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import cities from "../../mocks/cities";
 
 const initialState = {
-  selectedCity: cities[0],
-  citiesList: cities,
+  selectedCity: {},
+  citiesList: [],
+  cityQuery: "",
 };
 
 const citiesSlice = createSlice({
@@ -24,9 +24,12 @@ const citiesSlice = createSlice({
     selectCity: (state, action) => {
       state.selectedCity = action.payload;
     },
+    setCityQuery: (state, action) => {
+      state.cityQuery = action.payload;
+    },
   },
 });
 
-export const { addCity, removeCity, clearCities, selectCity } =
+export const { addCity, removeCity, clearCities, selectCity, setCityQuery } =
   citiesSlice.actions;
 export default citiesSlice.reducer;

@@ -1,5 +1,5 @@
 import { widgetTypes, uvTypes } from "../../constants";
-import Widget from "../Widget";
+import Widget from "../ui/Widget";
 
 const CityWidget = ({ widgetData }) => {
   let uvText;

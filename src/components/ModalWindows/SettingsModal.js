@@ -1,28 +1,79 @@
-import Modal from "./Modal";
+import { useDispatch, useSelector } from "react-redux";
+
+import Modal from "../ui/Modal";
 import WidgetCardSettings from "../Settings/WidgetSettingsCard";
 import SelectCard from "../Settings/SelectCard";
-import CloseModalButton from "../CloseModalButton";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleSettings } from "../../store/ui";
+import CloseModalButton from "../ui/CloseModalButton";
+import { hideCityInfo, hideSettings, openCityList } from "../../store/ui";
 import { setWeather, setMap } from "../../store/apis";
 import { settingsSelectInputsData } from "../../constants";
+import { addCity, clearCities } from "../../store/cities";
+
+import weatherAPIService from "../../services/weatherAPIService";
+import mapService from "../../services/mapService";
 
 const SettingsModal = () => {
   const dispatch = useDispatch();
-  const selectedMap = useSelector((state) => state.apis.map)
-  const selectedWeatherAPI = useSelector((state) => state.apis.weather)
+  const citiesData = useSelector((state) => state.cities.citiesList);
+  const weatherAPIType = useSelector((state) => state.apis.weather);
+  const selectedMap = useSelector((state) => state.apis.map);
 
   const closeSettingsClickHandler = () => {
-    dispatch(toggleSettings());
+    dispatch(hideSettings());
   };
+
+  const weatherSwitchHandler = (e) => {
+    const weatherAPITypes = weatherAPIService.getApiTypes();
+    const oldApiType = weatherAPIType;
+    weatherAPIService.setApiType(weatherAPITypes[e.target.value]);
+
+    if (oldApiType && weatherAPIService.selectedApiType.apiType === oldApiType.type) {
+      return;
+    }
+
+    dispatch(setWeather({
+      type: weatherAPIService.selectedApiType.apiType,
+      path: weatherAPIService.selectedApiType.apiPath
+    }));
+    dispatch(clearCities());
+
+    Promise.all(
+      citiesData.map((city) => {
+        weatherAPIService
+          .getForecast(city.title, [city.lat, city.lon])
+          .then((data) => {
+            dispatch(addCity(data));
+          });
+      })
+    ).then(() => {
+      dispatch(hideSettings());
+      dispatch(hideCityInfo());
+      dispatch(openCityList());
+    });
+  }
+
+  const mapSwitchHandler = (e) => {
+    const availableMapTypes = mapService.getMapTypes();
+    const oldMapType = selectedMap;
+    mapService.setMapType(availableMapTypes[e.target.value]);
+
+    if (oldMapType && mapService.selectedMapType.apiType === oldMapType.type) {
+      return;
+    }
+
+    dispatch(setMap({
+      type: mapService.selectedMapType.mapType,
+      path: mapService.selectedMapType.path
+    }));
+  }
 
   const changeHandler = (e, type) => {
     switch (type) {
       case "weather":
-        setWeather(e.target.value);
+        weatherSwitchHandler(e);
         break;
       case "map":
-        setMap(e.target.value);
+        mapSwitchHandler(e);
         break;
       default:
         return;
@@ -34,6 +85,7 @@ const SettingsModal = () => {
       key={select.title}
       title={select.title}
       options={select.options}
+      initialValue={select.type === "weather" ? weatherAPIType.type : selectedMap.type}
       onChange={changeHandler}
       type={select.type}
     />

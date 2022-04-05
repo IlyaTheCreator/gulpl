@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
-import { toggleAddCity } from "../../store/ui";
+import { openAddCity } from "../../store/ui";
 
-const AddCityBtn = () => {
+const AddCityBtn = ({ belongsToNoCitiesBlock }) => {
   const dispatch = useDispatch();
   
   const clickHandle = () => {
-    dispatch(toggleAddCity());
+    dispatch(openAddCity());
   }
 
   return (

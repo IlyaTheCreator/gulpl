@@ -98,6 +98,7 @@ class MapService {
 
         searchControl.events.add("submit", (e) => {
           if (!window.addCityBtnClicked) {
+            console.log("here")
             return;
           }
 

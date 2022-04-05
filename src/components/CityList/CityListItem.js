@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
 
-import Widget from "../Widget";
+import Widget from "../ui/Widget";
 import { widgetTypes } from "../../constants";
-import { toggleCityList } from "../../store/ui";
+import { hideCityList, showCityInfo } from "../../store/ui";
 import { selectCity } from "../../store/cities";
 
 const CityListItem = ({ itemData }) => {
@@ -10,9 +10,10 @@ const CityListItem = ({ itemData }) => {
 
   const clickHandle = () => {
     dispatch(selectCity(itemData));
-    dispatch(toggleCityList());
-  }
-  
+    dispatch(hideCityList());
+    dispatch(showCityInfo());
+  };
+
   return (
     <Widget
       classes={["screen__city"]}
@@ -23,18 +24,20 @@ const CityListItem = ({ itemData }) => {
         <h3 className="screen__title">
           <div className="screen__city-title-group">
             <span className="screen__city-name">{itemData.title}</span>
-            <p className="screen__city-time">{new Date(
-              itemData.date
-            ).toDateString()}</p>
+            <p className="screen__city-time">
+              {new Date(itemData.date).toDateString()}
+            </p>
           </div>
-          <span className="screen__city-temperature">{itemData.currentTemp}°</span>
+          <span className="screen__city-temperature">
+            {itemData.currentTemp}°
+          </span>
         </h3>
         <div className="screen__city-info">
-          <span className="screen__city-weather-condition">{
-            itemData.weatherCondition
-          }</span>
+          <span className="screen__city-weather-condition">
+            {itemData.weatherCondition}
+          </span>
           <span className="screen__city-temperature-range">
-            Max. {itemData.widgetRelatedInfo.maxTemp.value} 
+            Max. {itemData.widgetRelatedInfo.maxTemp.value}
             <span> </span>
             Min. {itemData.widgetRelatedInfo.minTemp.value}
           </span>
@@ -42,6 +45,6 @@ const CityListItem = ({ itemData }) => {
       </div>
     </Widget>
   );
-}
+};
 
 export default CityListItem;

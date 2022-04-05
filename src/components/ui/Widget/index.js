@@ -1,4 +1,4 @@
-import { widgetTypes } from "../../constants";
+import { widgetTypes } from "../../../constants";
 
 const Widget = ({ children, type, classes = [], onClick }) => {
   if (type === widgetTypes.LIST) {
