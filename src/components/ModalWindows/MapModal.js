@@ -1,22 +1,31 @@
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import Modal from "./Modal";
 
-import { mapTypes } from "../../constants";
 import mapService from "../../services/mapService";
 
 const mapContainerId = "yandex-map";
 
 const MapModal = () => {
+  const mapType = useSelector((state) => state.apis.map);
+
   const initMap = () => {
-    const availableMapTypes = mapService.getMapTypes();
-    mapService.setMapType(availableMapTypes[mapTypes.YANDEX]);
+    mapService.setMapType({
+      path: mapType.path,
+      mapType: mapType.type
+    });
+
+    // dispatch(setMap({
+    //   path: mapService.selectedMapType.path,
+    //   type: mapService.selectedMapType.mapType
+    // }));
 
     mapService.createMap(mapContainerId);
   };
 
   useEffect(() => {
     initMap();
-  }, []);
+  }, [initMap]);
 
   return (
     <Modal

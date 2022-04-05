@@ -1,12 +1,16 @@
 import { useDispatch } from "react-redux";
-import { toggleAddCity } from "../../store/ui";
+import { toggleAddCity, toggleMap } from "../../store/ui";
 
 const AddCityForm = () => {
   const dispatch = useDispatch();
 
-  const clickHandler = () => {
+  const btnClickHandler = () => {
     dispatch(toggleAddCity());
-  }
+  };
+
+  const iconClickHandler = () => {
+    dispatch(toggleMap());
+  };
 
   return (
     <div className="card add-city">
@@ -14,11 +18,17 @@ const AddCityForm = () => {
         <div className="input-wrapper">
           <input type="text" placeholder="Enter City Name..." />
           <div className="icon-wrapper">
-            <i className="icon-map" />
+            <i className="icon-map" onClick={iconClickHandler} />
           </div>
         </div>
         <button className="btn">Add</button>
-        <button type="button" onClick={clickHandler} className="close-add-city-btn">Cancel</button>
+        <button
+          type="button"
+          onClick={btnClickHandler}
+          className="close-add-city-btn"
+        >
+          Cancel
+        </button>
       </form>
     </div>
   );

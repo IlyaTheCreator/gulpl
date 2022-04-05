@@ -6,7 +6,7 @@ const initialState = {
     CityListModal: { isOpen: false, isUpfront: false },
     AddCityModal: { isOpen: false, isUpfront: false },
     SelectAPISourceModal: { isOpen: false, isUpfront: false },
-    MapModal: { isOpen: true, isUpfront: true },
+    MapModal: { isOpen: false, isUpfront: false },
   },
   shouldDisplayCityInfo: true,
 };

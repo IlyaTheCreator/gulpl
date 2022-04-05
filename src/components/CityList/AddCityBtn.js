@@ -5,7 +5,6 @@ const AddCityBtn = () => {
   const dispatch = useDispatch();
   
   const clickHandle = () => {
-    console.log("hello")
     dispatch(toggleAddCity());
   }
 

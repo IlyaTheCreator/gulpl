@@ -1,3 +1,5 @@
+export const appVersion = "weather-2.0.0"
+
 export const modalTypes = {
   SETTINGS: "settings",
   CITY_LIST: "city-list",

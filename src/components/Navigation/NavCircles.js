@@ -1,6 +1,8 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCity } from "../../store/cities";
 
 const NavCircles = () => {
+  const dispatch = useDispatch();
   const cities = useSelector((state) => state.cities.citiesList);
   const selectedCity = useSelector((state) => state.cities.selectedCity);
 
@@ -11,8 +13,12 @@ const NavCircles = () => {
       classes.push("navigation__circle--active");
     }
 
+    const clickHandler = () => {
+      dispatch(selectCity(city));
+    }
+
     return (
-      <i key={city.id} className={classes.join(" ")} />
+      <i onClick={clickHandler} key={city.id} className={classes.join(" ")} />
     )
   });
 

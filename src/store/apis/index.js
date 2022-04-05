@@ -14,7 +14,7 @@ const apisSlice = createSlice({
     },
     setWeather: (state, action) => {
       state.weather = action.payload;
-    },
+    }
   },
 });
 
