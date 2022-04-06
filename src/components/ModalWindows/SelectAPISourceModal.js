@@ -1,5 +1,5 @@
 import Modal from "../ui/Modal";
-import SelectAPISourceForm from "../SelectAPISourceForm";
+import SelectAPISourceForm from "../forms/SelectAPISourceForm";
 
 const SelectAPISourceModal = () => {
   return (

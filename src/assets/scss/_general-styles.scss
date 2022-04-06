@@ -116,6 +116,10 @@ i {
   @media screen and (max-width: 411px) {
     width: 100vw;
   }
+
+  @media screen and (max-width: 511px) {
+    height: 100vh;
+  }
 }
 
 .modal-overlay {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { hideAddCity, openMap } from "../../store/ui";
-import { setCityQuery } from "../../store/cities";
+import { hideAddCity, openMap } from "../../../store/ui";
+import { setCityQuery } from "../../../store/cities";
 
 const AddCityForm = () => {
   const dispatch = useDispatch();

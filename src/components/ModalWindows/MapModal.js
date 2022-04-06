@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "../ui/Modal";
 import {
   hideAddCity,
+  hideCityInfo,
   hideCityList,
   hideMap,
   showCityInfo,
@@ -17,6 +18,7 @@ const MapModal = () => {
   const dispatch = useDispatch();
   const mapType = useSelector((state) => state.apis.map);
   const weatherAPIType = useSelector((state) => state.apis.weather);
+  const existentCities = useSelector((state) => state.cities.citiesList);
   const cityQuery = useSelector((state) => state.cities.cityQuery);
 
   const initMap = useCallback(() => {
@@ -48,15 +50,22 @@ const MapModal = () => {
             return;
           }
 
+          const existentCityCheck = existentCities.find((city) => city.title === data.title);
+
+          if (existentCityCheck) {
+            return;
+          }
+
           dispatch(addCity(data));
           dispatch(selectCity(data));
           dispatch(hideMap());
           dispatch(hideAddCity());
           dispatch(hideCityList());
+          dispatch(hideCityInfo());
           dispatch(showCityInfo());
         });
     },
-    [weatherAPIType, dispatch]
+    [weatherAPIType, dispatch, existentCities]
   );
 
   useEffect(() => {

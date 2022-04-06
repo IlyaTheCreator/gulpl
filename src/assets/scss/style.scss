@@ -39,9 +39,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
   position: relative;
-
   height: 823px;
   width: 411px;
 
@@ -168,6 +166,7 @@
   justify-content: space-between;
   grid-gap: 25px 20px;
   margin-bottom: 50px;
+  height: 100%;
 
   &__grid-item-wrapper {
     flex: 1 0 44%;
@@ -529,6 +528,7 @@
   font-size: 1.3rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
+  z-index: 9999;
 }
 
 // map related stuff
@@ -774,4 +774,18 @@ ymaps[class*="searchbox-button"] {
   height: 80%;
   display: grid;
   place-content: center;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-pagination-bullet-active {
+  color: $color-primary;
 }

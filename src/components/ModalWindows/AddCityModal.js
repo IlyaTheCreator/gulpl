@@ -1,5 +1,5 @@
 import Modal from "../ui/Modal";
-import AddCityForm from "../AddCityForm";
+import AddCityForm from "../forms/AddCityForm";
 
 const AddCityModal = () => {
   return (

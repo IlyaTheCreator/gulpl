@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useSwiper } from "swiper/react";
 import { selectCity } from "../../../store/cities";
 
 const NavCircles = () => {
   const dispatch = useDispatch();
-  const cities = useSelector((state) => state.cities.citiesList);
+  const citiesData = useSelector((state) => state.cities.citiesList);
   const selectedCity = useSelector((state) => state.cities.selectedCity);
+  const swiper = useSwiper();
 
-  const output = cities.map((city) => {
+  const output = citiesData.map((city, index) => {
     const classes = ["icon", "icon-dot", "navigation__circle"]
 
     if (city.id === selectedCity.id) {
@@ -15,6 +17,7 @@ const NavCircles = () => {
 
     const clickHandler = () => {
       dispatch(selectCity(city));
+      swiper.slideTo(index);
     }
 
     return (
