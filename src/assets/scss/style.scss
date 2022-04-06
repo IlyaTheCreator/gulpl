@@ -334,7 +334,7 @@
 }
 
 .city-list {
-  padding: 0;
+  padding: 20px 0 0 0;
   align-self: flex-start !important;
   display: flex;
   flex-direction: column;
@@ -343,6 +343,7 @@
 }
 
 .empty-city-list-container {
+  margin-top: 30px;
   padding: 10px 4px 4px 4px;
   display: flex;
   flex-direction: column;

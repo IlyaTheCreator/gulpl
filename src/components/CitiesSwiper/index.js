@@ -26,7 +26,7 @@ const CitiesSwiper = () => {
         clickable: true,
         renderBullet: (index, className) => {
           return `<i class="icon icon-dot navigation__circle ${className}"></i>`;
-        }
+        },
       }}
     >
       {citiesData.map((city) => (
