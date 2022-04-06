@@ -1,12 +1,22 @@
+import { useSelector } from "react-redux";
 import CityListItem from "./CityListItem";
 import AddCityBtn from "./AddCityBtn";
-import { useSelector } from "react-redux";
 import NoCitiesMessageBlock from "../NoCitiesMessageBlock";
+import Spinner from "../ui/Spinner";
 
 const CityList = () => {
   const citiesData = useSelector((state) => state.cities.citiesList);
+  const isLoading = useSelector((state) => state.ui.isLoading);
 
   if (citiesData.length === 0) {
+    if (isLoading) {
+      return (
+        <div className="spinner-container">
+          <Spinner />
+        </div>
+      );
+    }
+
     return (
       <>
         <NoCitiesMessageBlock />

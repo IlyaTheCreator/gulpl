@@ -1,7 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../ui/Modal";
-import { hideAddCity, hideCityList, hideMap, showCityInfo } from "../../store/ui";
+import {
+  hideAddCity,
+  hideCityList,
+  hideMap,
+  showCityInfo,
+} from "../../store/ui";
 import { addCity, selectCity } from "../../store/cities";
 import mapService from "../../services/mapService";
 import weatherAPIService from "../../services/weatherAPIService";
@@ -38,6 +43,11 @@ const MapModal = () => {
       weatherAPIService
         .getForecast(e.detail.title, e.detail.coordinates)
         .then((data) => {
+          if (data.error) {
+            alert("could not fetch city data");
+            return;
+          }
+
           dispatch(addCity(data));
           dispatch(selectCity(data));
           dispatch(hideMap());

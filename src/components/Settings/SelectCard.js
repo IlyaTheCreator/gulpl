@@ -1,6 +1,4 @@
 const SelectCard = ({ title, options, type, onChange, initialValue }) => {
-  console.log(initialValue)
-
   return (
     <div className="card settings card-select">
       <h3>{title}</h3>

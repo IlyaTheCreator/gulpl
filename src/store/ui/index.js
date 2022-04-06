@@ -9,12 +9,16 @@ const initialState = {
     MapModal: { isOpen: false, isUpfront: false },
   },
   shouldDisplayCityInfo: true,
+  isLoading: false
 };
 
 const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     setUpfrontModalsToFalse: (state) => {
       Object.keys(state.modals).forEach((key) => {
         state.modals[key] = { ...state.modals[key], isUpfront: false };
@@ -90,6 +94,7 @@ export const {
   hideMap,
   showCityInfo,
   hideCityInfo,
-  setUpfrontModalsToFalse
+  setUpfrontModalsToFalse,
+  setIsLoading
 } = uiSlice.actions;
 export default uiSlice.reducer;

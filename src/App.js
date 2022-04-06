@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Layout from "./components/Layout";
@@ -16,24 +17,23 @@ const App = () => {
   const citiesData = useSelector((state) => state.cities.citiesList);
   const weatherAPIType = useSelector((state) => state.apis.weather);
 
-  if (citiesData.length === 0) {
-    dispatch(hideCityInfo());
+  useEffect(() => {
+    if (citiesData.length === 0) {
+      dispatch(hideCityInfo());
 
-    console.log(weatherAPIType)
-
-    if (!weatherAPIType.path || !weatherAPIType.type) {
-      console.log("Hello")
-      dispatch(openSelectAPISource());
-    } else {
-      dispatch(openCityList());
+      if (!weatherAPIType.path || !weatherAPIType.type) {
+        dispatch(openSelectAPISource());
+      } else {
+        dispatch(openCityList());
+      }
     }
-  }
+  }, [dispatch, weatherAPIType, citiesData]);
 
   return (
     <>
       <ModalWindows />
       <Layout>
-        {shouldDisplayCityInfo && (
+        {shouldDisplayCityInfo && citiesData.length !== 0 && (
           <>
             <Navigation />
             <SelectedCity />

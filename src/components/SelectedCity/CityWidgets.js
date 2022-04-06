@@ -10,9 +10,7 @@ const CityWidgets = ({ widgetRelatedInfo }) => {
       return null;
     }
 
-    return (
-      <CityWidget key={key} widgetData={widgetRelatedInfo[key]} />
-    )
+    return <CityWidget key={key} widgetData={widgetRelatedInfo[key]} />;
   });
 
   return <div className="city-info-grid">{output}</div>;

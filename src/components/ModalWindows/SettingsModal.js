@@ -4,7 +4,12 @@ import Modal from "../ui/Modal";
 import WidgetCardSettings from "../Settings/WidgetSettingsCard";
 import SelectCard from "../Settings/SelectCard";
 import CloseModalButton from "../ui/CloseModalButton";
-import { hideCityInfo, hideSettings, openCityList } from "../../store/ui";
+import {
+  hideCityInfo,
+  hideSettings,
+  openCityList,
+  setIsLoading,
+} from "../../store/ui";
 import { setWeather, setMap } from "../../store/apis";
 import { settingsSelectInputsData } from "../../constants";
 import { addCity, clearCities } from "../../store/cities";
@@ -27,30 +32,43 @@ const SettingsModal = () => {
     const oldApiType = weatherAPIType;
     weatherAPIService.setApiType(weatherAPITypes[e.target.value]);
 
-    if (oldApiType && weatherAPIService.selectedApiType.apiType === oldApiType.type) {
+    if (
+      oldApiType &&
+      weatherAPIService.selectedApiType.apiType === oldApiType.type
+    ) {
       return;
     }
 
-    dispatch(setWeather({
-      type: weatherAPIService.selectedApiType.apiType,
-      path: weatherAPIService.selectedApiType.apiPath
-    }));
-    dispatch(clearCities());
+    dispatch(
+      setWeather({
+        type: weatherAPIService.selectedApiType.apiType,
+        path: weatherAPIService.selectedApiType.apiPath,
+      })
+    );
+
+    // loader goes here
+    dispatch(setIsLoading(true));
 
     Promise.all(
       citiesData.map((city) => {
         weatherAPIService
           .getForecast(city.title, [city.lat, city.lon])
           .then((data) => {
+            if (data.error) {
+              return;
+            }
+
             dispatch(addCity(data));
           });
       })
-    ).then(() => {
-      dispatch(hideSettings());
-      dispatch(hideCityInfo());
-      dispatch(openCityList());
-    });
-  }
+    )
+      .then(() => {
+        dispatch(clearCities());
+        dispatch(hideSettings());
+        dispatch(hideCityInfo());
+        dispatch(openCityList());
+      })
+  };
 
   const mapSwitchHandler = (e) => {
     const availableMapTypes = mapService.getMapTypes();
@@ -61,11 +79,13 @@ const SettingsModal = () => {
       return;
     }
 
-    dispatch(setMap({
-      type: mapService.selectedMapType.mapType,
-      path: mapService.selectedMapType.path
-    }));
-  }
+    dispatch(
+      setMap({
+        type: mapService.selectedMapType.mapType,
+        path: mapService.selectedMapType.path,
+      })
+    );
+  };
 
   const changeHandler = (e, type) => {
     switch (type) {
@@ -85,7 +105,9 @@ const SettingsModal = () => {
       key={select.title}
       title={select.title}
       options={select.options}
-      initialValue={select.type === "weather" ? weatherAPIType.type : selectedMap.type}
+      initialValue={
+        select.type === "weather" ? weatherAPIType.type : selectedMap.type
+      }
       onChange={changeHandler}
       type={select.type}
     />

@@ -1,5 +1,5 @@
 const simpleRound = (num) => {
-  if (!num) {
+  if (typeof num !== "number") {
     return false;
   }
 
