@@ -1,21 +1,17 @@
-import { useDispatch } from "react-redux";
-
+import { appActionTypes } from "../../../appStateManager";
 import NavCircles from "./NavCircles";
-import { openAddCity, openCityList, openSettings } from "../../../store/ui";
 
-const Navigation = () => {
-  const dispatch = useDispatch();
-
+const Navigation = ({ appDispatch, selectedCityId }) => {
   const cityListClickHandle = () => {
-    dispatch(openCityList());
+    appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
   }
 
   const settingsClickHandle = () => {
-    dispatch(openSettings());
+    appDispatch({ type: appActionTypes.OPEN_SETTINGS });
   }
 
   const addCityClickHandle = () => {
-    dispatch(openAddCity());
+    appDispatch({ type: appActionTypes.OPEN_ADD_CITY });
   }
 
   return (
@@ -24,7 +20,7 @@ const Navigation = () => {
         <i className="icon icon-figma-settings"></i>
       </div>
       <div className="navigation__pages">
-        <NavCircles />
+        <NavCircles selectedCityId={selectedCityId} />
       </div>
       <div className="navigation__cities">
         <span onClick={addCityClickHandle} className="link add-city-link">

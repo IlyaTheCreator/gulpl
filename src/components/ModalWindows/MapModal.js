@@ -1,20 +1,14 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../ui/Modal";
-import {
-  hideAddCity,
-  hideCityInfo,
-  hideCityList,
-  hideMap,
-  showCityInfo,
-} from "../../store/ui";
 import { addCity, selectCity } from "../../store/cities";
 import mapService from "../../services/mapService";
 import weatherAPIService from "../../services/weatherAPIService";
+import { appActionTypes } from "../../appStateManager";
 
 const mapContainerId = "yandex-map";
 
-const MapModal = () => {
+const MapModal = ({ zIndex, appDispatch }) => {
   const dispatch = useDispatch();
   const mapType = useSelector((state) => state.apis.map);
   const weatherAPIType = useSelector((state) => state.apis.weather);
@@ -33,7 +27,7 @@ const MapModal = () => {
   const mapSearchListener = useCallback(
     (e) => {
       if (!e.detail.title || !e.detail.coordinates) {
-        dispatch(hideMap());
+        appDispatch({ type: appActionTypes.CLOSE_MAP });
         return;
       }
 
@@ -50,19 +44,11 @@ const MapModal = () => {
             return;
           }
 
-          const existentCityCheck = existentCities.find((city) => city.title === data.title);
-
-          if (existentCityCheck) {
-            return;
-          }
-
           dispatch(addCity(data));
-          dispatch(selectCity(data));
-          dispatch(hideMap());
-          dispatch(hideAddCity());
-          dispatch(hideCityList());
-          dispatch(hideCityInfo());
-          dispatch(showCityInfo());
+          appDispatch({ type: appActionTypes.CLOSE_MAP });
+          appDispatch({ type: appActionTypes.CLOSE_ADD_CITY });
+          appDispatch({ type: appActionTypes.CLOSE_SELECT_API_SOURCE });
+          appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
         });
     },
     [weatherAPIType, dispatch, existentCities]
@@ -80,7 +66,8 @@ const MapModal = () => {
 
   return (
     <Modal
-      hasOverlay={true}
+      zIndex={zIndex}
+      hasOverlay
       overlayClassName="modal-overlay--select-api-source"
       modalClassName="map-modal"
     >

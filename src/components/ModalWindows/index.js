@@ -1,26 +1,24 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-const ModalWindows = () => {
-  const modalsStateData = useSelector((state) => state.ui.modals);
-
-  const modals = Object.keys(modalsStateData).map((key) => {
-    if (!modalsStateData[key].isOpen) {
+const ModalWindows = ({
+  modalsState,
+  appDispatch,
+  setSelectedCityId,
+}) => {
+  const modals = Object.keys(modalsState).map((key) => {
+    if (!modalsState[key].isOpen) {
       return null;
     }
 
     const modalComponent = () => require(`./${key}`).default;
-    const displayOption = modalsStateData[key].isUpfront ? "block" : "none";
+    const modalComponentProps = {
+      ...modalsState[key],
+      setSelectedCityId: key === "CityListModal" ? setSelectedCityId : null,
+      appDispatch,
+      key,
+    };
 
-    return (
-      <div
-        className="modal-wrapper"
-        key={key}
-        style={{ display: displayOption }}
-      >
-        {React.createElement(modalComponent())}
-      </div>
-    );
+    return React.createElement(modalComponent(), modalComponentProps);
   });
 
   return modals;

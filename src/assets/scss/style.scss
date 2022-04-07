@@ -1,5 +1,6 @@
 @import "./variables";
 @import "./fonts";
+@import "./fonts-extended";
 @import "./general-styles";
 
 #root {
@@ -282,6 +283,7 @@
 
 .add-city-modal {
   justify-content: center;
+  overflow-y: hidden;
 }
 
 .settings-modal-wrapper {
@@ -334,12 +336,13 @@
 }
 
 .city-list {
-  padding: 20px 0 0 0;
+  padding: 0;
   align-self: flex-start !important;
   display: flex;
   flex-direction: column;
   min-height: 823px;
   overflow: hidden;
+  background: $color-cloudy;
 }
 
 .empty-city-list-container {
@@ -409,9 +412,10 @@
   position: fixed;
   top: auto;
   bottom: 15px;
-  left: 15px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 9999;
-  width: calc(100% - 30px);
+  width: calc(100% - 68px);
   margin-top: 20px;
   padding: 5px 0;
   color: $color-primary;
@@ -789,4 +793,123 @@ ymaps[class*="searchbox-button"] {
 
 .swiper-pagination-bullet-active {
   color: $color-primary;
+}
+
+.user-message {
+  position: absolute;
+  width: 363px;
+  z-index: 10001;
+  border-radius: 10px;
+  background: $color-blue;
+  box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.25);
+
+  &--top {
+    top: 50%;
+    left: 50%;
+    animation-name: show-message-from-top;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+  }
+
+  &--bottom {
+    bottom: 30px;
+    animation-name: show-message-from-bottom;
+    animation-duration: 5s;
+    animation-fill-mode: forwards;
+  }
+
+  &--action {
+    padding: 15px;
+  }
+
+  &--info {
+    box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.2);
+  }
+
+  &--info &__text {
+    padding: 0;
+    font-size: inherit;
+    border-bottom: 0;
+    text-align: left;
+    padding: 7px 15px 7px 7px;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+  }
+
+  &--info &__icon {
+    font-size: 1em;
+    margin-right: 10px;
+  }
+
+  &__text {
+    text-align: center;
+    font-size: 1.6em;
+    font-weight: normal;
+    border-bottom: 1px solid $color-primary;
+    padding: 7px 0 20px 0;
+  }
+
+  &__buttons-wrapper {
+    padding: 40px 4px 0px 4px;
+  }
+
+  &__icon-wrapper {
+    margin: 10px 0;
+    text-align: center;
+    font-size: 5.5em;
+  }
+
+  &__icon {
+    &--small {
+      font-size: 0.5em;
+    }
+
+    &--building {
+      margin-left: -33px;
+    }
+  }
+
+  &__button {
+    margin: 7px auto;
+    width: 100%;
+    font-size: 1.2em;
+    padding: 12px 20px;
+    border-radius: 10px;
+
+    &--positive {
+      background: lighten($color-blue, 5%);
+    }
+
+    &--negative {
+      background: coral;
+    }
+  }
+}
+
+@keyframes show-message-from-top {
+  from {
+    transform: translate(-50%, -70%);
+  }
+
+  to {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes show-message-from-bottom {
+  0% {
+    opacity: 0;
+    transform: translate(0, 200%);
+  }
+
+  7%, 10%, 20%, 40%, 60%, 80%, 90% {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 200%);
+  }
 }

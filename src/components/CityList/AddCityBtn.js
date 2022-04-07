@@ -1,12 +1,9 @@
-import { useDispatch } from "react-redux";
-import { openAddCity } from "../../store/ui";
+import { appActionTypes } from "../../appStateManager";
 
-const AddCityBtn = ({ belongsToNoCitiesBlock }) => {
-  const dispatch = useDispatch();
-  
+const AddCityBtn = ({ appDispatch }) => {
   const clickHandle = () => {
-    dispatch(openAddCity());
-  }
+    appDispatch({ type: appActionTypes.OPEN_ADD_CITY });
+  };
 
   return (
     <button onClick={clickHandle} className="btn widget screen__add-btn">

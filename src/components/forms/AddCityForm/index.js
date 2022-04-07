@@ -1,37 +1,80 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { hideAddCity, openMap } from "../../../store/ui";
+import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { setCityQuery } from "../../../store/cities";
+import Message from "../../ui/Message";
 
-const AddCityForm = () => {
+import { messageTypes } from "../../../constants";
+import { appActionTypes } from "../../../appStateManager";
+
+const AddCityForm = ({ appDispatch }) => {
   const dispatch = useDispatch();
+  const existentCities = useSelector((state) => state.cities.citiesList);
   const [city, setCity] = useState("");
+  const [cityExists, setCityExists] = useState(false);
+  const [noCityEntered, setNoCityEntered] = useState(false);
+  const inputRef = useRef();
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const triggerMapModal = () => {
     dispatch(setCityQuery(city));
-    dispatch(openMap());
+    appDispatch({ type: appActionTypes.OPEN_MAP });
     window.addCityBtnClicked = true;
   };
 
+  const positiveBtnClickHandler = () => {
+    setCityExists(false);
+    triggerMapModal();
+  };
+
+  const negativeBtnClickHandler = () => {
+    setCityExists(false);
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    if (city.trim().length === 0) {
+      setNoCityEntered(true);
+      const timeoutId = setTimeout(() => {
+        setNoCityEntered(false);
+        clearTimeout(timeoutId);
+      }, 5000);
+      return;
+    }
+
+    // checking if a city with such a name is already chosen
+    const existentCityCheck = existentCities.find(
+      (existentCity) =>
+        existentCity.title.trim().toLowerCase() === city.trim().toLowerCase()
+    );
+
+    if (existentCityCheck) {
+      setCityExists(true);
+      setNoCityEntered(false);
+      return;
+    }
+
+    triggerMapModal();
+  };
+
   const closeFormHandler = () => {
-    dispatch(hideAddCity());
+    appDispatch({ type: appActionTypes.CLOSE_ADD_CITY });
   };
 
   const iconClickHandler = () => {
     dispatch(setCityQuery(city));
-    dispatch(openMap());
+    appDispatch({ type: appActionTypes.OPEN_MAP });
   };
 
   const changeHandler = (e) => {
     setCity(e.target.value);
   };
 
-  return (
+  const form = (
     <div className="card add-city">
       <form onSubmit={submitHandler} className="add-city-form">
         <div className="input-wrapper">
           <input
+            ref={inputRef}
             value={city}
             onChange={changeHandler}
             type="text"
@@ -49,6 +92,39 @@ const AddCityForm = () => {
         </button>
       </form>
     </div>
+  );
+
+  return (
+    <>
+      {cityExists && (
+        <Message
+          type={messageTypes.USER_ACTION}
+          position="top"
+          message="City with such name already exists"
+          positiveBtnText="Proceed anyways"
+          negativeBtnText="Cancel"
+          onPositiveBtnClick={positiveBtnClickHandler}
+          onNegativeBtnClick={negativeBtnClickHandler}
+          icon={
+            <>
+              <i className="icon-building user-message__icon" />
+              <i className="icon-building user-message__icon user-message__icon--small user-message__icon--building" />
+            </>
+          }
+        />
+      )}
+      {noCityEntered && (
+        <Message
+          type={messageTypes.INFO}
+          position="bottom"
+          message="Please enter city name"
+          icon={
+            <i className="icon-building user-message__icon user-message__icon--small" />
+          }
+        />
+      )}
+      {form}
+    </>
   );
 };
 

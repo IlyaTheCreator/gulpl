@@ -4,7 +4,7 @@ import AddCityBtn from "./AddCityBtn";
 import NoCitiesMessageBlock from "../NoCitiesMessageBlock";
 import Spinner from "../ui/Spinner";
 
-const CityList = () => {
+const CityList = ({ appDispatch, setSelectedCityId }) => {
   const citiesData = useSelector((state) => state.cities.citiesList);
   const isLoading = useSelector((state) => state.ui.isLoading);
 
@@ -20,19 +20,24 @@ const CityList = () => {
     return (
       <>
         <NoCitiesMessageBlock />
-        <AddCityBtn belongsToNoCitiesBlock />
+        <AddCityBtn appDispatch={appDispatch} />
       </>
     );
   }
 
   const cities = citiesData.map((city) => (
-    <CityListItem key={city.id} itemData={city} />
+    <CityListItem
+      setSelectedCityId={setSelectedCityId}
+      appDispatch={appDispatch}
+      key={city.id}
+      itemData={city}
+    />
   ));
 
   return (
     <>
       {cities}
-      <AddCityBtn />
+      <AddCityBtn appDispatch={appDispatch} />
     </>
   );
 };

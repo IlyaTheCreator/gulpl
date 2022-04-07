@@ -103,7 +103,6 @@ i {
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
-  z-index: 9999;
   height: 823px;
   width: 411px;
   overflow-y: auto;
@@ -123,13 +122,16 @@ i {
 }
 
 .modal-overlay {
-  z-index: 9000;
   position: fixed;
   top: 0;
   left: 0;
   background: $color-normal;
   width: 100%;
   height: 100%;
+
+  &--message {
+    background: rgba(0, 0, 0, 0.25);
+  }
 }
 
 .close-modal-btn {
@@ -142,7 +144,6 @@ i {
   font-size: 35px;
   display: flex;
   justify-content: flex-end;
-  z-index: 9999;
 }
 
 .close-add-city-btn {

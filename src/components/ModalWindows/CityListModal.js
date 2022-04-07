@@ -1,32 +1,26 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { hideCityInfo, hideCityList } from "../../store/ui";
+import { useSelector } from "react-redux";
 import Modal from "../ui/Modal";
 import CityList from "../CityList";
 import CloseModalButton from "../ui/CloseModalButton";
+import { appActionTypes } from "../../appStateManager";
 
-const CityListModal = () => {
-  const dispatch = useDispatch();
+const CityListModal = ({ zIndex, appDispatch, setSelectedCityId }) => {
   const citiesData = useSelector((state) => state.cities.citiesList);
 
-  useEffect(() => {
-    dispatch(hideCityInfo());
-  }, [dispatch]);
-
   const clickHandler = () => {
-    dispatch(hideCityList());
+    appDispatch({ type: appActionTypes.CLOSE_CITY_LIST });
   };
 
   const shouldDisplayCloseModalBtn = citiesData.length > 0 ? true : false;
 
   return (
-    <Modal hasOverlay={false} modalClassName="city-list">
+    <Modal zIndex={zIndex} hasOverlay={false} modalClassName="city-list">
       <div className="city-list-container">
-        <CityList />
+        <CityList setSelectedCityId={setSelectedCityId} appDispatch={appDispatch} />
         {shouldDisplayCloseModalBtn && (
           <CloseModalButton
             className="close-city-list-btn"
-            text="close"
+            text="Close"
             onClick={clickHandler}
           />
         )}

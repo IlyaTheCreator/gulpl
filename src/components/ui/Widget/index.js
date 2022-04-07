@@ -7,7 +7,6 @@ const Widget = ({
   onClick,
   onMouseEnter,
   onMouseLeave,
-  longPressEvent
 }) => {
   if (type === widgetTypes.LIST) {
     classes.push("widget");
@@ -25,7 +24,6 @@ const Widget = ({
 
   return (
     <div
-      {...longPressEvent}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={clickHandler}

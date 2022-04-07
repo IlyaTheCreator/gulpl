@@ -4,27 +4,23 @@ import Modal from "../ui/Modal";
 import WidgetCardSettings from "../Settings/WidgetSettingsCard";
 import SelectCard from "../Settings/SelectCard";
 import CloseModalButton from "../ui/CloseModalButton";
-import {
-  hideCityInfo,
-  hideSettings,
-  openCityList,
-  setIsLoading,
-} from "../../store/ui";
+import { setIsLoading } from "../../store/ui";
 import { setWeather, setMap } from "../../store/apis";
 import { settingsSelectInputsData } from "../../constants";
 import { addCity, clearCities } from "../../store/cities";
 
 import weatherAPIService from "../../services/weatherAPIService";
 import mapService from "../../services/mapService";
+import { appActionTypes } from "../../appStateManager";
 
-const SettingsModal = () => {
+const SettingsModal = ({ zIndex, appDispatch }) => {
   const dispatch = useDispatch();
   const citiesData = useSelector((state) => state.cities.citiesList);
   const weatherAPIType = useSelector((state) => state.apis.weather);
   const selectedMap = useSelector((state) => state.apis.map);
 
   const closeSettingsClickHandler = () => {
-    dispatch(hideSettings());
+    appDispatch({ type: appActionTypes.CLOSE_SETTINGS });
   };
 
   const weatherSwitchHandler = (e) => {
@@ -61,13 +57,11 @@ const SettingsModal = () => {
             dispatch(addCity(data));
           });
       })
-    )
-      .then(() => {
-        dispatch(clearCities());
-        dispatch(hideSettings());
-        dispatch(hideCityInfo());
-        dispatch(openCityList());
-      })
+    ).then(() => {
+      dispatch(clearCities());
+      appDispatch({ type: appActionTypes.CLOSE_SETTINGS });
+      appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
+    });
   };
 
   const mapSwitchHandler = (e) => {
@@ -114,9 +108,13 @@ const SettingsModal = () => {
   ));
 
   return (
-    <Modal hasOverlay={true} overlayClassName="modal-overlay--settings">
+    <Modal
+      zIndex={zIndex}
+      hasOverlay
+      overlayClassName="modal-overlay--settings"
+    >
       <div className="settings-modal-wrapper">
-        <WidgetCardSettings />
+        <WidgetCardSettings appDispatch={appDispatch} />
         {cards}
         <CloseModalButton
           className="close-settings-modal-btn"

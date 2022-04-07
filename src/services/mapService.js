@@ -70,6 +70,10 @@ class MapService {
           isFullScreen = true;
         }
 
+        if (!document.getElementById(id)) {
+          return;
+        }
+
         const myMap = new maps.Map(id, {
           center: [55.76, 37.64],
           zoom: 7,
@@ -98,7 +102,6 @@ class MapService {
 
         searchControl.events.add("submit", (e) => {
           if (!window.addCityBtnClicked) {
-            console.log("here")
             return;
           }
 

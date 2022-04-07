@@ -1,4 +1,4 @@
-export const appVersion = "weather-2.0.0"
+export const appVersion = "weather-2.0.0";
 
 export const modalTypes = {
   SETTINGS: "settings",
@@ -29,6 +29,11 @@ export const mapTypes = {
   OPEN_STREET_MAP: "open-street-map",
 };
 
+export const messageTypes = {
+  USER_ACTION: "user-action",
+  INFO: "info",
+};
+
 export const settingsSelectInputsData = [
   {
     type: "weather",
@@ -42,7 +47,7 @@ export const settingsSelectInputsData = [
         text: "Open Weather API",
         value: "open-weather-map",
       },
-    ]
+    ],
   },
   {
     type: "map",
@@ -56,6 +61,6 @@ export const settingsSelectInputsData = [
         text: "Open Street Map",
         value: "open-street-map",
       },
-    ]
+    ],
   },
 ];
