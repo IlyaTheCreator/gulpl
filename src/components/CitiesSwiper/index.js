@@ -8,14 +8,16 @@ import "swiper/css";
 
 const CitiesSwiper = ({ selectedCityId, setSelectedCityId }) => {
   const citiesData = useSelector((state) => state.cities.citiesList);
-  const initialIndex = citiesData.findIndex((city) => city.id === selectedCityId)
+  const initialIndex = citiesData.findIndex(
+    (city) => city.id === selectedCityId
+  );
 
   const slideChangeHandler = (swiper) => {
     setSelectedCityId(citiesData[swiper.activeIndex].id);
   };
 
   const updateHandler = (swiper) => {
-    swiper.slideTo(citiesData.findIndex((city) => city.id === selectedCityId))
+    swiper.slideTo(citiesData.findIndex((city) => city.id === selectedCityId));
   };
 
   return (

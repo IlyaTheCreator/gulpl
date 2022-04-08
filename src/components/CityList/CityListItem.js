@@ -1,18 +1,12 @@
 import Widget from "../ui/Widget";
 
 import { widgetTypes } from "../../constants";
-import { appActionTypes } from "../../appStateManager";
 
-const CityListItem = ({ itemData, appDispatch, setSelectedCityId }) => {
-  const clickHandler = () => {
-    setSelectedCityId(itemData.id);
-    appDispatch({ type: appActionTypes.CLOSE_CITY_LIST });
-  };
-
+const CityListItem = ({ itemData, onClick }) => {
   const classes = ["screen__city"];
 
   return (
-    <Widget classes={classes} type={widgetTypes.LIST} onClick={clickHandler}>
+    <Widget classes={classes} type={widgetTypes.LIST} onClick={onClick}>
       <div className="link">
         <h3 className="screen__title">
           <div className="screen__city-title-group">

@@ -221,7 +221,6 @@
 }
 
 .screen-nav-wrapper {
-  // position: relative;
   width: 100vw;
 }
 
@@ -282,6 +281,7 @@
 }
 
 .add-city-modal {
+  border: 0;
   justify-content: center;
   overflow-y: hidden;
 }
@@ -358,7 +358,17 @@
   }
 
   & + button {
-    margin-right: 3px;
+    margin: 100px 0 0 0;
+    align-self: center;
+    width: 120px;
+    height: 120px;
+    font-size: 3rem;
+  }
+
+  &__action {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
   }
 }
 
@@ -522,6 +532,7 @@
   z-index: 10000;
   display: grid;
   place-content: center;
+  border: 0;
 }
 
 .delete-city-btn {
@@ -688,10 +699,14 @@ ymaps[class*="searchbox-button"] {
 .map-modal {
   padding: 0;
   overflow: hidden;
+  border: 0;
+}
+
+.settings-modal {
+  border: 0;
 }
 
 // loader styles
-
 .cssload-container {
   position: relative;
 }
@@ -804,9 +819,18 @@ ymaps[class*="searchbox-button"] {
   box-shadow: -1px 4px 26px 5px rgba(34, 60, 80, 0.25);
 
   &--top {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-name: show-message-from-top;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+  }
+
+  &--center {
     top: 50%;
     left: 50%;
-    animation-name: show-message-from-top;
+    animation-name: show-message-from-center;
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
   }
@@ -888,6 +912,23 @@ ymaps[class*="searchbox-button"] {
 }
 
 @keyframes show-message-from-top {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -200%);
+  }
+
+  7%, 10%, 20%, 40%, 60%, 80%, 90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -200%);
+  }
+}
+
+@keyframes show-message-from-center {
   from {
     transform: translate(-50%, -70%);
   }
@@ -911,5 +952,23 @@ ymaps[class*="searchbox-button"] {
   100% {
     opacity: 0;
     transform: translate(0, 200%);
+  }
+}
+
+.close-city-list-btn-wrapper {
+  background: rgba(0, 0, 0, 0.18);
+  border-top: 1px solid $color-normal;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: 100%;
+  margin-top: 20px;
+
+  button {
+    position: static;
+    transform: none;
+    margin: 15px auto;
   }
 }

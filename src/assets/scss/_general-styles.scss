@@ -119,6 +119,11 @@ i {
   @media screen and (max-width: 511px) {
     height: 100vh;
   }
+
+  @media screen and (min-width: 511px) {
+    border: 1px solid $color-dark-gray;
+    border-left: 1px solid $color-gray;
+  }
 }
 
 .modal-overlay {

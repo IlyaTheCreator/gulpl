@@ -1,23 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
+import { modalTypes } from "../../constants";
 
-const ModalWindows = ({ modalsState, appDispatch, setSelectedCityId }) => {
-  // state for managing user entered city name in order to pass it
-  // from addCityModal to mapModal
-  const [cityQuery, setCityQuery] = useState("");
-
+const ModalWindows = ({
+  modalsState,
+  appDispatch,
+  setSelectedCityId,
+  cityQuery,
+  setCityQuery,
+  citiesUpdated,
+  setCitiesUpdated,
+}) => {
   const modals = Object.keys(modalsState).map((key) => {
     if (!modalsState[key].isOpen) {
       return null;
     }
 
-    const modalComponent = () => require(`./${key}`).default;
+    const modalComponent = () => require(`./${key}Modal`).default;
     const modalComponentProps = {
       ...modalsState[key],
-      setSelectedCityId: key === "CityListModal" ? setSelectedCityId : null,
+      setSelectedCityId:
+        key === modalTypes.CITY_LIST ? setSelectedCityId : null,
+      citiesUpdated: key === modalTypes.CITY_LIST ? citiesUpdated : null,
       cityQuery:
-        key === "AddCityModal" || key === "MapModal" ? cityQuery : null,
+        key === modalTypes.ADD_CITY || key === modalTypes.MAP
+          ? cityQuery
+          : null,
       setCityQuery:
-        key === "AddCityModal" || key === "MapModal" ? setCityQuery : null,
+        key === modalTypes.ADD_CITY || key === modalTypes.MAP
+          ? setCityQuery
+          : null,
+      setCitiesUpdated:
+        key === modalTypes.SETTINGS || key === modalTypes.CITY_LIST
+          ? setCitiesUpdated
+          : null,
       appDispatch,
       key,
     };

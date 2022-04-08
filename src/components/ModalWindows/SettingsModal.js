@@ -6,21 +6,24 @@ import SelectCard from "../Settings/SelectCard";
 import CloseModalButton from "../ui/CloseModalButton";
 import { setIsLoading } from "../../store/ui";
 import { setWeather, setMap } from "../../store/apis";
-import { settingsSelectInputsData } from "../../constants";
+import { modalTypes, settingsSelectInputsData } from "../../constants";
 import { addCity, clearCities } from "../../store/cities";
 
 import weatherAPIService from "../../services/weatherAPIService";
 import mapService from "../../services/mapService";
 import { appActionTypes } from "../../appStateManager";
 
-const SettingsModal = ({ zIndex, appDispatch }) => {
+const SettingsModal = ({ zIndex, appDispatch, setCitiesUpdated }) => {
   const dispatch = useDispatch();
   const citiesData = useSelector((state) => state.cities.citiesList);
   const weatherAPIType = useSelector((state) => state.apis.weather);
   const selectedMap = useSelector((state) => state.apis.map);
 
   const closeSettingsClickHandler = () => {
-    appDispatch({ type: appActionTypes.CLOSE_SETTINGS });
+    appDispatch({
+      type: appActionTypes.CLOSE_MODAL,
+      payload: modalTypes.SETTINGS,
+    });
   };
 
   const weatherSwitchHandler = (e) => {
@@ -45,22 +48,41 @@ const SettingsModal = ({ zIndex, appDispatch }) => {
     // loader goes here
     dispatch(setIsLoading(true));
 
-    Promise.all(
-      citiesData.map((city) => {
-        weatherAPIService
-          .getForecast(city.title, [city.lat, city.lon])
-          .then((data) => {
-            if (data.error) {
-              return;
-            }
+    const amountOfCitiesToBeFetched = citiesData.length;
+    const oldCities = citiesData;
+    let citiesFetched = 0;
 
-            dispatch(addCity(data));
+    dispatch(clearCities());
+    appDispatch({
+      type: appActionTypes.CLOSE_MODAL,
+      payload: modalTypes.SETTINGS,
+    });
+
+    oldCities.forEach((city) => {
+      weatherAPIService
+        .getForecast(city.title, [city.lat, city.lon])
+        .then((data) => {
+          if (data.error) {
+            return;
+          }
+
+          dispatch(addCity(data));
+        })
+        .then(() => {
+          citiesFetched++;
+
+          if (citiesFetched + 1 !== amountOfCitiesToBeFetched) {
+            return;
+          }
+
+          appDispatch({
+            type: appActionTypes.OPEN_MODAL,
+            payload: modalTypes.CITY_LIST,
           });
-      })
-    ).then(() => {
-      dispatch(clearCities());
-      appDispatch({ type: appActionTypes.CLOSE_SETTINGS });
-      appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
+
+          dispatch(setIsLoading(false));
+          setCitiesUpdated(true);
+        });
     });
   };
 
@@ -112,13 +134,14 @@ const SettingsModal = ({ zIndex, appDispatch }) => {
       zIndex={zIndex}
       hasOverlay
       overlayClassName="modal-overlay--settings"
+      modalClassName="settings-modal"
     >
       <div className="settings-modal-wrapper">
         <WidgetCardSettings appDispatch={appDispatch} />
         {cards}
         <CloseModalButton
           className="close-settings-modal-btn"
-          text="close"
+          text="Close"
           onClick={closeSettingsClickHandler}
         />
       </div>

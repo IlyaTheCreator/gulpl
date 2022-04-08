@@ -1,3 +1,5 @@
+import { modalTypes } from "../constants";
+
 const initialIndex = 9000;
 
 const getNumberOfOpenedModals = (state) => {
@@ -9,24 +11,16 @@ const getNumberOfOpenedModals = (state) => {
 };
 
 export const appActionTypes = {
-  OPEN_SETTINGS: "open-settings",
-  CLOSE_SETTINGS: "close-settings",
-  OPEN_CITY_LIST: "open-city-list",
-  CLOSE_CITY_LIST: "close-city-list",
-  OPEN_ADD_CITY: "open-add-city",
-  CLOSE_ADD_CITY: "close-add-city",
-  OPEN_SELECT_API_SOURCE: "open-select-api-source",
-  CLOSE_SELECT_API_SOURCE: "close-select-api-source",
-  OPEN_MAP: "open-map",
-  CLOSE_MAP: "close-map"
-}
+  OPEN_MODAL: "open-modal",
+  CLOSE_MODAL: "close-modal",
+};
 
 export const initialState = {
-  SettingsModal: { isOpen: false, zIndex: initialIndex },
-  CityListModal: { isOpen: false, zIndex: initialIndex },
-  AddCityModal: { isOpen: false, zIndex: initialIndex },
-  SelectAPISourceModal: { isOpen: false, zIndex: initialIndex },
-  MapModal: { isOpen: false, zIndex: initialIndex },
+  [modalTypes.SETTINGS]: { isOpen: false, zIndex: initialIndex },
+  [modalTypes.CITY_LIST]: { isOpen: true, zIndex: initialIndex },
+  [modalTypes.ADD_CITY]: { isOpen: false, zIndex: initialIndex },
+  [modalTypes.SELECT_API_SOURCE]: { isOpen: false, zIndex: initialIndex },
+  [modalTypes.MAP]: { isOpen: false, zIndex: initialIndex },
 };
 
 export const reducer = (state, action) => {
@@ -36,69 +30,25 @@ export const reducer = (state, action) => {
       ? initialIndex
       : initialIndex + numberOfOpenedModals;
 
+  console.log(action.type, action.payload)
+
   switch (action.type) {
-    case appActionTypes.OPEN_SETTINGS:
+    case appActionTypes.OPEN_MODAL:
       return {
         ...state,
-        SettingsModal: {
+        [action.payload]: {
           zIndex: newIndex,
           isOpen: true,
         },
       };
-    case appActionTypes.CLOSE_SETTINGS:
+    case appActionTypes.CLOSE_MODAL:
       return {
         ...state,
-        SettingsModal: { zIndex: initialIndex, isOpen: false },
-      };
-    case appActionTypes.OPEN_CITY_LIST:
-      return {
-        ...state,
-        CityListModal: {
-          zIndex: newIndex,
-          isOpen: true,
+        [action.payload]: {
+          zIndex: initialIndex,
+          isOpen: false,
         },
       };
-    case appActionTypes.CLOSE_CITY_LIST:
-      return {
-        ...state,
-        CityListModal: { zIndex: initialIndex, isOpen: false },
-      };
-    case appActionTypes.OPEN_ADD_CITY:
-      return {
-        ...state,
-        AddCityModal: {
-          zIndex: newIndex,
-          isOpen: true,
-        },
-      };
-    case appActionTypes.CLOSE_ADD_CITY:
-      return {
-        ...state,
-        AddCityModal: { zIndex: initialIndex, isOpen: false },
-      };
-    case appActionTypes.OPEN_SELECT_API_SOURCE:
-      return {
-        ...state,
-        SelectAPISourceModal: {
-          zIndex: newIndex,
-          isOpen: true,
-        },
-      };
-    case appActionTypes.CLOSE_SELECT_API_SOURCE:
-      return {
-        ...state,
-        SelectAPISourceModal: { zIndex: initialIndex, isOpen: false },
-      };
-    case appActionTypes.OPEN_MAP:
-      return {
-        ...state,
-        MapModal: {
-          zIndex: newIndex,
-          isOpen: true,
-        },
-      };
-    case appActionTypes.CLOSE_MAP:
-      return { ...state, MapModal: { zIndex: initialIndex, isOpen: false } };
     default:
       return state;
   }

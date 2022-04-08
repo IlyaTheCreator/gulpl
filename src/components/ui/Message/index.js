@@ -13,10 +13,7 @@ const Message = ({
   icon,
 }) => {
   let content;
-  const classes = [
-    "user-message",
-    position === "top" ? "user-message--top" : "user-message--bottom",
-  ];
+  const classes = ["user-message", `user-message--${position}`];
 
   switch (type) {
     case messageTypes.INFO:

@@ -1,128 +1,171 @@
-import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { connect } from "react-redux";
+
 import Message from "../../ui/Message";
 
-import { messageTypes } from "../../../constants";
+import { messageTypes, modalTypes } from "../../../constants";
 import { appActionTypes } from "../../../appStateManager";
 
-const AddCityForm = ({ appDispatch, cityQuery, setCityQuery }) => {
-  const existentCities = useSelector((state) => state.cities.citiesList);
-  const [cityExists, setCityExists] = useState(false);
-  const [noCityEntered, setNoCityEntered] = useState(false);
-  const inputRef = useRef();
+class AddCityForm extends React.Component {
+  constructor() {
+    super();
 
-  const triggerMapModal = () => {
-    appDispatch({ type: appActionTypes.OPEN_MAP });
+    this.state = {
+      cityExists: false,
+      noCityEntered: false,
+    };
+
+    this.inputRef = React.createRef();
+  }
+
+  triggerMapModal = () => {
+    this.props.appDispatch({
+      type: appActionTypes.OPEN_MODAL,
+      payload: modalTypes.MAP,
+    });
+
     window.addCityBtnClicked = true;
   };
 
-  const positiveBtnClickHandler = () => {
-    setCityExists(false);
-    triggerMapModal();
+  positiveBtnClickHandler = () => {
+    this.setState((prevState) => ({ ...prevState, cityExists: false }));
+    this.triggerMapModal();
   };
 
-  const negativeBtnClickHandler = () => {
-    setCityExists(false);
-    setCityQuery("");
-    inputRef.current.focus();
+  negativeBtnClickHandler = () => {
+    this.setState((prevState) => ({ ...prevState, cityExists: false }));
+    this.props.setCityQuery("");
+    this.inputRef.current.focus();
   };
 
-  const submitHandler = (e) => {
+  submitHandler = (e) => {
     e.preventDefault();
 
-    if (cityQuery.trim().length === 0) {
-      setNoCityEntered(true);
+    if (this.props.cityQuery.trim().length === 0) {
+      this.setState((prevState) => ({ ...prevState, noCityEntered: true }));
+
       const timeoutId = setTimeout(() => {
-        setNoCityEntered(false);
+        this.setState((prevState) => ({ ...prevState, noCityEntered: false }));
         clearTimeout(timeoutId);
       }, 5000);
+
+      this.inputRef.current.focus();
+
       return;
     }
 
     // checking if a city with such a name is already chosen
-    const existentCityCheck = existentCities.find(
+    const existentCityCheck = this.props.existentCities.find(
       (existentCity) =>
-        existentCity.title.trim().toLowerCase() === cityQuery.trim().toLowerCase()
+        existentCity.title.trim().toLowerCase() ===
+        this.props.cityQuery.trim().toLowerCase()
     );
 
     if (existentCityCheck) {
-      setCityExists(true);
-      setNoCityEntered(false);
+      this.setState((prevState) => ({ ...prevState, cityExists: true }));
+      this.setState((prevState) => ({ ...prevState, noCityEntered: false }));
+
       return;
     }
 
-    triggerMapModal();
+    this.triggerMapModal();
   };
 
-  const closeFormHandler = () => {
-    appDispatch({ type: appActionTypes.CLOSE_ADD_CITY });
+  closeFormHandler = () => {
+    this.props.appDispatch({
+      type: appActionTypes.CLOSE_MODAL,
+      payload: modalTypes.ADD_CITY,
+    });
   };
 
-  const iconClickHandler = () => {
-    appDispatch({ type: appActionTypes.OPEN_MAP });
+  iconClickHandler = () => {
+    this.props.appDispatch({
+      type: appActionTypes.OPEN_MODAL,
+      payload: modalTypes.MAP,
+    });
   };
 
-  const changeHandler = (e) => {
-    setCityQuery(e.target.value);
+  changeHandler = (e) => {
+    this.props.setCityQuery(e.target.value);
   };
 
-  const form = (
-    <div className="card add-city">
-      <form onSubmit={submitHandler} className="add-city-form">
-        <div className="input-wrapper">
-          <input
-            ref={inputRef}
-            value={cityQuery}
-            onChange={changeHandler}
-            type="text"
-            placeholder="Enter City Name..."
-          />
-          <div className="icon-wrapper">
-            <i className="icon-map" onClick={iconClickHandler} />
+  getForm() {
+    return (
+      <div className="card add-city">
+        <form onSubmit={this.submitHandler} className="add-city-form">
+          <div className="input-wrapper">
+            <input
+              ref={this.inputRef}
+              value={this.props.cityQuery}
+              onChange={this.changeHandler}
+              type="text"
+              placeholder="Enter City Name..."
+            />
+            <div className="icon-wrapper">
+              <i className="icon-map" onClick={this.iconClickHandler} />
+            </div>
           </div>
-        </div>
-        <button type="submit" className="btn">
-          Add
-        </button>
-        <button onClick={closeFormHandler} className="close-add-city-btn">
-          Cancel
-        </button>
-      </form>
-    </div>
-  );
+          <button type="submit" className="btn">
+            Add
+          </button>
+          <button
+            type="button"
+            onClick={this.closeFormHandler}
+            className="close-add-city-btn"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    );
+  }
 
-  return (
-    <>
-      {cityExists && (
-        <Message
-          type={messageTypes.USER_ACTION}
-          position="top"
-          message="City with such name already exists"
-          positiveBtnText="Proceed anyways"
-          negativeBtnText="Cancel"
-          onPositiveBtnClick={positiveBtnClickHandler}
-          onNegativeBtnClick={negativeBtnClickHandler}
-          icon={
-            <>
-              <i className="icon-building user-message__icon" />
-              <i className="icon-building user-message__icon user-message__icon--small user-message__icon--building" />
-            </>
-          }
-        />
-      )}
-      {noCityEntered && (
-        <Message
-          type={messageTypes.INFO}
-          position="bottom"
-          message="Please enter city name"
-          icon={
-            <i className="icon-building user-message__icon user-message__icon--small" />
-          }
-        />
-      )}
-      {form}
-    </>
-  );
-};
+  getCityExistMessage = () => {
+    return (
+      <Message
+        type={messageTypes.USER_ACTION}
+        position="center"
+        message="City with such name already exists"
+        positiveBtnText="Proceed anyways"
+        negativeBtnText="Cancel"
+        onPositiveBtnClick={this.positiveBtnClickHandler}
+        onNegativeBtnClick={this.negativeBtnClickHandler}
+        icon={
+          <>
+            <i className="icon-building user-message__icon" />
+            <i className="icon-building user-message__icon user-message__icon--small user-message__icon--building" />
+          </>
+        }
+      />
+    );
+  };
 
-export default AddCityForm;
+  getNoCityEnteredMessage = () => {
+    return (
+      <Message
+        type={messageTypes.INFO}
+        position="bottom"
+        message="Please enter city name"
+        icon={
+          <i className="icon-building user-message__icon user-message__icon--small" />
+        }
+      />
+    );
+  };
+
+  render() {
+    return (
+      <>
+        {this.state.cityExists && this.getCityExistMessage()}
+        {this.state.noCityEntered && this.getNoCityEnteredMessage()}
+        {this.getForm()}
+      </>
+    );
+  }
+}
+
+const mapStateToProps = (state) => ({
+  existentCities: state.cities.citiesList,
+});
+
+export default connect(mapStateToProps)(AddCityForm);

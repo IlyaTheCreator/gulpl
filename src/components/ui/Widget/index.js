@@ -1,13 +1,6 @@
 import { widgetTypes } from "../../../constants";
 
-const Widget = ({
-  children,
-  type,
-  classes = [],
-  onClick,
-  onMouseEnter,
-  onMouseLeave,
-}) => {
+const Widget = ({ children, type, classes = [], onClick }) => {
   if (type === widgetTypes.LIST) {
     classes.push("widget");
   }
@@ -23,12 +16,7 @@ const Widget = ({
   };
 
   return (
-    <div
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={clickHandler}
-      className={classes.join(" ")}
-    >
+    <div onClick={clickHandler} className={classes.join(" ")}>
       {children}
     </div>
   );

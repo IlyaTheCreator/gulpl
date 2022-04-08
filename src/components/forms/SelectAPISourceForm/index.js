@@ -4,6 +4,7 @@ import { setWeather } from "../../../store/apis";
 
 import weatherAPIService from "../../../services/weatherAPIService";
 import { appActionTypes } from "../../../appStateManager";
+import { modalTypes } from "../../../constants";
 
 const SelectAPISourceForm = ({ appDispatch }) => {
   const [selectedAPI, setSelectedAPI] = useState("open-weather-map");
@@ -19,11 +20,14 @@ const SelectAPISourceForm = ({ appDispatch }) => {
         path: weatherAPITypes[selectedAPI].apiPath,
       })
     );
-  }
+  };
 
   const clickHandler = () => {
     selectWeatherAPI();
-    appDispatch({ type: appActionTypes.CLOSE_SELECT_API_SOURCE })
+    appDispatch({
+      type: appActionTypes.CLOSE_MODAL,
+      payload: modalTypes.SELECT_API_SOURCE,
+    });
   };
 
   const changeHandler = (e) => {

@@ -5,6 +5,7 @@ import { addCity } from "../../store/cities";
 import mapService from "../../services/mapService";
 import weatherAPIService from "../../services/weatherAPIService";
 import { appActionTypes } from "../../appStateManager";
+import { modalTypes } from "../../constants";
 
 const mapContainerId = "yandex-map";
 
@@ -12,7 +13,6 @@ const MapModal = ({ zIndex, appDispatch, cityQuery, setCityQuery }) => {
   const dispatch = useDispatch();
   const mapType = useSelector((state) => state.apis.map);
   const weatherAPIType = useSelector((state) => state.apis.weather);
-  const existentCities = useSelector((state) => state.cities.citiesList);
 
   const initMap = useCallback(() => {
     mapService.setMapType({
@@ -26,7 +26,10 @@ const MapModal = ({ zIndex, appDispatch, cityQuery, setCityQuery }) => {
   const mapSearchListener = useCallback(
     (e) => {
       if (!e.detail.title || !e.detail.coordinates) {
-        appDispatch({ type: appActionTypes.CLOSE_MAP });
+        appDispatch({
+          type: appActionTypes.CLOSE_MODAL,
+          payload: modalTypes.MAP,
+        });
         return;
       }
 
@@ -44,14 +47,26 @@ const MapModal = ({ zIndex, appDispatch, cityQuery, setCityQuery }) => {
           }
 
           dispatch(addCity(data));
-          appDispatch({ type: appActionTypes.CLOSE_MAP });
-          appDispatch({ type: appActionTypes.CLOSE_ADD_CITY });
-          appDispatch({ type: appActionTypes.CLOSE_SELECT_API_SOURCE });
-          appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
+          appDispatch({
+            type: appActionTypes.CLOSE_MODAL,
+            payload: modalTypes.MAP,
+          });
+          appDispatch({
+            type: appActionTypes.CLOSE_MODAL,
+            payload: modalTypes.ADD_CITY,
+          });
+          appDispatch({
+            type: appActionTypes.CLOSE_MODAL,
+            payload: modalTypes.SELECT_API_SOURCE,
+          });
+          appDispatch({
+            type: appActionTypes.OPEN_MODAL,
+            payload: modalTypes.CITY_LIST,
+          });
           setCityQuery("");
         });
     },
-    [weatherAPIType, dispatch, existentCities]
+    [weatherAPIType, dispatch, appDispatch, setCityQuery]
   );
 
   useEffect(() => {

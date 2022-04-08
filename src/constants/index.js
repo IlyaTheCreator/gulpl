@@ -1,11 +1,11 @@
 export const appVersion = "weather-2.0.0";
 
 export const modalTypes = {
-  SETTINGS: "settings",
-  CITY_LIST: "city-list",
-  ADD_CITY: "add-city",
-  SELECT_API_SOURCE: "select-api-source",
-  MAP: "map",
+  SETTINGS: "Settings",
+  CITY_LIST: "CityList",
+  ADD_CITY: "AddCity",
+  SELECT_API_SOURCE: "SelectAPISource",
+  MAP: "Map",
 };
 
 export const widgetTypes = {

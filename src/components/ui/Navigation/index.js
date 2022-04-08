@@ -1,27 +1,34 @@
 import { appActionTypes } from "../../../appStateManager";
-import NavCircles from "./NavCircles";
+import { modalTypes } from "../../../constants";
 
-const Navigation = ({ appDispatch, selectedCityId }) => {
+const Navigation = ({ appDispatch }) => {
   const cityListClickHandle = () => {
-    appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
-  }
+    appDispatch({
+      type: appActionTypes.OPEN_MODAL,
+      payload: modalTypes.CITY_LIST,
+    });
+  };
 
   const settingsClickHandle = () => {
-    appDispatch({ type: appActionTypes.OPEN_SETTINGS });
-  }
+    appDispatch({
+      type: appActionTypes.OPEN_MODAL,
+      payload: modalTypes.SETTINGS,
+    });
+  };
 
   const addCityClickHandle = () => {
-    appDispatch({ type: appActionTypes.OPEN_ADD_CITY });
-  }
+    appDispatch({
+      type: appActionTypes.OPEN_MODAL,
+      payload: modalTypes.ADD_CITY,
+    });
+  };
 
   return (
     <nav className="navigation">
       <div className="navigation__settings" onClick={settingsClickHandle}>
         <i className="icon icon-figma-settings"></i>
       </div>
-      <div className="navigation__pages">
-        <NavCircles selectedCityId={selectedCityId} />
-      </div>
+      <div className="navigation__pages"></div>
       <div className="navigation__cities">
         <span onClick={addCityClickHandle} className="link add-city-link">
           <div className="navigation__cities-link-wrapper">

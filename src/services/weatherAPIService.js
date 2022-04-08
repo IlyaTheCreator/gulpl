@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { apiTypes } from "../constants";
 
 import simpleRound from "../helpers/simpleRound";
+import capitalizeString from "../helpers/capitalizeString";
 
 class WeatherAPIService {
   constructor() {
@@ -64,7 +65,9 @@ class WeatherAPIService {
         lon: lon,
         cityImage: "cloudy.png",
         currentTemp: simpleRound(forecastData.daily[0].temp.day),
-        weatherCondition: forecastData.daily[0].weather[0].description,
+        weatherCondition: capitalizeString(
+          forecastData.daily[0].weather[0].description
+        ),
         widgetRelatedInfo: this.generateWidgetRelatedInfo(
           forecastData.daily[0].temp.min,
           forecastData.daily[0].temp.max,
@@ -103,8 +106,9 @@ class WeatherAPIService {
         lon: lon,
         cityImage: "cloudy.png",
         currentTemp: simpleRound(forecastData.current.temp_c),
-        weatherCondition:
-          forecastData.forecast.forecastday[0].day.condition.text,
+        weatherCondition: capitalizeString(
+          forecastData.forecast.forecastday[0].day.condition.text
+        ),
         widgetRelatedInfo: this.generateWidgetRelatedInfo(
           forecastData.forecast.forecastday[0].day.mintemp_c,
           forecastData.forecast.forecastday[0].day.maxtemp_c,
