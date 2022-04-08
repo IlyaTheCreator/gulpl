@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
-const ModalWindows = ({
-  modalsState,
-  appDispatch,
-  setSelectedCityId,
-}) => {
+const ModalWindows = ({ modalsState, appDispatch, setSelectedCityId }) => {
+  // state for managing user entered city name in order to pass it
+  // from addCityModal to mapModal
+  const [cityQuery, setCityQuery] = useState("");
+
   const modals = Object.keys(modalsState).map((key) => {
     if (!modalsState[key].isOpen) {
       return null;
@@ -14,6 +14,10 @@ const ModalWindows = ({
     const modalComponentProps = {
       ...modalsState[key],
       setSelectedCityId: key === "CityListModal" ? setSelectedCityId : null,
+      cityQuery:
+        key === "AddCityModal" || key === "MapModal" ? cityQuery : null,
+      setCityQuery:
+        key === "AddCityModal" || key === "MapModal" ? setCityQuery : null,
       appDispatch,
       key,
     };

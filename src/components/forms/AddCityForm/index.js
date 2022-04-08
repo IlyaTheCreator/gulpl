@@ -1,21 +1,17 @@
 import { useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setCityQuery } from "../../../store/cities";
+import { useSelector } from "react-redux";
 import Message from "../../ui/Message";
 
 import { messageTypes } from "../../../constants";
 import { appActionTypes } from "../../../appStateManager";
 
-const AddCityForm = ({ appDispatch }) => {
-  const dispatch = useDispatch();
+const AddCityForm = ({ appDispatch, cityQuery, setCityQuery }) => {
   const existentCities = useSelector((state) => state.cities.citiesList);
-  const [city, setCity] = useState("");
   const [cityExists, setCityExists] = useState(false);
   const [noCityEntered, setNoCityEntered] = useState(false);
   const inputRef = useRef();
 
   const triggerMapModal = () => {
-    dispatch(setCityQuery(city));
     appDispatch({ type: appActionTypes.OPEN_MAP });
     window.addCityBtnClicked = true;
   };
@@ -27,12 +23,14 @@ const AddCityForm = ({ appDispatch }) => {
 
   const negativeBtnClickHandler = () => {
     setCityExists(false);
+    setCityQuery("");
+    inputRef.current.focus();
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (city.trim().length === 0) {
+    if (cityQuery.trim().length === 0) {
       setNoCityEntered(true);
       const timeoutId = setTimeout(() => {
         setNoCityEntered(false);
@@ -44,7 +42,7 @@ const AddCityForm = ({ appDispatch }) => {
     // checking if a city with such a name is already chosen
     const existentCityCheck = existentCities.find(
       (existentCity) =>
-        existentCity.title.trim().toLowerCase() === city.trim().toLowerCase()
+        existentCity.title.trim().toLowerCase() === cityQuery.trim().toLowerCase()
     );
 
     if (existentCityCheck) {
@@ -61,12 +59,11 @@ const AddCityForm = ({ appDispatch }) => {
   };
 
   const iconClickHandler = () => {
-    dispatch(setCityQuery(city));
     appDispatch({ type: appActionTypes.OPEN_MAP });
   };
 
   const changeHandler = (e) => {
-    setCity(e.target.value);
+    setCityQuery(e.target.value);
   };
 
   const form = (
@@ -75,7 +72,7 @@ const AddCityForm = ({ appDispatch }) => {
         <div className="input-wrapper">
           <input
             ref={inputRef}
-            value={city}
+            value={cityQuery}
             onChange={changeHandler}
             type="text"
             placeholder="Enter City Name..."

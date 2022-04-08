@@ -1,9 +1,11 @@
 import Widget from "../ui/Widget";
+
 import { widgetTypes } from "../../constants";
 import { appActionTypes } from "../../appStateManager";
 
-const CityListItem = ({ itemData, appDispatch }) => {
+const CityListItem = ({ itemData, appDispatch, setSelectedCityId }) => {
   const clickHandler = () => {
+    setSelectedCityId(itemData.id);
     appDispatch({ type: appActionTypes.CLOSE_CITY_LIST });
   };
 

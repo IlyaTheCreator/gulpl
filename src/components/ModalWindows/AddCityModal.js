@@ -1,7 +1,7 @@
 import Modal from "../ui/Modal";
 import AddCityForm from "../forms/AddCityForm";
 
-const AddCityModal = ({ zIndex, appDispatch }) => {
+const AddCityModal = ({ zIndex, appDispatch, cityQuery, setCityQuery }) => {
   return (
     <Modal
       zIndex={zIndex}
@@ -9,7 +9,11 @@ const AddCityModal = ({ zIndex, appDispatch }) => {
       modalClassName="add-city-modal"
       hasOverlay
     >
-      <AddCityForm appDispatch={appDispatch} />
+      <AddCityForm
+        appDispatch={appDispatch}
+        cityQuery={cityQuery}
+        setCityQuery={setCityQuery}
+      />
     </Modal>
   );
 };

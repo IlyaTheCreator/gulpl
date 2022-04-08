@@ -1,19 +1,18 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../ui/Modal";
-import { addCity, selectCity } from "../../store/cities";
+import { addCity } from "../../store/cities";
 import mapService from "../../services/mapService";
 import weatherAPIService from "../../services/weatherAPIService";
 import { appActionTypes } from "../../appStateManager";
 
 const mapContainerId = "yandex-map";
 
-const MapModal = ({ zIndex, appDispatch }) => {
+const MapModal = ({ zIndex, appDispatch, cityQuery, setCityQuery }) => {
   const dispatch = useDispatch();
   const mapType = useSelector((state) => state.apis.map);
   const weatherAPIType = useSelector((state) => state.apis.weather);
   const existentCities = useSelector((state) => state.cities.citiesList);
-  const cityQuery = useSelector((state) => state.cities.cityQuery);
 
   const initMap = useCallback(() => {
     mapService.setMapType({
@@ -49,6 +48,7 @@ const MapModal = ({ zIndex, appDispatch }) => {
           appDispatch({ type: appActionTypes.CLOSE_ADD_CITY });
           appDispatch({ type: appActionTypes.CLOSE_SELECT_API_SOURCE });
           appDispatch({ type: appActionTypes.OPEN_CITY_LIST });
+          setCityQuery("");
         });
     },
     [weatherAPIType, dispatch, existentCities]

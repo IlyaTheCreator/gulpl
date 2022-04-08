@@ -5,15 +5,26 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper";
 
 import "swiper/css";
-import "swiper/css/effect-cube";
 
-const CitiesSwiper = () => {
+const CitiesSwiper = ({ selectedCityId, setSelectedCityId }) => {
   const citiesData = useSelector((state) => state.cities.citiesList);
+  const initialIndex = citiesData.findIndex((city) => city.id === selectedCityId)
+
+  const slideChangeHandler = (swiper) => {
+    setSelectedCityId(citiesData[swiper.activeIndex].id);
+  };
+
+  const updateHandler = (swiper) => {
+    swiper.slideTo(citiesData.findIndex((city) => city.id === selectedCityId))
+  };
 
   return (
     <Swiper
       grabCursor={true}
       modules={[Pagination]}
+      onSlideChange={slideChangeHandler}
+      initialSlide={initialIndex}
+      onUpdate={updateHandler}
       pagination={{
         el: ".navigation__pages",
         clickable: true,

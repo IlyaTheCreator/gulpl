@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedCityId: "",
   citiesList: [],
 };
 
@@ -20,12 +19,8 @@ const citiesSlice = createSlice({
     clearCities: (state) => {
       state.citiesList = [];
     },
-    setCityQuery: (state, action) => {
-      state.cityQuery = action.payload;
-    },
   },
 });
 
-export const { addCity, removeCity, clearCities, setCityQuery } =
-  citiesSlice.actions;
+export const { addCity, removeCity, clearCities } = citiesSlice.actions;
 export default citiesSlice.reducer;
