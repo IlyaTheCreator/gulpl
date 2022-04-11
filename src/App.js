@@ -10,7 +10,6 @@ import CitiesSwiper from "./components/CitiesSwiper";
 
 import LsService from "./services/lsService";
 import { appVersion, modalTypes } from "./constants";
-import Selector from "./components/ui/Selector";
 
 const App = () => {
   const citiesData = useSelector((state) => state.cities.citiesList);
@@ -61,7 +60,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <Layout>
       <ModalWindows
         setSelectedCityId={updateSelectedCityId}
         modalsState={modalsState}
@@ -71,18 +70,16 @@ const App = () => {
         citiesUpdated={citiesUpdated}
         setCitiesUpdated={setCitiesUpdated}
       />
-      <Layout>
-        {citiesData.length !== 0 && (
-          <>
-            <Navigation appDispatch={dispatch} />
-            <CitiesSwiper
-              selectedCityId={selectedCityId}
-              setSelectedCityId={updateSelectedCityId}
-            />
-          </>
-        )}
-      </Layout>
-    </>
+      {citiesData.length !== 0 && (
+        <>
+          <Navigation appDispatch={dispatch} />
+          <CitiesSwiper
+            selectedCityId={selectedCityId}
+            setSelectedCityId={updateSelectedCityId}
+          />
+        </>
+      )}
+    </Layout>
   );
 };
 
