@@ -79,7 +79,7 @@ const CityListItem = ({ itemData, onClick, onSwipe }) => {
         shortSwipes={false}
         allowSlidePrev={false}
         slidesPerView={1}
-        spaceBetween={0}
+        spaceBetween={5}
         onSliderMove={sliderMoveHandler}
         onSlideChange={sliderChangeHandler}
         onTouchEnd={sliderTouchEndHandler}
