@@ -1,121 +1,70 @@
-# <img width="300px" src="https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"> <br> Weather app 
+# Getting Started with Create React App
 
-## Table of contents
-* [General info](#general-info)
-* [Demo](#demo)
-* [Used services](#used-services)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## General info 
-This project is a web application for searching current weather information for given cities.
+## Available Scripts
 
-## Demo 
-At the initial startup, you can choose weather api data source: 
-<br>
-<img src="https://i.imgur.com/OeynjaY.png">
+In the project directory, you can run:
 
-Adding a city:
-<br>
-<img src="https://i.imgur.com/94BsCIB.png">
-<br>
-<img src="https://i.imgur.com/GeXFrna.png">
+### `npm start`
 
-Optionally choosing city on a map: 
-<br>
-<img src="https://i.imgur.com/RDOCzva.png">
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-City info view: 
-<br>
-<img src="https://i.imgur.com/3ypzrsF.png">
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-All selected cities view: 
-<br>
-<img src="https://i.imgur.com/a1JziV8.png">
+### `npm test`
 
-Edit app settings: 
-<br>
-<img src="https://i.imgur.com/4blZqhb.png">
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Used services 
-### LsService 
-Service for managing localstorage.
-Init the service:
-``` 
-const lsService = new LsService();
-```
-Run init() method for setting localstorage item for your app (store argument's value somewhere else for later use):
-``` 
-lsService.init("my-app-ls-key");
-```
-Example: get data (static method):
-``` 
-LsService.get("my-app-ls-key");
-```
-<hr>
+### `npm run build`
 
-### ModalService
-Service for managing modals (adding city, city list, settings, etc)
-Init the service: 
-``` 
-const modalService = new ModalService();
-```
-Create a modal (this method returns an actual DOM element)
-``` 
-const myModal = modalService.createModal(
-  "modal-type", // found in app/js/constants | modalTypes
-  () => [
-    document.createElement("div"),
-    document.createElement("h1")
-  ],
-  ["class1", "class2"], // optional
-  "modal-id" // optional
-);
-```
-Mount the modal wherever you need it: 
-``` 
-document.querySelector("body").appendChild(myModal);
-```
-<hr>
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-### WeatherAPIService
-Service for managing calling different APIs for getting weather data
-Init the service: 
-``` 
-const weatherAPIService = new WeatherAPIService();
-```
-Get available API types: 
-``` 
-const weatherAPITypes = weatherAPIService.getApiTypes();
-```
-Select which one to use: 
-``` 
-weatherAPIService.setApiType(weatherAPITypes["api-type"]); // found in app/js/constants | apiTypes
-```
-Make a call: 
-``` 
-weatherAPIService.getForecast("Moscow", [54.913681, 37.416601]) // second argument is coordinates, btw
-  .then((res) => res.json())
-  .then((cityData) => console.log(cityData)); 
-```
-<hr>
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-### MapService
-Service for creating and managing different maps 
-Init the service: 
-``` 
-const mapService = new MapService();
-```
-Get available map types: 
-``` 
-const mapTypes = mapService.getMapTypes();
-```
-Select which one to use: 
-``` 
-mapService.setMapType(mapTypes["map-type"]); // found in app/js/constants | mapTypes
-```
-Create a map: 
-``` 
-mapService.createMap(
-  "map-container", // id of existing DOM element
-  "Moscow" // optional name of a city (in case you want to put this value into map's search right away)
-);
-```
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

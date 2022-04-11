@@ -1,0 +1,58 @@
+const cities = [
+  {
+    id: "cd3a7981-cb6f-431f-b023-11be732b35ff",
+    title: "Kostroma",
+    date: "2022-03-31T08:10:02.472Z",
+    lat: 40.94232093800002,
+    lon: 57.7967409940679,
+    cityImage: "cloudy.png",
+    currentTemp: 18.3,
+    weatherCondition: "Overcast",
+    widgetRelatedInfo: {
+      minTemp: { name: "MIN TEMP", value: "8.9°" },
+      maxTemp: { name: "MAX TEMP", value: "22.1°" },
+      feltTemp: { name: "FEELS LIKE", value: "18.3°" },
+      uvIndicator: { name: "Uv Indicator", value: 4 },
+      pressure: { name: "PRESSURE", value: "1019 hPa" },
+      windSpeed: { name: "WIND SPEED", value: "22.7 kph" },
+    },
+  },
+  {
+    id: "403d7719-8d30-4d45-baf9-aae7721e77d9",
+    title: "Moscow",
+    date: "2022-03-31T08:10:02.483Z",
+    lat: 37.385168369999974,
+    lon: 55.583683544217536,
+    cityImage: "cloudy.png",
+    currentTemp: 19.6,
+    weatherCondition: "Sunny",
+    widgetRelatedInfo: {
+      minTemp: { name: "MIN TEMP", value: "11.1°" },
+      maxTemp: { name: "MAX TEMP", value: "21.9°" },
+      feltTemp: { name: "FEELS LIKE", value: "19.6°" },
+      uvIndicator: { name: "Uv Indicator", value: 6 },
+      pressure: { name: "PRESSURE", value: "1019 hPa" },
+      windSpeed: { name: "WIND SPEED", value: "18 kph" },
+    },
+  },
+  {
+    id: "e746a7d0-8532-4815-960b-695a2e4fd12e",
+    title: "Ivanovo",
+    date: "2022-03-31T08:10:02.517Z",
+    lat: 40.97771921249998,
+    lon: 57.0064890490643,
+    cityImage: "cloudy.png",
+    currentTemp: 18.3,
+    weatherCondition: "Overcast",
+    widgetRelatedInfo: {
+      minTemp: { name: "MIN TEMP", value: "8.9°" },
+      maxTemp: { name: "MAX TEMP", value: "22.1°" },
+      feltTemp: { name: "FEELS LIKE", value: "18.3°" },
+      uvIndicator: { name: "Uv Indicator", value: 4 },
+      pressure: { name: "PRESSURE", value: "1019 hPa" },
+      windSpeed: { name: "WIND SPEED", value: "22.7 kph" },
+    },
+  },
+];
+
+export default cities;
