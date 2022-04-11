@@ -10,6 +10,7 @@ import CitiesSwiper from "./components/CitiesSwiper";
 
 import LsService from "./services/lsService";
 import { appVersion, modalTypes } from "./constants";
+import Selector from "./components/ui/Selector";
 
 const App = () => {
   const citiesData = useSelector((state) => state.cities.citiesList);

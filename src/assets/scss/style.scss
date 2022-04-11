@@ -348,7 +348,8 @@
   overflow: hidden;
   background: $color-cloudy;
 
-  .swiper, .swiper-wrapper .swiper-slide {
+  .swiper,
+  .swiper-wrapper .swiper-slide {
     border-radius: 10px;
   }
 }
@@ -700,6 +701,22 @@ ymaps[class*="searchbox-button"] {
   flex-direction: column;
   position: relative;
   overflow-y: auto;
+
+  @media screen and (min-width: 511px) {
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #dfdfdf;
+    }
+  }
 }
 
 .map-modal {
@@ -923,7 +940,13 @@ ymaps[class*="searchbox-button"] {
     transform: translate(-50%, -200%);
   }
 
-  7%, 10%, 20%, 40%, 60%, 80%, 90% {
+  7%,
+  10%,
+  20%,
+  40%,
+  60%,
+  80%,
+  90% {
     opacity: 1;
     transform: translate(-50%, 0);
   }
@@ -950,7 +973,13 @@ ymaps[class*="searchbox-button"] {
     transform: translate(0, 200%);
   }
 
-  7%, 10%, 20%, 40%, 60%, 80%, 90% {
+  7%,
+  10%,
+  20%,
+  40%,
+  60%,
+  80%,
+  90% {
     opacity: 1;
     transform: translate(0, -50%);
   }
@@ -962,8 +991,7 @@ ymaps[class*="searchbox-button"] {
 }
 
 .close-city-list-btn-wrapper {
-  background: rgba(0, 0, 0, 0.18);
-  border-top: 1px solid $color-normal;
+  background:#2c5364;
   position: fixed;
   bottom: 0;
   left: 50%;
@@ -994,5 +1022,34 @@ ymaps[class*="searchbox-button"] {
   to {
     transform: translateX(-100%);
     opacity: 0;
+  }
+}
+
+.custom-selector {
+  background: $color-primary;
+  color: $color-black;
+  font-size: 20px;
+  padding: 10px;
+  position: relative;
+  border-radius: 1px;
+  cursor: pointer;
+
+  &__options {
+    position: absolute;
+    top: (100% + 10);
+    left: 0;
+    border-radius: 1px;
+    width: 100%;
+    background: $color-primary;
+    color: $color-black;
+  }
+
+  &__option {
+    padding: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: darken($color-primary, 5%);
+    }
   }
 }

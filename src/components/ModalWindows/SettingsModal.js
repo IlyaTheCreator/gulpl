@@ -26,10 +26,10 @@ const SettingsModal = ({ zIndex, appDispatch, setCitiesUpdated }) => {
     });
   };
 
-  const weatherSwitchHandler = (e) => {
+  const weatherSwitchHandler = (type) => {
     const weatherAPITypes = weatherAPIService.getApiTypes();
     const oldApiType = weatherAPIType;
-    weatherAPIService.setApiType(weatherAPITypes[e.target.value]);
+    weatherAPIService.setApiType(weatherAPITypes[type]);
 
     if (
       oldApiType &&
@@ -86,10 +86,10 @@ const SettingsModal = ({ zIndex, appDispatch, setCitiesUpdated }) => {
     });
   };
 
-  const mapSwitchHandler = (e) => {
+  const mapSwitchHandler = (type) => {
     const availableMapTypes = mapService.getMapTypes();
     const oldMapType = selectedMap;
-    mapService.setMapType(availableMapTypes[e.target.value]);
+    mapService.setMapType(availableMapTypes[type]);
 
     if (oldMapType && mapService.selectedMapType.apiType === oldMapType.type) {
       return;
@@ -103,13 +103,13 @@ const SettingsModal = ({ zIndex, appDispatch, setCitiesUpdated }) => {
     );
   };
 
-  const changeHandler = (e, type) => {
+  const changeHandler = (type, value) => {
     switch (type) {
       case "weather":
-        weatherSwitchHandler(e);
+        weatherSwitchHandler(value);
         break;
       case "map":
-        mapSwitchHandler(e);
+        mapSwitchHandler(value);
         break;
       default:
         return;
