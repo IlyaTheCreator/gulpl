@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CityListItem from "./CityListItem";
 import AddCityBtn from "./AddCityBtn";
 import NoCitiesMessageBlock from "../NoCitiesMessageBlock";
@@ -6,6 +6,7 @@ import Spinner from "../ui/Spinner";
 
 import { appActionTypes } from "../../appStateManager";
 import { modalTypes } from "../../constants";
+import { removeCity } from "../../store/cities";
 
 const CityList = ({
   appDispatch,
@@ -13,6 +14,7 @@ const CityList = ({
   citiesUpdated,
   setCitiesUpdated,
 }) => {
+  const dispatch = useDispatch();
   const citiesData = useSelector((state) => state.cities.citiesList);
   const isLoading = useSelector((state) => state.ui.isLoading);
 
@@ -39,6 +41,10 @@ const CityList = ({
     }
   };
 
+  const swipeHanlder = (id) => {
+    dispatch(removeCity(id));
+  }
+
   if (citiesData.length === 0) {
     if (isLoading) {
       return (
@@ -58,6 +64,7 @@ const CityList = ({
 
   const cities = citiesData.map((city) => (
     <CityListItem
+      onSwipe={() => swipeHanlder(city.id)}
       onClick={() => cityListItemClickHandler(city.id)}
       key={city.id}
       itemData={city}

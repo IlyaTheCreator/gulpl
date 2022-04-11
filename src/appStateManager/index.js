@@ -30,8 +30,6 @@ export const reducer = (state, action) => {
       ? initialIndex
       : initialIndex + numberOfOpenedModals;
 
-  console.log(action.type, action.payload)
-
   switch (action.type) {
     case appActionTypes.OPEN_MODAL:
       return {

@@ -1,6 +1,5 @@
 @import "./variables";
 @import "./fonts";
-@import "./fonts-extended";
 @import "./general-styles";
 
 #root {
@@ -73,7 +72,12 @@
   }
 
   &__city {
-    margin: 20px 0;
+    margin: 17px 0;
+    padding: 0;
+
+    .link {
+      padding: 8px 10px;
+    }
 
     &-name {
       font-size: 30px;
@@ -343,6 +347,10 @@
   min-height: 823px;
   overflow: hidden;
   background: $color-cloudy;
+
+  .swiper, .swiper-wrapper .swiper-slide {
+    border-radius: 10px;
+  }
 }
 
 .empty-city-list-container {
@@ -536,15 +544,13 @@
 }
 
 .delete-city-btn {
-  position: absolute;
-  top: 30px;
-  left: 30px;
   background: coral;
   padding: 10px 30px;
-  font-size: 1.3rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-  z-index: 9999;
+  font-size: 2.4rem;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 // map related stuff
@@ -970,5 +976,23 @@ ymaps[class*="searchbox-button"] {
     position: static;
     transform: none;
     margin: 15px auto;
+  }
+}
+
+.city-to-be-deleted {
+  animation-name: city-delete-animation;
+  animation-duration: 0.35s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes city-delete-animation {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
   }
 }
