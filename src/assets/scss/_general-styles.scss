@@ -112,11 +112,8 @@ i {
   display: flex;
   flex-direction: column;
 
-  @media screen and (max-width: 411px) {
-    width: 100vw;
-  }
-
   @media screen and (max-width: 511px) {
+    width: 100vw;
     height: 100vh;
 
     &::-webkit-scrollbar {
